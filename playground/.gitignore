@@ -3,5 +3,8 @@
 !*/
 !SUMMARY.md
 !README.md
+# A lesson's explainer figure: the built page and the script that builds it.
+!figure.html
+!figure.mjs
 # A sandbox holds node_modules, whose README.md files the rule above would otherwise re-include.
 /*-sandbox/
