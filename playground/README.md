@@ -3,11 +3,24 @@
 Scratch space for Learning Mode exercises. One directory per lesson, named by topic ID:
 `07-generics/` in the Java track, `R13-useeffect/` in the React track.
 
-Only `SUMMARY.md` cards and this file are committed — the `.gitignore` here ignores everything
-else, so scratch code can be deleted freely.
+Only `SUMMARY.md` cards, lesson figures and this file are committed — the `.gitignore` here ignores
+everything else, so scratch code can be deleted freely.
 
 Anything that is not a lesson (a comparison page, a diagram, a one-off experiment) goes in
 `playground/_scratch/`. It is not tracked, so tell the learner that when you create a file there.
+
+## Lesson figures
+
+A figure is an optional extra, made only when the learner asks for one (asked for on 2026-10-12).
+The lesson itself still happens in the console.
+
+- **Keep it small, with a simple explanation**: two short legend keys and a caption of one or two
+  sentences. The detail belongs in the lesson, not under the drawing.
+- **Save it in the lesson directory**, never in `_scratch/`: `playground/<NN>-<topic>/figure.html`,
+  with the script that builds it beside it as `figure.mjs`.
+- **Commit and push it** once it builds and opens cleanly.
+
+`09a-comparable-comparator/` is the first one.
 
 ## Where exercise code goes — Java
 
