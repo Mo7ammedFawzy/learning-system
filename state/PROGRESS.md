@@ -19,7 +19,7 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
 
 One line per track; a lesson changes only its own track's line.
 
-**java** — Topic: 09 — Iteration, `Comparable`, `Comparator` (SOURCES row 39). Step: not started. (06b — `final`, nested classes — and 08c — `HashMap` resizing and load factor — have no source rows and wait behind the PDFs.)
+**java** — Topic: 09a — `Comparable` vs `Comparator` (SOURCES row 39). Step: 2, three questions asked, none answered yet (`TreeSet` with `CASE_INSENSITIVE_ORDER`; sort strings by length; `x.balance() - y.balance()` overflow). Warm-up skipped, no `Held` change. Then 09b — iteration and fail-fast iterators, no source row. (06b — `final`, nested classes — and 08c — `HashMap` resizing and load factor — have no source rows and wait behind the PDFs.)
 
 **react** — Topic: R01 — JSX. Step: not started.
 
