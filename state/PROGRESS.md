@@ -19,7 +19,7 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
 
 One line per track; a lesson changes only its own track's line.
 
-**java** — Topic: 08b — Maps: `HashMap` internals, `LinkedHashMap`, `TreeMap`, `Hashtable` (SOURCES rows 9, 10). Step: not started. (06b — `final`, nested classes — has no source rows and waits behind the PDFs.)
+**java** — Topic: 09 — Iteration, `Comparable`, `Comparator` (SOURCES row 39). Step: not started. (06b — `final`, nested classes — and 08c — `HashMap` resizing and load factor — have no source rows and wait behind the PDFs.)
 
 **react** — Topic: R01 — JSX. Step: not started.
 
@@ -40,6 +40,7 @@ Last review: 2026-09-06 (topic 01).
 | 05b | Dynamic dispatch, the four OOP concepts, varargs | 2026-10-03 | ok | Dispatch and encapsulation landed, varargs resolution did not. Step 2: one of three right; re-tests on dispatch and encapsulation passed with reasons, varargs capped. Step 3: all three reports fixed first try, no hints, validation shared by constructor and setter; `@Override` left off. Drill: Q1 passed after one probe; Q2 failed, answer flipped when the declarations were swapped. |
 | 06a | `static` and class initialisation | 2026-10-04 | ok | Step 2: one of three right (static vs instance access); both re-tests passed with reasons. Step 3: all three reports fixed first try, no hints, told "per class" from "per object" in both directions; dropped `private` from `Ticket.next`. Drill: both base answers passed, both probes failed (first use of the main class; said static binding happens at runtime). |
 | 08a | List and Set, backing structure and Big O | 2026-10-07 | shaky | Sets landed, the headline list question did not. Step 2: Q1 wrong (`LinkedHashSet` read as `LinkedList`, `HashSet` order called known), re-test capped on "`contains` walks the links". Step 3: A and B first try, C after one level-1 hint, fixed by copying into an `ArrayList` rather than for-each. Drill: Q1 (`ArrayList` vs `LinkedList` middle insert) failed, still O(1) for `LinkedList` after the probe; Q2 passed (O(n²), `HashSet`, bucket reason), its *Then* got "slower" with no Big O. |
+| 08b | Maps: `HashMap`, `LinkedHashMap`, `TreeMap`, `Hashtable` | 2026-10-12 | ok | Choosing a map landed, describing `Hashtable` did not. Step 2: order question right with reasons; worst-case costs swapped and "no map takes a `null` key", both re-tests passed with reasons. Step 3: all three reports fixed first try, no hints, each with the reason in a comment. Drill: Q2 (is `get` O(1)?) passed on the second asking with the tree reason; Q1 opened with "the difference is the Big O" and never said "synchronized", even when probed for it. Resizing and load factor not taught (08c). |
 
 ## Scratched
 
@@ -105,7 +106,10 @@ lesson.
   was the one that failed, and whether the other one even ran** — never "what's wrong with this?".
   Related: a bucket was described as a slot holding one entry (`HashSet` of two equal-hash items
   answered as size 1). That half closed on the re-test.
-  08a warm-up (2026-10-05): held. Held: 1/2
+  08a warm-up (2026-10-05): held.
+  08b warm-up (2026-10-11): not held. Row B right (`equals` fails, same hash). Row A opened with
+  "equals, both fail" and then said `equals` won't run: mechanism known, wrong method named
+  first. Held: 1/2
 
 - **Calls a broken `equals`/`hashCode` contract "not a bug". 03a drill.** Asked flat "is overriding
   `equals` without `hashCode` a bug?", answered "not a bug, it creates mini buckets", framing a
@@ -229,10 +233,24 @@ lesson.
   share one bucket and it gets slower, no complexity. It is O(log n) once the bucket treeifies
   (O(n) before Java 8, or under 8 entries). Same family as the count entry above. Re-test: demand
   the O-term, refuse an adjective. Held: 0/2
+  08b (2026-10-12): gave O-terms when asked, values swapped at first (see below), then O(log n)
+  with the tree reason in the re-test and the drill. Same sitting, not counted as a hold.
 - **`LinkedHashSet` read as a `LinkedList`; `HashSet` order called known** (08a, 2026-10-05, step
   2). "Linked" buys insertion order on a hash table, not list costs; `HashSet` promises no order.
   Not re-tested since. The capped "`contains` walks the links" closed in the drill ("searches the
   bucket, not the index"). Re-test: ask the cost of `contains` on a `LinkedHashSet`. Held: 0/2
+
+- **`HashMap` vs `Hashtable`: never says "synchronized"** (08b, 2026-10-12). Drill: opened "the
+  difference is the Big O", and said "I don't know how `Hashtable` stores". Probed directly for what
+  `Hashtable` does on every method call that `HashMap` does not, answered storage and Big O again.
+  The difference is that every `Hashtable` method is `synchronized` (and it takes no `null`); the
+  average cost is the same O(1). Same family as the adjacent-question entry. Re-test flat: "why is
+  `Hashtable` slower than `HashMap`?" Held: 0/2
+- **Treeification given to `Hashtable`** (08b, 2026-10-12, step 2). Said `HashMap` is O(n) and
+  `Hashtable` O(log n) under a constant `hashCode`. Only `HashMap` turns a long bucket into a tree.
+  Closed on the re-test and stated unaided in the drill.
+- **"No map accepts a `null` key". 08b step 2.** `HashMap` and `LinkedHashMap` take one. Closed on
+  the re-test and in the exercise.
 
 - **"Mutate it, then call the setter with it"** (R05/R02 scratch, 2026-10-10). Asked to predict a
   component that multiplies `item.price` in its body, proposed `item.price = …; setItem(item)` as

@@ -20,8 +20,8 @@ the lesson teaches the mechanism, the PDF supplies the question.
 | 6 | Wrapper classes, autoboxing and unboxing | 01 | ✅ 01, 2026-09-06 |
 | 7 | Abstract class vs interface | 04 | ✅ 04a, 2026-09-27 |
 | 8 | Collections — Set and List | 08 | ✅ 08a, 2026-10-07 |
-| 9 | Map implementations | 08 | ☐ |
-| 10 | HashMap vs HashSet vs Hashtable | 08 | ☐ |
+| 9 | Map implementations | 08 | ✅ 08b, 2026-10-12 |
+| 10 | HashMap vs HashSet vs Hashtable | 08 | ✅ 08b, 2026-10-12 |
 | 11 | Immutable vs mutable classes, making a class immutable | 14 | ☐ |
 | 12 | Error vs Exception, the hierarchy | 12 | ☐ |
 | 13 | throw vs throws | 12 | ☐ |
