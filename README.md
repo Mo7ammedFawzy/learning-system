@@ -63,7 +63,8 @@ core/            the shared source of truth — agent-neutral, codebase-neutral
     CURRICULUM.md    41 topics: core, hooks, TypeScript, patterns, libraries, Next.js, build
     INTERVIEW-BANK.md
 labs/            optional pluggable codebase profiles (INDEX, TEMPLATE, one file per codebase)
-state/PROGRESS.md your progress per track, weak spots, and what to revisit
+state/PROGRESS.md your progress per track
+state/WEAK-SPOTS.md named misconceptions, re-tested one per warm-up
 state/LEARNER.md  what you already know — lessons build on it instead of re-teaching it
 playground/      your summary cards; its README names where exercise code goes
 adapters/        thin per-agent entry points — pointers only

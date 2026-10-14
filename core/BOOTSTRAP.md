@@ -34,14 +34,14 @@ Then read, in this order:
 
 | File | Why |
 |---|---|
-| `state/PROGRESS.md` | Where the learner is in each track, and what they were shaky on |
+| `state/PROGRESS.md` | Where the learner is in each track, and how each topic went |
 | `state/LEARNER.md` | What the learner already knows, if it exists — bridge from it, do not re-teach it. Where it disagrees with `state/PROGRESS.md`, PROGRESS is right: one is claimed, the other was measured |
 | `core/<track>/CURRICULUM.md` | The track's ordered topic list |
 | `core/METHODOLOGY.md` | The five-step contract and its time budget — **read before teaching your first topic** |
 | `state/SOURCES.md` | The priority source checklist, if it exists — it decides the next topic in the track its rows belong to |
 
-Do not read the interview bank or a lab profile yet; they are needed at step 5 and at the optional
-real-world detour, if you take it at all.
+Do not read the interview bank, `state/WEAK-SPOTS.md` or a lab profile yet; they are needed at
+step 5, at the warm-up and close, and at the optional real-world detour, if you take it at all.
 
 ## 2. Select a lab profile
 
@@ -64,7 +64,7 @@ Codebase-free mode is a normal mode, not a degraded one. Never invent file paths
 | *(none)* | Report the current topic and step, then propose resuming it or starting the next topic. Do not dump the whole curriculum unless asked. |
 | a topic name or ID | Resolve against the track's `CURRICULUM.md` (exact → substring). Jump there even if out of order; say so if prerequisites are unmet, but honour the choice. |
 | `next` | Give **the review reminder** below if it is due, then advance to the next topic (see **The next topic** below). |
-| `review` | Re-test the entries under **Weak spots to revisit**, skipping step 1. |
+| `review` | Re-test the open entries in `state/WEAK-SPOTS.md`, skipping step 1. |
 | `review` + a topic | Quick review of that completed topic, skipping step 1: 2–3 questions from its `SUMMARY.md` and its open weak spots, verdicts, done. About five minutes. |
 | `scratch`, with or without a scope | A fast batch pass over several topics. Read `core/SCRATCH.md` and follow it in place of sections 4 and 5 below. From `core/METHODOLOGY.md` only the *Delivery* section applies. |
 | a topic not in the curriculum | Teach it with the same five steps, then add it to the track's `CURRICULUM.md` under the nearest section, with the next free ID. |
@@ -103,7 +103,7 @@ and stop.
 After step 5, update `state/PROGRESS.md`:
 
 - Move the topic to **Completed** with today's date and a confidence of `solid`, `ok` or `shaky`
-- Add what they missed to **Weak spots to revisit** as named misconceptions, in the line format
+- Add what they missed to `state/WEAK-SPOTS.md` as named misconceptions, in the line format
   that file's header gives — be specific ("missed that erasure makes the overload ambiguous", not
   "generics")
 - Update `Held` on the entry the warm-up tested. At `Held: 2/2` move it to the "Closed on …" line
@@ -111,6 +111,8 @@ After step 5, update `state/PROGRESS.md`:
   ticked only when its topic closes, never after step 1 alone — that tick is what stops the same
   concept being taught twice
 - Set that track's **Current** line to the next topic; leave the other tracks' lines alone
+- Commit `state/` and the topic's summary card, and push to `master`. The learner should not have
+  to ask
 
 Grade honestly. A `solid` on a topic the learner fumbled makes the whole file worthless, and they
 will walk into an interview trusting it.

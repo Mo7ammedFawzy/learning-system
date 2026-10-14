@@ -46,6 +46,18 @@ for dir in core/*/; do
   fi
 done
 
+# --- state/PROGRESS.md: one Current line per track naming a real topic, and small enough to read every session ---
+p=state/PROGRESS.md
+for dir in core/*/; do
+  t=$(basename "$dir")
+  n=$(grep -c "^\*\*$t\*\* — Topic: " "$p")
+  [ "$n" = 1 ] || { bad "$p: expected one Current line for $t, found $n"; continue; }
+  id=$(grep -oE "^\*\*$t\*\* — Topic: [A-Z]*[0-9]{2}[a-z]?" "$p" | awk '{print $NF}')
+  grep -qE "^\| $id \|" "${dir}CURRICULUM.md" || bad "$p: $t Current topic '$id' is not in ${dir}CURRICULUM.md"
+done
+lines=$(wc -l < "$p")
+[ "$lines" -le 150 ] || bad "$p is $lines lines (cap 150): move detail to state/WEAK-SPOTS.md or trim Completed notes"
+
 # --- the installers run to the end on this machine, without installing anything ---
 out=$(bash install.sh --check 2>&1) || bad "install.sh --check failed" "$out"
 if command -v powershell >/dev/null 2>&1; then

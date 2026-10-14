@@ -27,6 +27,7 @@ Read `core/BOOTSTRAP.md` and follow it exactly. `<learning-home>` is this reposi
 | `core/<track>/INTERVIEW-BANK.md` | Interview questions per topic of that track |
 | `labs/` | Optional, pluggable real-codebase profiles. `labs/INDEX.md` maps a working directory to a profile; no match means codebase-free mode |
 | `state/PROGRESS.md` | Learner state — one `Current` line per track |
+| `state/WEAK-SPOTS.md` | Named misconceptions. Read at the warm-up and close only, not at session start |
 | `state/LEARNER.md` | What the learner already knows, self-reported. Lessons bridge from it and never edit it |
 | `state/SOURCES.md` | Priority checklist: every question in the `sources/` PDFs, mapped to a topic. Gates the `java` track only |
 | `sources/` | Interview-prep PDFs the learner wants finished first |

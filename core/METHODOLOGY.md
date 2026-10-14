@@ -92,7 +92,7 @@ the exercise directory `playground/README.md` names, because it has to run, and 
 a new topic and a resumed one alike. A `review` session skips it: it is all re-test already. About
 a minute; it is not a sixth step and has no re-test round.
 
-- **Source.** An open entry under **Weak spots to revisit** in `state/PROGRESS.md`, asked flat in
+- **Source.** An open entry in `state/WEAK-SPOTS.md`, asked flat in
   that entry's own "Re-test" framing. Use only entries from today's track, plus the cross-topic
   ones about the learner — a question from another track is a context switch, not a warm-up. Pick
   one that touches today's topic first, else the one re-tested least recently. With no open entry,
@@ -300,4 +300,4 @@ skipping is the default, and it needs no justification.
 ## After step 5
 
 Update `state/PROGRESS.md`: move the topic to Completed with a date and an honest confidence, record
-specific weak spots, set the next Current topic. Then offer the next topic — do not start it.
+specific weak spots in `state/WEAK-SPOTS.md`, set the next Current topic. Then offer the next topic — do not start it.
