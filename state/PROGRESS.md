@@ -19,7 +19,7 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
 
 One line per track; a lesson changes only its own track's line.
 
-**java** — Topic: 09a — `Comparable` vs `Comparator` (SOURCES row 39). Step: 2, three questions asked, none answered yet (`TreeSet` with `CASE_INSENSITIVE_ORDER`; sort strings by length; `x.balance() - y.balance()` overflow). Warm-up skipped, no `Held` change. Then 09b — iteration and fail-fast iterators, no source row. (06b — `final`, nested classes — and 08c — `HashMap` resizing and load factor — have no source rows and wait behind the PDFs.)
+**java** — Topic: 10 — Streams and lambdas (SOURCES rows 20, 40, 41). Step: not started. (06b — `final`, nested classes — 08c — `HashMap` resizing and load factor — and 09b — iteration and fail-fast iterators — have no source rows and wait behind the PDFs.)
 
 **react** — Topic: R01 — JSX. Step: not started.
 
@@ -41,6 +41,7 @@ Last review: 2026-09-06 (topic 01).
 | 06a | `static` and class initialisation | 2026-10-04 | ok | Step 2: one of three right (static vs instance access); both re-tests passed with reasons. Step 3: all three reports fixed first try, no hints, told "per class" from "per object" in both directions; dropped `private` from `Ticket.next`. Drill: both base answers passed, both probes failed (first use of the main class; said static binding happens at runtime). |
 | 08a | List and Set, backing structure and Big O | 2026-10-07 | shaky | Sets landed, the headline list question did not. Step 2: Q1 wrong (`LinkedHashSet` read as `LinkedList`, `HashSet` order called known), re-test capped on "`contains` walks the links". Step 3: A and B first try, C after one level-1 hint, fixed by copying into an `ArrayList` rather than for-each. Drill: Q1 (`ArrayList` vs `LinkedList` middle insert) failed, still O(1) for `LinkedList` after the probe; Q2 passed (O(n²), `HashSet`, bucket reason), its *Then* got "slower" with no Big O. |
 | 08b | Maps: `HashMap`, `LinkedHashMap`, `TreeMap`, `Hashtable` | 2026-10-12 | ok | Choosing a map landed, describing `Hashtable` did not. Step 2: order question right with reasons; worst-case costs swapped and "no map takes a `null` key", both re-tests passed with reasons. Step 3: all three reports fixed first try, no hints, each with the reason in a comment. Drill: Q2 (is `get` O(1)?) passed on the second asking with the tree reason; Q1 opened with "the difference is the Big O" and never said "synchronized", even when probed for it. Resizing and load factor not taught (08c). |
+| 09a | `Comparable` vs `Comparator` | 2026-10-14 | shaky | Hands right, words wrong. Step 2: one of three (Comparator for `String` by length); `TreeSet` zero-means-duplicate and subtraction overflow both capped. Step 3: all three reports fixed first try, no hints (`thenComparing`, `Comparable` by name, `comparingInt`). Drill: lives-where and when-to-pick passed; the method names swapped in both questions and stayed swapped after both probes. Q2 got "no, size 1, returned 0" right. Iteration and fail-fast not taught (09b). |
 
 ## Scratched
 
@@ -251,6 +252,29 @@ lesson.
   Closed on the re-test and stated unaided in the drill.
 - **"No map accepts a `null` key". 08b step 2.** `HashMap` and `LinkedHashMap` take one. Closed on
   the re-test and in the exercise.
+
+- **"A sorted set keeps elements that compare as zero". Two rounds, capped in 09a step 2**
+  (09a, 2026-10-13). `TreeSet` with `CASE_INSENSITIVE_ORDER` and three spellings of "java" answered
+  size 3; re-test with `comparingInt(String::length)` and `fig`/`kiwi`/`pea` answered `3 fig pea
+  kiwi`, ties "kept in insertion order". Named `compare` as the deciding method both times and did
+  not apply its zero: a `TreeSet`/`TreeMap` never calls `equals`, zero means "already here" and the
+  add is dropped (`2 [fig, kiwi]`). Insertion-order ties are `List.sort` stability, not a set.
+  Re-test: hand over a `TreeSet` with a one-key comparator and ask for the size. Held: 0/2
+- **Subtraction comparator: overflow not seen. Two rounds, capped in 09a step 2** (09a,
+  2026-10-13). `x.balance() - y.balance()` on ±2 billion: first said the comparator returns 0, then
+  on the re-test "it won't sort", with no list and no sign though both were asked for. The
+  difference (±4 billion) does not fit an `int`, wraps, and comes back with the opposite sign, so
+  the sort runs and gives the reverse order. Fix is `Integer.compare(x, y)`; first offered
+  `comparingInt(Account::id)` on a `String` key. Re-test: ask for the sign of `x - y` at the two
+  extremes. Held: 0/2
+- **`compareTo` and `compare` swapped** (09a, 2026-10-14). Drill: gave `Comparable` the method
+  `compare` and `Comparator` the method `compareTo(o1, o2)`; probed with the blank in
+  `implements Comparable<Product>`, wrote `compare(Product other)`. Then said a `TreeSet` built on
+  `comparingInt` called `compareTo`, on a record that implements nothing. Wrote both correctly in
+  the step-3 code, so the gap is naming, which is what the interviewer hears. `Comparable` →
+  `compareTo(T other)`, one argument, because `this` is the other side. `Comparator` →
+  `compare(T a, T b)`, two, because it is neither object. Re-test flat: "a `TreeSet` with a
+  comparator: which method does it call, on which object?" Held: 0/2
 
 - **"Mutate it, then call the setter with it"** (R05/R02 scratch, 2026-10-10). Asked to predict a
   component that multiplies `item.price` in its body, proposed `item.price = …; setItem(item)` as

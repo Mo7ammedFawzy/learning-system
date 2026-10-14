@@ -50,7 +50,7 @@ the lesson teaches the mechanism, the PDF supplies the question.
 | 36 | `equals()` vs `==` for any object (02a covered Strings only) | 03 | ✅ 03a, 2026-09-23 |
 | 37 | join(), sleep(), wait() | 37 | ☐ |
 | 38 | Achieving thread safety | 38 | ☐ |
-| 39 | Comparable vs Comparator | 09 | ☐ |
+| 39 | Comparable vs Comparator | 09 | ✅ 09a, 2026-10-14 |
 | 40 | map() vs flatMap() | 10 | ☐ |
 | 41 | stream vs parallelStream | 10 | ☐ |
 | 42 | Salting | 33 | ☐ |

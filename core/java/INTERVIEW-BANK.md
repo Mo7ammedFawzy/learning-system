@@ -198,6 +198,25 @@ and add any question the user is asked in a real interview.
   practice at nearly every size. `LinkedList` is defensible mainly as a `Deque`.
 - *Then:* "When did you last legitimately use a `LinkedList`?"
 
+## 09 — Iteration, Comparable, Comparator
+
+**Q.** What is the difference between `Comparable` and `Comparator`?
+- *Shallow:* "`Comparable` has `compareTo`, `Comparator` has `compare`."
+- *Passes:* `Comparable` is implemented by the class itself and defines its one natural order;
+  `Comparator` is a separate object, so a class can have many orders and you can order a class you
+  do not own. Natural order for the single obvious ordering, a `Comparator` (`comparing`,
+  `thenComparing`) for every other one.
+- *Then:* "You need `String`s sorted by length — which one, and why not the other?" (`Comparator`:
+  `String` already has its natural order and is not yours to edit.)
+
+**Q.** Can a `TreeSet` ordered by price hold two different products with the same price?
+- *Shallow:* "Yes, they are different objects, `equals` is false."
+- *Passes:* No. A `TreeSet` never calls `equals`; a comparison of zero means "already present" and
+  the second add is dropped silently. The ordering must be consistent with `equals`, so add a
+  tie-breaker with `thenComparing` until zero means truly equal.
+- *Then:* "Why is `(a, b) -> a.price() - b.price()` a bug?" (The difference can overflow `int` and
+  flip sign; use `Integer.compare` or `comparingInt`.)
+
 ## 10 — Streams
 
 **Q.** What does laziness mean in a stream pipeline?
