@@ -59,6 +59,12 @@ lesson.
 | R10 | `useReducer` | 2026-10-10 | Miss: "I don't know" on two dispatches then a log |
 | R11 | Context | 2026-10-10 | Miss: said a consumer reading only `theme` does not re-render when `user` changes |
 | R12 | Refs | 2026-10-10 | Miss: "I don't know" on a ref shown in JSX |
+| 23 | IoC and dependency injection | 2026-10-15 | — |
+| 24 | Beans: definition, scopes, lifecycle | 2026-10-15 | — |
+| 25 | Injection styles | 2026-10-15 | — |
+| 26 | Configuration and properties | 2026-10-15 | — |
+| 31 | REST controllers | 2026-10-15 | — |
+| 32 | Error handling | 2026-10-15 | — |
 
 ## Notes to self
 
