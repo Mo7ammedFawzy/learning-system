@@ -16,7 +16,7 @@ task log or require a real-world exercise or formal code review to mark it compl
 
 One line per track; a lesson changes only its own track's line.
 
-**java** — Topic: 10 — Streams and lambdas (SOURCES rows 20, 40, 41). Step: not started. (06b — `final`, nested classes — 08c — `HashMap` resizing and load factor — and 09b — iteration and fail-fast iterators — have no source rows and wait behind the PDFs.)
+**java** — Topic: 10 — Streams and lambdas, part 10b: lazy pipelines, intermediate vs terminal, `map` vs `flatMap`, `stream` vs `parallelStream` (SOURCES rows 20, 40, 41). Step: not started. (06b — `final`, nested classes — 08c — `HashMap` resizing and load factor — and 09b — iteration and fail-fast iterators — have no source rows and wait behind the PDFs.)
 
 **react** — Topic: R01 — JSX. Step: not started.
 
@@ -39,6 +39,7 @@ Last review: 2026-09-06 (topic 01).
 | 08a | List and Set, backing structure and Big O | 2026-10-07 | shaky | Sets landed, the headline list question did not. Step 2: Q1 wrong (`LinkedHashSet` read as `LinkedList`, `HashSet` order called known), re-test capped on "`contains` walks the links". Step 3: A and B first try, C after one level-1 hint, fixed by copying into an `ArrayList` rather than for-each. Drill: Q1 (`ArrayList` vs `LinkedList` middle insert) failed, still O(1) for `LinkedList` after the probe; Q2 passed (O(n²), `HashSet`, bucket reason), its *Then* got "slower" with no Big O. |
 | 08b | Maps: `HashMap`, `LinkedHashMap`, `TreeMap`, `Hashtable` | 2026-10-12 | ok | Choosing a map landed, describing `Hashtable` did not. Step 2: order question right with reasons; worst-case costs swapped and "no map takes a `null` key", both re-tests passed with reasons. Step 3: all three reports fixed first try, no hints, each with the reason in a comment. Drill: Q2 (is `get` O(1)?) passed on the second asking with the tree reason; Q1 opened with "the difference is the Big O" and never said "synchronized", even when probed for it. Resizing and load factor not taught (08c). |
 | 09a | `Comparable` vs `Comparator` | 2026-10-14 | shaky | Hands right, words wrong. Step 2: one of three (Comparator for `String` by length); `TreeSet` zero-means-duplicate and subtraction overflow both capped. Step 3: all three reports fixed first try, no hints (`thenComparing`, `Comparable` by name, `comparingInt`). Drill: lives-where and when-to-pick passed; the method names swapped in both questions and stayed swapped after both probes. Q2 got "no, size 1, returned 0" right. Iteration and fail-fast not taught (09b). |
+| 10a | Lambdas, functional interfaces, method references | 2026-10-19 | shaky | The rule landed, the mechanism didn't. Step 3: A (plain loop instead of capturing `count`) and B (`String::startsWith` receiver order) fixed first try, with no *why* comments. C (`() -> EMPTY` shared list) needed the solution after hint 1. Drill: Q1 got "the lambda copies the value" but not the stack frame, and said a field is copied too. Q2 called a functional interface "an annotation" (corrected after a probe) and never reached why `equals` doesn't count. Streams not taught (10b), so SOURCES row 20 stays open. |
 
 ## Scratched
 

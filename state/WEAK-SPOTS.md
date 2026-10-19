@@ -210,7 +210,9 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
   the sort runs and gives the reverse order. Fix is `Integer.compare(x, y)`; first offered
   `comparingInt(Account::id)` on a `String` key. Re-test: ask for the sign of `x - y` at the two
   extremes. Held: 0/2
-- **`compareTo` and `compare` swapped** (09a, 2026-10-14). Drill: gave `Comparable` the method
+- **`compareTo` and `compare` swapped** (09a, 2026-10-14; re-test failed 10a, 2026-10-19: named
+  `compare(a, b)` for `Comparator` correctly but offered `String::compare` for `Comparable`, capped
+  after two rounds — third miss). Drill: gave `Comparable` the method
   `compare` and `Comparator` the method `compareTo(o1, o2)`; probed with the blank in
   `implements Comparable<Product>`, wrote `compare(Product other)`. Then said a `TreeSet` built on
   `comparingInt` called `compareTo`, on a record that implements nothing. Wrote both correctly in
@@ -218,6 +220,15 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
   `compareTo(T other)`, one argument, because `this` is the other side. `Comparator` →
   `compare(T a, T b)`, two, because it is neither object. Re-test flat: "a `TreeSet` with a
   comparator: which method does it call, on which object?" Held: 0/2
+- **"A lambda copies a field's value too"** (10a drill, 2026-10-19). Said reading a field is fine
+  because "the lambda takes its value". It is the opposite: the lambda captures `this` and reads the
+  field live on every run, so it sees later changes. Only locals are copied, because they live in the
+  stack frame that dies when the method returns. Re-test: a lambda printing field `n`, then
+  `c.n = 9; r.run()`, and ask what it prints and why. Held: 0/2
+- **A `Supplier` that returns a shared object** (10a step 3, 2026-10-19). `() -> EMPTY` with a
+  `static final` list was not seen as one list for every caller, even after hint 1. `new` must run
+  inside the lambda (`ArrayList::new`). Re-test: two `get()` calls, ask whether they are the same
+  object. Held: 0/2
 
 - **"Mutate it, then call the setter with it"** (R05/R02 scratch, 2026-10-10). Asked to predict a
   component that multiplies `item.price` in its body, proposed `item.price = …; setItem(item)` as

@@ -235,6 +235,24 @@ and add any question the user is asked in a real interview.
   usually slower and shares the common `ForkJoinPool`.
 - *Then:* "What is wrong with a `forEach` that adds to an `ArrayList` in parallel?"
 
+**Q.** Why can a lambda only use effectively final local variables?
+- *Shallow:* "Because Java says so" or "so you can't change them."
+- *Passes:* The lambda captures a **copy of the value**, not the variable. It may run later or on
+  another thread, after the method's stack frame is gone, so a local that changes after capture
+  would leave two copies that disagree. Fields are not affected, because the lambda captures `this`
+  and reads the field through it.
+- *Then:* "So how do you count inside a `forEach`?" (Don't. Use a loop, `count()`, or a reduction.
+  An `int[]` or `AtomicInteger` holder compiles but hides shared mutable state.)
+
+**Q.** What is a functional interface, and what does `@FunctionalInterface` add?
+- *Shallow:* "An interface for lambdas."
+- *Passes:* An interface with exactly one abstract method. Default and static methods, and methods
+  that come from `Object`, don't count. A lambda implements that method, and the target type tells
+  the compiler which method it is. The annotation is optional and only makes the compiler reject a
+  second abstract method.
+- *Then:* "Is `Comparator` functional? It declares `equals` too." (Yes: `equals` comes from
+  `Object`.)
+
 ## 11 — Optional and null
 
 **Q.** What is `Optional` for?
