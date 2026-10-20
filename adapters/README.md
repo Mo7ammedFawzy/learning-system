@@ -17,6 +17,12 @@ If you ever find yourself explaining a teaching step inside an adapter, stop —
 | Claude Code | `adapters/claude/scratch.md` | `~/.claude/skills/scratch/SKILL.md` |
 | OpenCode | `adapters/opencode/scratch.md` | `~/.config/opencode/commands/scratch.md` |
 | Codex | `adapters/codex/scratch.md` | `~/.codex/skills/scratch/SKILL.md` |
+| Claude Code | `adapters/claude/progress-mod/` | `~/.claude/skills/learning-progress` (a link, not a copy) |
+
+`progress-mod` is a Claude Code mod, not a pointer: the `/progress` side panel, one square per
+curriculum topic coloured by its confidence in `state/PROGRESS.md`, plus each track's level. It
+reads the repo through the link, so it is never stale. Test it with
+`claude plugin test adapters/claude/progress-mod`.
 
 The `scratch` adapters are the same pointer with one difference: they hand the bootstrap the
 argument `scratch <scope>`, which its dispatch table sends to `core/SCRATCH.md`. The manual and

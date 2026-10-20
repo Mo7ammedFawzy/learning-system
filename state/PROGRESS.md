@@ -24,7 +24,19 @@ One line per track; a lesson changes only its own track's line.
 
 **node** — Topic: N01 — The event loop and async code. Step: not started.
 
-Last review: 2026-09-06 (topic 01).
+Last review: 2026-10-20 (placement quiz) · 2026-09-06 (topic 01).
+
+## Level
+
+Scale: `beginner` → `intermediate` → `advanced` → `senior`; a trailing `+` means close to the next.
+Measured by a placement quiz, not claimed. Re-assess when a curriculum track (A, B, … ) closes.
+`progress.ps1` prints this column; a track with no row is not assessed yet.
+
+| Track | Level | Assessed | To reach the next level |
+|---|---|---|---|
+| java | beginner+ | 2026-10-20 | Exceptions, streams and `groupingBy`, `ConcurrentHashMap`, `volatile` vs atomic `count++` |
+| spring | beginner | 2026-10-20 | Constructor injection, auto-configuration, `@Transactional` self-call, N+1, prototype-in-singleton |
+| react | beginner | 2026-10-20 | `useEffect` dependencies, batching and updater functions, keys, memoisation, Context re-renders |
 
 ## Completed
 

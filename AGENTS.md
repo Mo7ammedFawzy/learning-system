@@ -59,6 +59,7 @@ There is no build, no test suite and no application code — the system is plain
 ```powershell
 .\install.ps1              # write adapters into the global agent config dirs (-Uninstall removes)
 .\progress.ps1             # one progress bar per track, from the curricula and state/PROGRESS.md. The status line calls it
+# /progress in Claude Code   # the side-panel heatmap (adapters/claude/progress-mod), linked in by the installer
 ```
 ```bash
 ./install.sh               # same, Git Bash / macOS / Linux (--uninstall)

@@ -45,10 +45,18 @@ $scratchOpenDsts = @(
 
 $allDsts = @($claudeDst, $codexDst) + $openDsts + @($scratchClaudeDst, $scratchCodexDst) + $scratchOpenDsts
 
+# The Claude Code progress panel (/progress). A junction, not a copy, so the mod reads this
+# repo's state/PROGRESS.md. Claude Code loads a plugin folder found under ~/.claude/skills.
+$modSrc = Join-Path $repo 'adapters\claude\progress-mod'
+$modDst = Join-Path $HOME '.claude\skills\learning-progress'
+# Directory.Delete without recursion removes a junction and refuses a real folder with files.
+function Remove-ModLink { if (Test-Path $modDst) { [System.IO.Directory]::Delete($modDst); Write-Host "removed  $modDst" } }
+
 if ($Uninstall) {
     foreach ($f in $allDsts) {
         if (Test-Path $f) { Remove-Item $f -Force; Write-Host "removed  $f" }
     }
+    Remove-ModLink
     Write-Host "`nUninstalled. This repo was not touched." -ForegroundColor Green
     return
 }
@@ -94,6 +102,10 @@ if (-not $Check) {
         exit 1
     }
     Write-Host "verified: all adapters resolve to $repoFwd/core/BOOTSTRAP.md" -ForegroundColor Green
+
+    Remove-ModLink
+    New-Item -ItemType Junction -Path $modDst -Target $modSrc | Out-Null
+    Write-Host "linked   $modDst -> $modSrc  (/progress in Claude Code)"
 
     # check.sh runs on every commit from here on
     if (Get-Command git -ErrorAction SilentlyContinue) { git -C $repo config core.hooksPath .githooks }

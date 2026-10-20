@@ -1,0 +1,5 @@
+{
+  "name": "learning-progress",
+  "version": "0.1.0",
+  "description": "A side panel with one square per curriculum topic, coloured by how it went, plus your level per track. Reads state/PROGRESS.md of the learning system."
+}

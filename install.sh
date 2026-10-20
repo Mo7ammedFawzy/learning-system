@@ -37,10 +37,23 @@ SCRATCH_OPEN_DSTS=("$HOME/.config/opencode/commands/scratch.md" "$HOME/.config/o
 ALL_DSTS=("$CLAUDE_DST" "$CODEX_DST" "${OPEN_DSTS[@]}"
           "$SCRATCH_CLAUDE_DST" "$SCRATCH_CODEX_DST" "${SCRATCH_OPEN_DSTS[@]}")
 
+# The Claude Code progress panel (/progress). A link, not a copy, so the mod reads this repo's
+# state/PROGRESS.md. Claude Code loads a plugin folder found under ~/.claude/skills.
+MOD_SRC="$REPO/adapters/claude/progress-mod"
+MOD_DST="$HOME/.claude/skills/learning-progress"
+# Removes only a link: rmdir refuses a real folder with files, and so does set -e after it.
+remove_mod_link() {
+  if [ -L "$MOD_DST" ] && ! command -v cygpath >/dev/null 2>&1; then rm "$MOD_DST"
+  elif [ -e "$MOD_DST" ]; then cmd //c rmdir "$(cygpath -w "$MOD_DST")"
+  else return 0; fi
+  echo "removed  $MOD_DST"
+}
+
 if [ "${1:-}" = "--uninstall" ]; then
   for f in "${ALL_DSTS[@]}"; do
     [ -f "$f" ] && rm -f "$f" && echo "removed  $f"
   done
+  remove_mod_link
   echo; echo "Uninstalled. This repo was not touched."
   exit 0
 fi
@@ -77,6 +90,16 @@ if [ "${1:-}" != "--check" ]; then
   done
   [ "$fail" -eq 0 ] || exit 1
   echo "verified: all adapters resolve to $REPO/core/BOOTSTRAP.md"
+
+  remove_mod_link
+  mkdir -p "$(dirname "$MOD_DST")"
+  if command -v cygpath >/dev/null 2>&1; then
+    # Git Bash: ln -s copies unless symlinks are enabled, so make a junction
+    cmd //c mklink /J "$(cygpath -w "$MOD_DST")" "$(cygpath -w "$MOD_SRC")" >/dev/null
+  else
+    ln -s "$MOD_SRC" "$MOD_DST"
+  fi
+  echo "linked   $MOD_DST -> $MOD_SRC  (/progress in Claude Code)"
 
   # check.sh runs on every commit from here on
   git -C "$REPO" config core.hooksPath .githooks
