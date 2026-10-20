@@ -82,6 +82,10 @@ lesson.
 | 26 | Configuration and properties | 2026-10-15 | — |
 | 31 | REST controllers | 2026-10-15 | — |
 | 32 | Error handling | 2026-10-15 | — |
+| D01 | Images, containers and the Dockerfile | 2026-10-20 | — |
+| D02 | Docker Compose | 2026-10-20 | — |
+| D03 | A Spring Boot API in a container | 2026-10-20 | — |
+| D04 | A single-page app behind Nginx | 2026-10-20 | — |
 
 ## Notes to self
 
