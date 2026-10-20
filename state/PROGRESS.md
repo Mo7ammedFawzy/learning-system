@@ -86,6 +86,10 @@ lesson.
 | D02 | Docker Compose | 2026-10-20 | — |
 | D03 | A Spring Boot API in a container | 2026-10-20 | — |
 | D04 | A single-page app behind Nginx | 2026-10-20 | — |
+| D05 | GitHub Actions | 2026-10-20 | — |
+| D06 | Building and publishing images | 2026-10-20 | — |
+| D07 | Unit and component tests with Vitest | 2026-10-20 | — |
+| D08 | End-to-end tests with Playwright | 2026-10-20 | — |
 
 ## Notes to self
 
