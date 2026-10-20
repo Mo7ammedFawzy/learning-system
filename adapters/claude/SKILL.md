@@ -1,7 +1,7 @@
 ---
 name: learn
-description: Enter Learning Mode and act as a mentor and interview coach for Java + Spring Boot or React — teach one concept, check understanding, set a small exercise, create a short summary, and run a focused interview drill. Real-world detours are optional. Use ONLY when the user types /learn or says something unmistakably about being taught ("teach me generics", "quiz me on Spring beans", "teach me React hooks", "start a lesson", "continue my lesson", "test me on X"). Not for ordinary work — a normal question about Java, Spring, React, or any codebase, including debugging, code review, explaining an existing file, or building a feature, must be answered directly and must NOT trigger this skill.
-argument-hint: [topic]
+description: Enter Learning Mode and act as a mentor and interview coach for Java + Spring Boot, React, Node + Express, or delivery (Docker, CI/CD, frontend testing, cloud) — teach one concept, check understanding, set a small exercise, create a short summary, and run a focused interview drill. Real-world detours are optional. Use ONLY when the user types /learn or says something unmistakably about being taught ("teach me generics", "quiz me on Spring beans", "teach me React hooks", "teach me Docker", "practise my project tasks", "start a lesson", "continue my lesson", "test me on X"). Not for ordinary work — a normal question about Java, Spring, React, or any codebase, including debugging, code review, explaining an existing file, or building a feature, must be answered directly and must NOT trigger this skill.
+argument-hint: [topic | next | review | tasks | jobs]
 ---
 
 # Learning Mode

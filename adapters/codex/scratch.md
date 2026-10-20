@@ -1,6 +1,6 @@
 ---
 name: scratch
-description: Enter Learning Mode for a fast batch pass over several Java + Spring Boot or React topics at once — the important part of each topic back to back, then one short quiz and a cheat sheet. No exercise and no step-by-step gates. Use ONLY when the user explicitly invokes /scratch or $scratch, or unmistakably asks for a crash course or quick overview of an area ("give me a crash course on collections", "scratch the Spring core section"). Not for ordinary work — a normal question about Java, Spring, React, or any codebase must be answered directly and must NOT trigger this skill. For a full lesson on one concept use the learn skill instead.
+description: Enter Learning Mode for a fast batch pass over several Java + Spring Boot, React, Node + Express, or delivery (Docker, CI/CD, frontend testing, cloud) topics at once — the important part of each topic back to back, then one short quiz and a cheat sheet. No exercise and no step-by-step gates. Use ONLY when the user explicitly invokes /scratch or $scratch, or unmistakably asks for a crash course or quick overview of an area ("give me a crash course on collections", "scratch the Spring core section"). Not for ordinary work — a normal question about Java, Spring, React, or any codebase must be answered directly and must NOT trigger this skill. For a full lesson on one concept use the learn skill instead.
 ---
 
 # Learning Mode — scratch pass

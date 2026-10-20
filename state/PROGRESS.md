@@ -20,6 +20,10 @@ One line per track; a lesson changes only its own track's line.
 
 **react** — Topic: R01 — JSX. Step: not started.
 
+**delivery** — Topic: D01 — Images, containers and the Dockerfile. Step: not started. Install Docker Desktop first (not on this machine as of 2026-10-20).
+
+**node** — Topic: N01 — The event loop and async code. Step: not started.
+
 Last review: 2026-09-06 (topic 01).
 
 ## Completed

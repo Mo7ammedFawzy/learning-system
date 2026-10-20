@@ -1,8 +1,9 @@
 # Agent instructions for this repository
 
 This repo is a **Learning System**: a mentoring and interview-coaching methodology, shared across
-agents, with one **track** per technology — currently Java + Spring Boot (`core/java/`) and React
-(`core/react/`). It contains no application code.
+agents, with one **track** per technology — currently Java + Spring Boot (`core/java/`), React
+(`core/react/`), Node + Express (`core/node/`) and delivery — Docker, CI/CD, frontend testing,
+cloud (`core/delivery/`). It contains no application code.
 
 ## Default behaviour
 
@@ -30,6 +31,8 @@ Read `core/BOOTSTRAP.md` and follow it exactly. `<learning-home>` is this reposi
 | `state/WEAK-SPOTS.md` | Named misconceptions. Read at the warm-up and close only, not at session start |
 | `state/LEARNER.md` | What the learner already knows, self-reported. Lessons bridge from it and never edit it |
 | `state/SOURCES.md` | Priority checklist: every question in the `sources/` PDFs, mapped to a topic. Gates the `java` track only |
+| `state/TASKS.md` | Changes to the learner's own projects, each unlocked by finished topics. Practised with the `tasks` argument |
+| `state/JOBS.md` | Job postings mapped to the topics that close each gap. Reference only — it never reorders lessons |
 | `sources/` | Interview-prep PDFs the learner wants finished first |
 | `playground/` | Summary cards per lesson (tracked). `playground/README.md` names where exercise code goes and how to run it |
 | `adapters/` | Thin per-agent entry points — pointers only, never methodology |

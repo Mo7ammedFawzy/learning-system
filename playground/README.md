@@ -141,3 +141,40 @@ npx create-next-app@latest next-sandbox
 ```
 
 Each topic gets a route folder, `app/r<NN>-<topic>/page.tsx`. Run with `npm run dev`.
+
+## Delivery exercises
+
+Each exercise is a small self-contained app in `playground/D<NN>-<topic>/`, with its
+`Dockerfile`, `compose.yaml` or workflow beside it. Only `SUMMARY.md` is tracked.
+
+Needs **Docker Desktop** with the WSL 2 backend. Not installed on this machine as of 2026-10-20 —
+install it before D01 and check with `docker run hello-world`.
+
+```powershell
+cd playground\D02-compose
+docker compose up --build
+```
+
+GitHub Actions topics (D05, D06) are practised on a throwaway public repository, or run locally with
+[`act`](https://github.com/nektos/act) where a push would be too slow. Frontend-testing topics (D07,
+D08) reuse `playground/react-sandbox/`: `npm install -D vitest @testing-library/react jsdom` and
+`npm init playwright@latest` when the topic is reached.
+
+## Node exercises
+
+**Exercise code goes in one shared sandbox, not in the lesson directory:** `playground/node-sandbox/`,
+an Express 5 + TypeScript project. It is git-ignored. `SUMMARY.md` still goes in
+`playground/N<NN>-<topic>/`.
+
+Create it once, on the first Node lesson:
+
+```powershell
+cd playground
+mkdir node-sandbox; cd node-sandbox
+npm init -y
+npm install express
+npm install -D typescript tsx @types/express @types/node
+npx tsc --init --strict
+```
+
+Each exercise is one file, `src/N<NN>-<topic>.ts`, run with `npx tsx watch src/N03-middleware.ts`.

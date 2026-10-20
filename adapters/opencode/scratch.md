@@ -1,5 +1,5 @@
 ---
-description: Learning Mode, scratch pass — a fast batch over several Java + Spring Boot or React topics at once, then one short quiz and a cheat sheet. No exercise, no step-by-step gates. Not for ordinary work.
+description: Learning Mode, scratch pass — a fast batch over several Java + Spring Boot, React, Node + Express, or delivery (Docker, CI/CD, frontend testing, cloud) topics at once, then one short quiz and a cheat sheet. No exercise, no step-by-step gates. Not for ordinary work.
 ---
 
 You are entering **Learning Mode** for a scratch pass. This prompt is a thin adapter: all

@@ -66,6 +66,8 @@ Legend: **★** asked in almost every interview · **☆** asked at senior level
 | 44 | Schema design and DDL ★ | Keys and constraints (primary, foreign, unique, `NOT NULL`, `DEFAULT`), normalisation and when to denormalise, `CHAR` vs `VARCHAR`, auto-increment, `DELETE` vs `TRUNCATE` vs `DROP`, the SQL command families, OLTP vs OLAP |
 | 45 | Advanced SQL and the classic query puzzles ★ | CTEs and recursive queries, temporary tables, window functions and `ROW_NUMBER`/`RANK`/`DENSE_RANK`, `CASE`, pivot, views, stored procedures vs functions, triggers, cursors, dynamic SQL and injection — then the puzzles interviewers set: Nth highest salary, duplicates, delete duplicates |
 | 17 | Indexes, execution plans and isolation ★ | What an index is and what it costs on write, composite indexes and leftmost-prefix, why a function on an indexed column kills it, reading an execution plan, and the four isolation levels with the anomalies each permits, plus locking and database deadlocks |
+| 47 | PostgreSQL for a SQL Server / MySQL developer ★ | What changes when the same JPA app moves to PostgreSQL: identity columns vs sequences, `text` vs `varchar`, `boolean`, `timestamptz`, case-folded identifiers, `ILIKE`, `LIMIT`/`OFFSET`, `RETURNING`, `jsonb`, and running one app against two databases with a Spring profile. *Read:* [PostgreSQL — data types](https://www.postgresql.org/docs/current/datatype.html) |
+| 48 | Schema migrations with Flyway ★ | Why `ddl-auto=update` is not a production strategy, versioned vs repeatable migrations, the schema history table, baselining an existing database, what to do when a migration fails, Flyway vs Liquibase. *Prereq: 44, 47.* *Read:* [Spring Boot — database initialization](https://docs.spring.io/spring-boot/how-to/data-initialization.html) |
 | 18 | JPA and Hibernate mapping ★ | Reading: the active lab profile's persistence text, if it declares one. Entities, ids, relationships, the owning side, `@MappedSuperclass` |
 | 19 | Persistence context and lazy loading ★ | Reading: same text, persistence-context sections. Entity states, the first-level cache, `LazyInitializationException`, dirty checking |
 | 20 | Queries ★ | Reading: same text, query sections. JPQL/HQL, Criteria, native SQL, projections, pagination |
@@ -98,6 +100,7 @@ Legend: **★** asked in almost every interview · **☆** asked at senior level
 | # | Topic | Objective |
 |---|---|---|
 | 33 | Spring Security basics ☆ | The filter chain, authentication vs authorisation, method security, common misconfigurations, JWT and stateless auth, password hashing and salting |
+| 49 | OAuth2 resource server and Keycloak ☆ | A hand-rolled JWT vs an identity provider, the OAuth2 roles (client, resource server, authorization server), validating a JWT against a JWKS endpoint, mapping Keycloak roles to authorities, the authorization code flow with PKCE for a SPA. *Prereq: 33.* *Read:* [Spring Security — OAuth2 resource server JWT](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html) |
 
 ## Track I — JVM, memory and concurrency
 

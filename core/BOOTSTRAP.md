@@ -67,6 +67,8 @@ Codebase-free mode is a normal mode, not a degraded one. Never invent file paths
 | `review` | Re-test the open entries in `state/WEAK-SPOTS.md`, skipping step 1. |
 | `review` + a topic | Quick review of that completed topic, skipping step 1: 2–3 questions from its `SUMMARY.md` and its open weak spots, verdicts, done. About five minutes. |
 | `scratch`, with or without a scope | A fast batch pass over several topics. Read `core/SCRATCH.md` and follow it in place of sections 4 and 5 below. From `core/METHODOLOGY.md` only the *Delivery* section applies. |
+| `tasks`, with or without a task ID | Practise on a real project. See **Project tasks** below. |
+| `jobs` | Read `state/JOBS.md` and report, in a few lines, the biggest open gaps and the topics that close them. No lesson. |
 | a topic not in the curriculum | Teach it with the same five steps, then add it to the track's `CURRICULUM.md` under the nearest section, with the next free ID. |
 
 **The next topic** is always chosen inside the active track. While `state/SOURCES.md` has an open
@@ -80,6 +82,20 @@ completed since `Last review` in `state/PROGRESS.md`, say so in one line before 
 suggest a quick review of one older topic — the completed one reviewed least recently. It is a
 reminder, not a gate: if they decline, start the next topic and do not ask again this session. Any
 `review` session sets `Last review` to its date when it ends.
+
+**Project tasks.** `state/TASKS.md`, if it exists, lists changes to the learner's own projects,
+each needing some topics. A task is unlocked when every topic it needs is under Completed or
+Scratched. With no task ID, list the unlocked, unticked tasks — at most five, in file order — and
+let the learner pick. Then:
+
+- The learner writes the code; you coach. Restate the task's *Done when*, help plan it, answer
+  questions, review what they wrote against the topic's lesson, and point at the gap rather than
+  fixing it — the same hint ladder as step 3 in `core/METHODOLOGY.md`. Write code for them only
+  when they ask for it outright.
+- The project is the learner's working tree, so the read-only rule for lab codebases does not apply
+  to the files the task names. Still edit nothing yourself unless asked.
+- When *Done when* holds, tick the row with the date, update the matching row in
+  `state/JOBS.md`, and commit `state/` as at close.
 
 **If `state/PROGRESS.md` shows an unfinished step, resume at that step.** Do not restart the topic
 and do not re-teach step 1 — the learner already read it.
@@ -117,7 +133,9 @@ After step 5, update `state/PROGRESS.md`:
 Grade honestly. A `solid` on a topic the learner fumbled makes the whole file worthless, and they
 will walk into an interview trusting it.
 
-Then offer the next topic — do not start it.
+Then offer the next topic — do not start it. If closing this topic unlocked a task in
+`state/TASKS.md`, name it in the same line ("this unlocks L01 — ask for `tasks L01` when you want
+it"). The same reminder follows a scratch pass that unlocks one.
 
 ## Five traps
 
