@@ -9,8 +9,7 @@ closes.
 
 **Keep progress lightweight.** Update it only when a lesson closes or a two-round re-test identifies
 a weak spot. Record the next topic, confidence, and specific gap; do not turn each lesson into a
-task log or require a real-world exercise or formal code review to mark it complete.
-`./check.sh` caps this file at 150 lines.
+task log or require a real-world exercise or formal code review to mark it complete. `./check.sh` caps this file at 150 lines.
 
 ## Current
 
@@ -90,7 +89,7 @@ lesson.
 | D06 | Building and publishing images | 2026-10-20 | — |
 | D07 | Unit and component tests with Vitest | 2026-10-20 | — |
 | D08 | End-to-end tests with Playwright | 2026-10-20 | — |
-| 10 | Streams and lambdas | 2026-10-25 | — |
+| 10b | Streams: pipelines, `map` vs `flatMap`, parallel | 2026-10-25 | — |
 | 12 | Exceptions | 2026-10-25 | — |
 | 14 | Immutability and defensive copying | 2026-10-25 | — |
 
