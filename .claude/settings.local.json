@@ -3,7 +3,7 @@
     "codebase-design": "off",
     "diagnosing-bugs": "off",
     "find-skills": "off",
-    "prototype": "off",
+    "prototype": "on",
     "research": "off",
     "resolving-merge-conflicts": "off",
     "tdd": "off",
