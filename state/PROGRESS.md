@@ -90,6 +90,9 @@ lesson.
 | D06 | Building and publishing images | 2026-10-20 | — |
 | D07 | Unit and component tests with Vitest | 2026-10-20 | — |
 | D08 | End-to-end tests with Playwright | 2026-10-20 | — |
+| 10 | Streams and lambdas | 2026-10-25 | — |
+| 12 | Exceptions | 2026-10-25 | — |
+| 14 | Immutability and defensive copying | 2026-10-25 | — |
 
 ## Notes to self
 
