@@ -70,6 +70,7 @@ misconception. No re-teach beyond that and no re-test: a miss is what a full les
   4–5 lines per topic (mental model, trap, interview answer), quiz misses marked.
 - In `state/PROGRESS.md`, add each row to **Scratched** with today's date and its quiz result, and
   add each miss to `state/WEAK-SPOTS.md` in that file's line format.
+- Add each topic to `state/REVIEW.md` at rung 1, due tomorrow.
 - Leave **Completed**, every **Current** line and `state/SOURCES.md` untouched.
 
 Then offer the next batch, or a full lesson on the weakest topic. Start neither.

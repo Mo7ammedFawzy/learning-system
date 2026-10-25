@@ -23,5 +23,9 @@ C:/Projects/learning-system
 3. Pass `scratch` followed by the user's argument (a section, topic IDs, a range, or nothing) to
    its dispatch table.
 
+Inline pictures: where `mcp__visualize__show_widget` is available (the desktop app), it is the
+inline surface the methodology's *Delivery* section means — call `mcp__visualize__read_me` once
+first. Where it is not (a terminal), there is none.
+
 If that file cannot be found, say so and stop — do not improvise a lesson from memory, and do not
 fall back to teaching without the shared methodology.

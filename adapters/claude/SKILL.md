@@ -22,5 +22,9 @@ C:/Projects/learning-system
 2. Follow it exactly, treating `<learning-home>` as the path above.
 3. Pass the user's argument (the topic, `next`, `review`, or nothing) to its dispatch table.
 
+Inline pictures: where `mcp__visualize__show_widget` is available (the desktop app), it is the
+inline surface the methodology's *Delivery* section means — call `mcp__visualize__read_me` once
+first. Where it is not (a terminal), there is none.
+
 If that file cannot be found, say so and stop — do not improvise a lesson from memory, and do not
 fall back to teaching without the shared methodology.

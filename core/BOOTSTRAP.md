@@ -64,7 +64,8 @@ Codebase-free mode is a normal mode, not a degraded one. Never invent file paths
 | *(none)* | Report the current topic and step, then propose resuming it or starting the next topic. Do not dump the whole curriculum unless asked. |
 | a topic name or ID | Resolve against the track's `CURRICULUM.md` (exact → substring). Jump there even if out of order; say so if prerequisites are unmet, but honour the choice. |
 | `next` | Give **the review reminder** below if it is due, then advance to the next topic (see **The next topic** below). |
-| `review` | Re-test the open entries in `state/WEAK-SPOTS.md`, skipping step 1. |
+| `review` | Run the due rows of `state/REVIEW.md` — see **The review schedule** below — then re-test any open `state/WEAK-SPOTS.md` entries on those topics. Skips step 1. |
+| `review weak` | Re-test the open entries in `state/WEAK-SPOTS.md`, skipping step 1. |
 | `review` + a topic | Quick review of that completed topic, skipping step 1: 2–3 questions from its `SUMMARY.md` and its open weak spots, verdicts, done. About five minutes. |
 | `scratch`, with or without a scope | A fast batch pass over several topics. Read `core/SCRATCH.md` and follow it in place of sections 4 and 5 below. From `core/METHODOLOGY.md` only the *Delivery* section applies. |
 | `tasks`, with or without a task ID | Practise on a real project. See **Project tasks** below. |
@@ -77,11 +78,29 @@ row whose topic ID belongs to that track, the next topic is the first topic in t
 earlier. With no such open rows, or no such file, it is the next uncompleted topic in row order.
 Open rows belonging to one track never hold back another.
 
-**The review reminder.** When the learner asks for the next topic and two or more topics have been
-completed since `Last review` in `state/PROGRESS.md`, say so in one line before anything else and
-suggest a quick review of one older topic — the completed one reviewed least recently. It is a
-reminder, not a gate: if they decline, start the next topic and do not ask again this session. Any
-`review` session sets `Last review` to its date when it ends.
+**The review reminder.** When the learner asks for the next topic, or gives no argument, and
+`state/REVIEW.md` has rows due today or earlier, say how many in one line before anything else and
+suggest `review`. It is a reminder, not a gate: if they decline, start the next topic and do not ask
+again this session. Any `review` session sets `Last review` in `state/PROGRESS.md` to its date when
+it ends.
+
+**The review schedule.** `state/REVIEW.md` holds one row per completed or scratched topic, with a
+due date and a rung on the ladder 1 → 3 → 7 → 21 → 60 days.
+
+- **Which rows.** At most five due rows per session, most overdue first. **Interleave them**: never
+  two in a row from the same topic, and mix tracks when more than one is due — the learner has to
+  work out which concept a question needs, which is what an interview tests.
+- **The question.** One per row, from that topic's `SUMMARY.md` or `CHEATSHEET.md` entry, in a
+  Prediction, Trap Card or Debugger shape, with a picture where the client can show one. Reason
+  asked for. Verdict as in step 2, but no re-test round.
+- **A pass** — right, with the reason — moves the row one rung up and sets `Due` to today plus the
+  new rung. Past 60 it stays at 60.
+- **A partial** — right answer, reason missing or wrong — moves the row one rung down (not below 1)
+  and sets `Due` to today plus that rung.
+- **A miss** — wrong or blank — moves the row to rung 1, due tomorrow. Add a weak spot only when
+  the miss names a misconception not already open in `state/WEAK-SPOTS.md`; a repeat of an open one
+  is tested here, not twice.
+- **Writing.** Set `Last` to today on every row asked. Commit `state/` as at close.
 
 **Project tasks.** `state/TASKS.md`, if it exists, lists changes to the learner's own projects,
 each needing some topics. A task is unlocked when every topic it needs is under Completed or
@@ -122,6 +141,8 @@ After step 5, update `state/PROGRESS.md`:
 - Add what they missed to `state/WEAK-SPOTS.md` as named misconceptions, in the line format
   that file's header gives — be specific ("missed that erasure makes the overload ambiguous", not
   "generics")
+- Add the topic to `state/REVIEW.md` at rung 1, due tomorrow — or move its row there, if it was
+  scratched before
 - Update `Held` on the entry the warm-up tested. At `Held: 2/2` move it to the "Closed on …" line
 - In `state/SOURCES.md`, tick every row mapped to this topic with the topic and date. A row is
   ticked only when its topic closes, never after step 1 alone — that tick is what stops the same

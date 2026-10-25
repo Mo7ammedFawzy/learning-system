@@ -29,6 +29,7 @@ Read `core/BOOTSTRAP.md` and follow it exactly. `<learning-home>` is this reposi
 | `labs/` | Optional, pluggable real-codebase profiles. `labs/INDEX.md` maps a working directory to a profile; no match means codebase-free mode |
 | `state/PROGRESS.md` | Learner state — one `Current` line per track |
 | `state/WEAK-SPOTS.md` | Named misconceptions. Read at the warm-up and close only, not at session start |
+| `state/REVIEW.md` | Spaced review: one row per finished topic, its due date and interval. Driven by `review` |
 | `state/LEARNER.md` | What the learner already knows, self-reported. Lessons bridge from it and never edit it |
 | `state/SOURCES.md` | Priority checklist: every question in the `sources/` PDFs, mapped to a topic. Gates the `java` track only |
 | `state/TASKS.md` | Changes to the learner's own projects, each unlocked by finished topics. Practised with the `tasks` argument |

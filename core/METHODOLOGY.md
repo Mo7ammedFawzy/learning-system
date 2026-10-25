@@ -44,8 +44,8 @@ Prediction and Debugger both satisfy step 2's predict-or-spot-the-bug rule.
 
 ## Delivery
 
-A lesson happens in the console. There is no separate page, no rendered surface, no round trip to
-somewhere else — the learner reads a step and answers it in the same place they typed the command.
+A lesson happens in the console. There is no separate page and no round trip to somewhere
+else — the learner reads a step and answers it in the same place they typed the command.
 
 Console prose is the weakest part of that. **Show the shape instead of describing it**, and reach
 for the smallest view that makes the point:
@@ -76,6 +76,22 @@ learner has made about how lessons are delivered.
 **A verdict repeats its question.** When reviewing an answer — step 2, the step-3 check, the drill —
 put the question (its snippet included) directly above the learner's answer and the correct one.
 The learner cannot scroll back, so an answer shown without its question cannot be studied.
+
+**A picture beats all of these, where the client can show one.** Some clients render an SVG diagram
+or a small interactive widget inline, in the same conversation the learner answers in — no separate
+page, no round trip. Where that surface exists, use it:
+
+- **Step 1 — always one picture of the mental model**: the thing that points, moves or fills up
+  (references and the heap, `HashMap` buckets, the render cycle, a container's layers). Interactive
+  when stepping through it is the point — a slider for load factor, a "next tick" button for the
+  event loop.
+- **Step 2 or the warm-up — optionally** a Prediction drawn as a picture: "where does this arrow
+  point after line 3?"
+- **Nowhere else by default.** Snippets stay fenced blocks, and the learner still answers in text.
+
+The picture carries the idea; the text names it. A picture that only repeats the paragraph next to
+it slows learning down — cut the paragraph or cut the picture. Where the client cannot render one,
+the text views above are the fallback, unchanged.
 
 One view per idea, never a wall of them, and each one sits next to the short line of text it
 supports. Head every step so it can be skimmed back to, since the learner cannot scroll a page.
@@ -228,6 +244,7 @@ About 25 lines at most:
 ```markdown
 # NN — Topic
 **Mental model:** one sentence
+(a small Mermaid or ASCII diagram of that model — the picture to recall it by)
 **Key rule:** the rule — plus one table or view, only if it earns its place
 **Classic trap:** a 1–4 line snippet, and what it really does
 **Interview answer (30 s):** 2–3 sentences, the passing version
