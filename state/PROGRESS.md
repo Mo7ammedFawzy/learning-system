@@ -91,17 +91,14 @@ lesson.
 | 44 | Schema design and DDL | 2026-10-25 | — |
 | 45 | Advanced SQL and the classic query puzzles | 2026-10-25 | — |
 | 17 | Indexes, execution plans and isolation | 2026-10-25 | — |
+| 18 | JPA and Hibernate mapping | 2026-10-25 | — |
+| 19 | Persistence context and lazy loading | 2026-10-25 | — |
+| 20 | Queries | 2026-10-25 | — |
+| 22 | Performance: N+1 and caching | 2026-10-25 | — |
 
 ## Notes to self
 
-- **Teaching language: English + light Egyptian Arabic.** Arabic for the room — and more Arabic
-  than feels natural in English prose. Framing, encouragement, corrections and the nudge at the end
-  of a step go in light Egyptian dialect: "خلينا نشوف", "واضح كده؟", "برافو",
-  "غلط، وهقولك ليه".
-  **Technical content stays English**: code, terms (reference, heap, proxy, bean, erasure), the
-  step-1 explanation, and the reasoning for *why* something breaks. That is the exact vocabulary
-  needed in the interview itself, so it never gets translated.
-  Rule of thumb: **Arabic for the room, English for the material.**
+- **Teaching language: English + light Egyptian Arabic.** Arabic for the room — and more Arabic than feels natural in English prose. Framing, encouragement, corrections and the nudge at the end of a step go in light Egyptian dialect: "خلينا نشوف", "واضح كده؟", "برافو", "غلط، وهقولك ليه". **Technical content stays English**: code, terms (reference, heap, proxy, bean, erasure), the step-1 explanation, and the reasoning for *why* something breaks. That is the exact vocabulary needed in the interview itself, so it never gets translated. Rule of thumb: **Arabic for the room, English for the material.**
 
 - **Never mix Arabic and English in the same line.** A line is either pure Arabic — a short
   standalone phrase, with no English words, no `code`, no backticks, no trailing English
