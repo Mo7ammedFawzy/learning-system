@@ -1,15 +1,10 @@
 # Progress
 
-Maintained by the `/learn` skill. Read at the start of every session, updated after step 5.
-Confidence is honest, not encouraging: `solid` / `ok` / `shaky`.
+Maintained by the `/learn` skill. Read at the start of every session, updated after step 5. Confidence is honest, not encouraging: `solid` / `ok` / `shaky`.
 
-**Current is one line, not a log.** It names the topic and the step in progress, plus anything
-needed to resume. Detail about what went wrong belongs in `state/WEAK-SPOTS.md` when the topic
-closes.
+**Current is one line, not a log.** It names the topic and the step in progress, plus anything needed to resume. Detail about what went wrong belongs in `state/WEAK-SPOTS.md` when the topic closes.
 
-**Keep progress lightweight.** Update it only when a lesson closes or a two-round re-test identifies
-a weak spot. Record the next topic, confidence, and specific gap; do not turn each lesson into a
-task log or require a real-world exercise or formal code review to mark it complete. `./check.sh` caps this file at 150 lines.
+**Keep progress lightweight.** Update it only when a lesson closes or a two-round re-test identifies a weak spot. Record the next topic, confidence, and specific gap; do not turn each lesson into a task log or require a real-world exercise or formal code review to mark it complete. `./check.sh` caps this file at 150 lines.
 
 ## Current
 
@@ -92,6 +87,10 @@ lesson.
 | 10b | Streams: pipelines, `map` vs `flatMap`, parallel | 2026-10-25 | — |
 | 12 | Exceptions | 2026-10-25 | — |
 | 14 | Immutability and defensive copying | 2026-10-25 | — |
+| 16 | SQL fundamentals | 2026-10-25 | — |
+| 44 | Schema design and DDL | 2026-10-25 | — |
+| 45 | Advanced SQL and the classic query puzzles | 2026-10-25 | — |
+| 17 | Indexes, execution plans and isolation | 2026-10-25 | — |
 
 ## Notes to self
 
