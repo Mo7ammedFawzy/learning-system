@@ -59,6 +59,9 @@ lesson.
 
 | # | Topic | Date | Quiz |
 |---|---|---|---|
+| 10 | Streams — lazy pipelines, intermediate vs terminal, `map` vs `flatMap`, `parallelStream` | 2026-10-27 | — |
+| 12 | Exceptions — hierarchy, checked vs unchecked, `throw` vs `throws`, catch ordering | 2026-10-27 | — |
+| 14 | Immutability and defensive copying | 2026-10-27 | — |
 
 ## Notes to self
 
