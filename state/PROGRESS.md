@@ -24,13 +24,14 @@ Last review: 2026-10-20 (placement quiz) · 2026-09-06 (topic 01).
 
 Scale: `beginner` → `intermediate` → `advanced` → `senior`; a trailing `+` means close to the next.
 Measured by a placement quiz, not claimed. Re-assess when a curriculum track (A, B, … ) closes.
-`progress.ps1` prints this column; a track with no row is not assessed yet.
+`progress.ps1` prints this column; a track with no row is not assessed yet. *Topics* are the
+curriculum IDs that close the gap; the progress band counts how many of them are done.
 
-| Track | Level | Assessed | To reach the next level |
-|---|---|---|---|
-| java | beginner+ | 2026-10-20 | Exceptions, streams and `groupingBy`, `ConcurrentHashMap`, `volatile` vs atomic `count++` |
-| spring | beginner | 2026-10-20 | Constructor injection, auto-configuration, `@Transactional` self-call, N+1, prototype-in-singleton |
-| react | beginner | 2026-10-20 | `useEffect` dependencies, batching and updater functions, keys, memoisation, Context re-renders |
+| Track | Level | Assessed | Topics | To reach the next level |
+|---|---|---|---|---|
+| java | beginner+ | 2026-10-20 | 10, 12, 37, 40 | Exceptions, streams and `groupingBy`, `ConcurrentHashMap`, `volatile` vs atomic `count++` |
+| spring | beginner | 2026-10-20 | 22, 24, 25, 27, 30 | Constructor injection, auto-configuration, `@Transactional` self-call, N+1, prototype-in-singleton |
+| react | beginner | 2026-10-20 | R05, R07, R11, R13, R16 | `useEffect` dependencies, batching and updater functions, keys, memoisation, Context re-renders |
 
 ## Completed
 

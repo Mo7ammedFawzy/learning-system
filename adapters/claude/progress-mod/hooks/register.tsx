@@ -7,7 +7,8 @@ import type { EngineInterface, Register } from 'claude-code'
 
 type State = 'solid' | 'ok' | 'shaky' | 'scr' | 'none'
 type Section = { name: string; ids: string[] }
-type Track = { name: string; level?: string; next?: string; last?: string; sections: Section[] }
+type Gate = { id: string; name: string; state: State }
+type Track = { name: string; level?: string; next?: string; last?: string; sections: Section[]; gate: Gate[] }
 
 const COLOR: Record<State, string> = {
   solid: '#5fb36b', ok: '#d9b44a', shaky: '#e0674f', scr: '#7489e0', none: '#4a4a4a',
@@ -22,6 +23,7 @@ const rowCells = (line: string) => line.split('|').slice(1, -1).map(c => c.trim(
 export function parse(progress: string, curricula: Record<string, string>): Track[] {
   const state: Record<string, State> = {}
   const levels: Record<string, string> = {}
+  const gates: Record<string, string[]> = {}
   const current: Record<string, string> = {}
   const last: Record<string, string> = {}
   let section = ''
@@ -33,7 +35,7 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
     const c = rowCells(line)
     const c0 = c[0] ?? ''
     const id = c0.match(/^([A-Z]*\d{2})[a-z]?$/)?.[1]
-    if (section === 'Level' && /^[a-z]+$/.test(c0)) levels[c0] = c[1] ?? ''
+    if (section === 'Level' && /^[a-z]+$/.test(c0)) { levels[c0] = c[1] ?? ''; gates[c0] = c[3]?.match(/[A-Z]*\d{2}/g) ?? [] }
     // newest date on a Completed or Scratched row ("2026-09-01, reviewed 2026-09-06" counts the review)
     const date = (c[2]?.match(/\d{4}-\d{2}-\d{2}/g) ?? []).sort().at(-1)
     if (id && date && (section === 'Completed' || section === 'Scratched') && date > (last[id] ?? '')) last[id] = date
@@ -61,12 +63,14 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
       const id = row?.[1]
       if (sec && id && !sec.ids.includes(id)) { sec.ids.push(id); names[id] = row?.[2]?.trim() ?? '' }
     }
-    tracks.push({ name, sections: own.filter(s => s.ids.length) })
-    if (spring.length) tracks.push({ name: 'spring', sections: spring })
+    tracks.push({ name, sections: own.filter(s => s.ids.length), gate: [] })
+    if (spring.length) tracks.push({ name: 'spring', sections: spring, gate: [] })
   }
 
   for (const t of tracks) {
     t.level = levels[t.name]
+    // a gate topic can live in another track's curriculum (spring's N+1 is java's 22)
+    t.gate = (gates[t.name] ?? []).map(id => ({ id, name: names[id] ?? '', state: state[id] ?? 'none' }))
     const ids = t.sections.flatMap(s => s.ids)
     const fromCurrent = current[t.name]?.split(' ')[0]
     const nextId = fromCurrent && ids.includes(fromCurrent) ? fromCurrent : ids.find(i => !RANK[state[i] ?? ''])
@@ -116,6 +120,15 @@ const counts = (t: Track) => {
   }
 }
 
+/** Does this gate topic count as closed on the way to the next level? */
+export function passes(g: Gate): boolean {
+  // strict: a shaky lesson or a scratch does not unlock a level
+  return g.state === 'solid' || g.state === 'ok'
+}
+
+/** "Concurrent collections, atomics, ThreadLocal" -> "Concurrent collections" */
+const short = (name: string) => name.split(/,| and |:/)[0]!.trim()
+
 /** The track studied most recently; the first one when none has a date. */
 export const focus = (tracks: Track[]) =>
   tracks.reduce<Track | undefined>((a, t) => (!a || (t.last ?? '') > (a.last ?? '') ? t : a), undefined)
@@ -152,11 +165,31 @@ export const register: Register = on => {
           {f.level ? <Text color={ACCENT}>{f.level}</Text> : <Text dimColor>not assessed</Text>}
           {f.next ? <Text><Text color={ACCENT}>   ▶ </Text><Text>{f.next}</Text></Text> : ''}
         </Text>
-        <Text wrap="truncate">
-          <Text dimColor>lessons </Text>{meter(c.done, COLOR.solid, '█')}
-          <Text dimColor> {c.done}/{c.n} {Math.round(c.done * 100 / c.n)}%    scratched </Text>{meter(c.scr, COLOR.scr, '▒')}
-          <Text dimColor> {c.scr}/{c.n}</Text>
-        </Text>
+        {f.gate.length && LEVELS[at + 1] ? (
+          // progress to the next level: one box per gate topic, the first open one is next
+          <Text wrap="truncate">
+            <Text dimColor>to </Text><Text>{LEVELS[at + 1]} </Text>
+            {f.gate.map(g => <Text color={passes(g) ? COLOR.solid : COLOR.none}>{passes(g) ? '■' : '▢'}</Text>)}
+            <Text dimColor> {f.gate.filter(passes).length}/{f.gate.length}  </Text>
+            {f.gate.map((g, i) => {
+              const isNext = g === f.gate.find(x => !passes(x))
+              return (
+                <Text>
+                  {i ? <Text color={COLOR.none}> · </Text> : ' '}
+                  <Text color={passes(g) ? COLOR.solid : isNext ? ACCENT : undefined} dimColor={!passes(g) && !isNext}>
+                    {isNext ? '▶ ' : ''}{g.id} {short(g.name)}
+                  </Text>
+                </Text>
+              )
+            })}
+          </Text>
+        ) : (
+          <Text wrap="truncate">
+            <Text dimColor>lessons </Text>{meter(c.done, COLOR.solid, '█')}
+            <Text dimColor> {c.done}/{c.n} {Math.round(c.done * 100 / c.n)}%    scratched </Text>{meter(c.scr, COLOR.scr, '▒')}
+            <Text dimColor> {c.scr}/{c.n}</Text>
+          </Text>
+        )}
         <Text wrap="truncate">
           {tracks.map((t, i) => {
             const k = counts(t), isFocus = t === f

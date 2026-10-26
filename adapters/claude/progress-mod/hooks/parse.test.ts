@@ -7,10 +7,10 @@ const PROGRESS = `# Progress
 **java** — Topic: 10 — Streams and lambdas, part 10b: lazy. Step: not started.
 **react** — Topic: R01 — JSX. Step: not started.
 ## Level
-| Track | Level | Assessed | To reach the next level |
-|---|---|---|---|
-| java | beginner+ | 2026-10-20 | x |
-| spring | beginner | 2026-10-20 | x |
+| Track | Level | Assessed | Topics | To reach the next level |
+|---|---|---|---|---|
+| java | beginner+ | 2026-10-20 | 04, 10 | x |
+| spring | beginner | 2026-10-20 | 10, 24 | x |
 ## Completed
 | # | Topic | Date | Confidence | Notes |
 |---|---|---|---|---|
@@ -57,4 +57,8 @@ test('parse: states, levels, next topic, spring split, untouched tracks hidden',
   // the band's focus is the track studied most recently: spring's 23 (2026-10-15) beats react's R01
   expect(by.java?.last).toBe('2026-09-29')
   expect(focus(tracks)?.name).toBe('spring')
+  // gate topics carry their state, even from another track's curriculum
+  expect(by.java?.gate.map(g => `${g.id}:${g.state}`)).toEqual(['04:shaky', '10:none'])
+  expect(by.spring?.gate.map(g => g.name)).toEqual(['Streams', 'Beans'])
+  expect(by.react?.gate).toEqual([])
 })
