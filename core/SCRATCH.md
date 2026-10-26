@@ -79,3 +79,9 @@ misconception. No re-teach beyond that and no re-test: a miss is what a full les
 - Run `progress.ps1 -Roadmap -Write`, so `state/ROADMAP.md` shows the batch as scratched.
 
 Then offer the next batch, or a full lesson on the weakest topic. Start neither.
+
+Where the agent can build a **detailed figure** — a standalone, interactive page that shows a
+mental model as a real working object, slower to make than an inline picture — also offer one for
+the batch's hardest topic (★ first, then the biggest quiz miss). Build it only on a yes, save it as
+`playground/scratch-<scope>/<id>-figure.html` and list it in the cheat sheet. It is a study aid
+for between sessions: it never replaces a block's inline picture and never delays the teach turn.

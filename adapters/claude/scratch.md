@@ -27,5 +27,8 @@ Inline pictures: where `mcp__visualize__show_widget` is available (the desktop a
 inline surface the methodology's *Delivery* section means — call `mcp__visualize__read_me` once
 first. Where it is not (a terminal), there is none.
 
+Detailed figure: the `anatomy` skill is the tool the scratch contract's close means — invoke it
+only after the learner says yes to the offer.
+
 If that file cannot be found, say so and stop — do not improvise a lesson from memory, and do not
 fall back to teaching without the shared methodology.

@@ -95,7 +95,7 @@ if [ "${1:-}" != "--check" ]; then
   mkdir -p "$(dirname "$MOD_DST")"
   if command -v cygpath >/dev/null 2>&1; then
     # Git Bash: ln -s copies unless symlinks are enabled, so make a junction
-    cmd //c mklink /J "$(cygpath -w "$MOD_DST")" "$(cygpath -w "$MOD_SRC")" >/dev/null
+    cmd //c mklink //J "$(cygpath -w "$MOD_DST")" "$(cygpath -w "$MOD_SRC")" >/dev/null
   else
     ln -s "$MOD_SRC" "$MOD_DST"
   fi
