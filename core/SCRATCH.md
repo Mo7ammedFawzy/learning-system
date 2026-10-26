@@ -50,6 +50,7 @@ mental model — the same rule as a lesson's step 1 — and the snippet stays a 
 | Classic trap | the line that looks right and is not, and what it really does |
 | Interview answer (30 s) | 2–3 sentences, the passing version |
 | Source | the row's *Read:* link where it has one, else the primary source by title |
+| In the learner's language | when `state/PROGRESS.md` names a second teaching language: 3–5 short lines retelling the mental model and the trap in it, written to that file's language rules. Copied into the cheat sheet entry |
 
 **When a topic does not fit the block, cut in this order:**
 

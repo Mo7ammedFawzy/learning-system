@@ -88,6 +88,10 @@ lesson.
   the rows under Scratched, with `—` in the Quiz column, only once the learner says they finished
   reading it (asked for on 2026-10-26). Questions belong to `/learn`.
 
+- **Every scratch block ends with an Egyptian Arabic explanation** (asked for on 2026-10-26):
+  3–5 lines retelling the mental model and the trap, in the same pure-Arabic-line rules as above,
+  with technical terms transliterated. The cheat sheet entry carries the same lines.
+
 - **Keep lessons to 20–30 minutes.** Requested on 2026-09-16: five steps, no mandatory real-world
   task, no formal code-review step, and no drilling one detail past two rounds. If a concept will
   not fit, split it into two lessons rather than overrunning.
