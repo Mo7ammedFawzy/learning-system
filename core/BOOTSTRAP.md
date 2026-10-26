@@ -27,8 +27,14 @@ the rules below run on what follows it (`scratch react hooks` → the `react` tr
 - **The argument is a topic ID or name** → the track whose curriculum contains it. If a name
   matches in more than one track, ask which.
 - **No argument, `next` or `review` alone** → the track of the lesson finished or left open most
-  recently. With no argument, report the **Current** line of every track, each with its bar from
-  `progress.ps1`, before proposing one.
+  recently. With no argument, report the **Current** line of every track under the roadmap before
+  proposing one.
+
+**Open every learning session with the roadmap.** The first reply of a session starts with the
+output of `progress.ps1 -Roadmap -Write`, run from `<learning-home>`, in a fenced `text` block —
+whatever the argument, including `scratch`, `review` and `tasks`. The same run rewrites
+`state/ROADMAP.md`, so the file is never older than the last session. Show it once per session, not
+at every step.
 
 Then read, in this order:
 
@@ -148,6 +154,7 @@ After step 5, update `state/PROGRESS.md`:
   ticked only when its topic closes, never after step 1 alone — that tick is what stops the same
   concept being taught twice
 - Set that track's **Current** line to the next topic; leave the other tracks' lines alone
+- Run `progress.ps1 -Roadmap -Write` again, so `state/ROADMAP.md` shows the topic just closed
 - Commit `state/` and the topic's summary card, and push to `master`. The learner should not have
   to ask
 

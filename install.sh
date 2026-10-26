@@ -37,7 +37,7 @@ SCRATCH_OPEN_DSTS=("$HOME/.config/opencode/commands/scratch.md" "$HOME/.config/o
 ALL_DSTS=("$CLAUDE_DST" "$CODEX_DST" "${OPEN_DSTS[@]}"
           "$SCRATCH_CLAUDE_DST" "$SCRATCH_CODEX_DST" "${SCRATCH_OPEN_DSTS[@]}")
 
-# The Claude Code progress panel (/progress). A link, not a copy, so the mod reads this repo's
+# The Claude Code progress band above the prompt. A link, not a copy, so the mod reads this repo's
 # state/PROGRESS.md. Claude Code loads a plugin folder found under ~/.claude/skills.
 MOD_SRC="$REPO/adapters/claude/progress-mod"
 MOD_DST="$HOME/.claude/skills/learning-progress"
@@ -99,7 +99,7 @@ if [ "${1:-}" != "--check" ]; then
   else
     ln -s "$MOD_SRC" "$MOD_DST"
   fi
-  echo "linked   $MOD_DST -> $MOD_SRC  (/progress in Claude Code)"
+  echo "linked   $MOD_DST -> $MOD_SRC  (progress band in Claude Code)"
 
   # check.sh runs on every commit from here on
   git -C "$REPO" config core.hooksPath .githooks

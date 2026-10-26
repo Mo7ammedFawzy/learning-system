@@ -1,15 +1,13 @@
 import type { EngineInterface, Register } from 'claude-code'
 
-// The learning-progress pane: one square per curriculum topic, coloured by how it went.
+// The learning-progress band above the prompt: the focus track's level on a beginner -> senior
+// ladder and its next topic, its lessons and scratches as two meters, then every track in one row.
 // Everything is read from the repo this mod sits in (adapters/claude/progress-mod -> ../../..),
 // on every draw, so it is never out of date with state/PROGRESS.md.
 
-const PANE = 'learning-progress'
-const OPEN = { id: PANE, title: 'Learning progress' }
-
 type State = 'solid' | 'ok' | 'shaky' | 'scr' | 'none'
 type Section = { name: string; ids: string[] }
-type Track = { name: string; level?: string; next?: string; sections: Section[] }
+type Track = { name: string; level?: string; next?: string; last?: string; sections: Section[] }
 
 const COLOR: Record<State, string> = {
   solid: '#5fb36b', ok: '#d9b44a', shaky: '#e0674f', scr: '#7489e0', none: '#4a4a4a',
@@ -25,6 +23,7 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
   const state: Record<string, State> = {}
   const levels: Record<string, string> = {}
   const current: Record<string, string> = {}
+  const last: Record<string, string> = {}
   let section = ''
   for (const line of progress.split(/\r?\n/)) {
     if (line.startsWith('## ')) { section = line.slice(3).trim(); continue }
@@ -35,6 +34,9 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
     const c0 = c[0] ?? ''
     const id = c0.match(/^([A-Z]*\d{2})[a-z]?$/)?.[1]
     if (section === 'Level' && /^[a-z]+$/.test(c0)) levels[c0] = c[1] ?? ''
+    // newest date on a Completed or Scratched row ("2026-09-01, reviewed 2026-09-06" counts the review)
+    const date = (c[2]?.match(/\d{4}-\d{2}-\d{2}/g) ?? []).sort().at(-1)
+    if (id && date && (section === 'Completed' || section === 'Scratched') && date > (last[id] ?? '')) last[id] = date
     if (section === 'Completed' && id) {
       // a split topic (04a, 04b, 04c) shows its weakest part
       const conf = c[3] as State
@@ -66,11 +68,10 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
   for (const t of tracks) {
     t.level = levels[t.name]
     const ids = t.sections.flatMap(s => s.ids)
-    const fromCurrent = current[t.name]
-    const first = ids.find(i => !RANK[state[i] ?? ''])
-    t.next = fromCurrent && ids.includes(fromCurrent.split(' ')[0]!)
-      ? fromCurrent
-      : first && `${first} ${names[first]}`.trim()
+    const fromCurrent = current[t.name]?.split(' ')[0]
+    const nextId = fromCurrent && ids.includes(fromCurrent) ? fromCurrent : ids.find(i => !RANK[state[i] ?? ''])
+    t.next = nextId && `${nextId} ${names[nextId]}`.trim()
+    t.last = ids.map(i => last[i] ?? '').sort().at(-1) || undefined
   }
   return tracks.filter(t => t.level || t.sections.some(s => s.ids.some(i => state[i])))
     .map(t => ({ ...t, sections: t.sections.map(s => ({ ...s, ids: s.ids.map(i => `${i}:${state[i] ?? 'none'}`) })) }))
@@ -83,77 +84,93 @@ async function repoOf($: EngineInterface): Promise<string> {
   return real.replace(/[\\/]adapters[\\/]claude[\\/]progress-mod[\\/]?$/, '')
 }
 
+const slash = (p: string) => p.replace(/\\/g, '/').toLowerCase()
+async function inRepo($: EngineInterface, repo: string): Promise<boolean> {
+  return slash(await $.session.cwd()).startsWith(slash(repo))
+}
+
+async function load($: EngineInterface, repo: string): Promise<Track[]> {
+  const curricula: Record<string, string> = {}
+  for (const d of await $.fs.list(`${repo}/core`)) {
+    if (d.kind !== 'dir') continue
+    const f = `${repo}/core/${d.name}/CURRICULUM.md`
+    if (await $.fs.exists(f)) curricula[d.name] = await $.fs.read(f)
+  }
+  return parse(await $.fs.read(`${repo}/state/PROGRESS.md`), curricula)
+}
+
+
+const LEVELS = ['beginner', 'beginner+', 'intermediate', 'intermediate+', 'advanced', 'advanced+', 'senior']
+const SHORT: Record<string, string> = {
+  beginner: 'beg', 'beginner+': 'beg+', intermediate: 'int', 'intermediate+': 'int+', advanced: 'adv', 'advanced+': 'adv+', senior: 'sen',
+}
+const ACCENT = '#d97757'
+const W = 14
+
+const counts = (t: Track) => {
+  const all = t.sections.flatMap(s => s.ids)
+  return {
+    n: all.length,
+    done: all.filter(x => RANK[x.split(':')[1] ?? '']).length,
+    scr: all.filter(x => x.endsWith(':scr')).length,
+  }
+}
+
+/** The track studied most recently; the first one when none has a date. */
+export const focus = (tracks: Track[]) =>
+  tracks.reduce<Track | undefined>((a, t) => (!a || (t.last ?? '') > (a.last ?? '') ? t : a), undefined)
+
 export const register: Register = on => {
+  // pick up lessons that close while the session is open
   on('session.start', async ($, e, next) => {
-    await $.command.register({ name: 'progress', description: 'Show your learning progress in a side panel' })
-    // open by itself only inside the learning repo; elsewhere /progress opens it
-    const repo = await repoOf($)
-    const cwd = (await $.session.cwd()).replace(/\\/g, '/').toLowerCase()
-    if (cwd.startsWith(repo.replace(/\\/g, '/').toLowerCase())) void $.ui.open(OPEN)
-    // pick up lessons that close while the pane is open
     $.clock.every(30_000, () => $.ui.invalidate('ui.render'))
     return next(e)
   })
 
-  on('command.run', { command: 'progress' }, async $ => {
-    await $.ui.open({ ...OPEN, focus: true, closeOnEscape: true })
-    return { text: 'Learning progress opened.' }
-  })
-
-  on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
-    const { Box, Text } = $.ui.resolve(e)
+  // Only inside the learning repo; elsewhere it would be noise above every chat.
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const repo = await repoOf($)
-    let tracks: Track[]
-    try {
-      const curricula: Record<string, string> = {}
-      for (const d of await $.fs.list(`${repo}/core`)) {
-        if (d.kind !== 'dir') continue
-        const f = `${repo}/core/${d.name}/CURRICULUM.md`
-        if (await $.fs.exists(f)) curricula[d.name] = await $.fs.read(f)
-      }
-      tracks = parse(await $.fs.read(`${repo}/state/PROGRESS.md`), curricula)
-    } catch (err) {
-      return <Text color={COLOR.shaky}>Cannot read the learning repo at {repo}: {String(err)}</Text>
+    if (e.props.hasSurvey || !(await inRepo($, repo))) return next(e)
+    const tracks = await load($, repo).catch(() => undefined)
+    const f = tracks && focus(tracks)
+    if (!tracks || !f) return next(e)
+    const { Box, Text } = $.ui.resolve(e)
+    const c = counts(f)
+    const at = LEVELS.indexOf(f.level ?? '')
+    const meter = (k: number, color: string, ch: string) => {
+      const full = Math.round(k * W / c.n)
+      return <Text><Text color={color}>{ch.repeat(full)}</Text><Text color={COLOR.none}>{'░'.repeat(W - full)}</Text></Text>
     }
 
     return (
       <Box flexDirection="column">
-        <Text dimColor>Every topic, coloured by how it went</Text>
-        {tracks.map(t => {
-          const all = t.sections.flatMap(s => s.ids)
-          const done = all.filter(x => RANK[x.split(':')[1] ?? '']).length
-          const scr = all.filter(x => x.endsWith(':scr')).length
-          const nextId = t.next?.split(' ')[0]
-          return (
-            <Box flexDirection="column" marginTop={1}>
-              <Box justifyContent="space-between">
-                <Text bold>{t.name.toUpperCase()}</Text>
-                <Text color="#d97757">{t.level ?? 'not assessed'}</Text>
-              </Box>
+        <Text wrap="truncate">
+          <Text bold>{f.name}  </Text>
+          <Text dimColor>beginner </Text>
+          {LEVELS.map((_, i) => <Text color={i < at ? COLOR.solid : i === at ? ACCENT : COLOR.none}>{i === at ? '●' : '━'}</Text>)}
+          <Text dimColor> senior  </Text>
+          {f.level ? <Text color={ACCENT}>{f.level}</Text> : <Text dimColor>not assessed</Text>}
+          {f.next ? <Text><Text color={ACCENT}>   ▶ </Text><Text>{f.next}</Text></Text> : ''}
+        </Text>
+        <Text wrap="truncate">
+          <Text dimColor>lessons </Text>{meter(c.done, COLOR.solid, '█')}
+          <Text dimColor> {c.done}/{c.n} {Math.round(c.done * 100 / c.n)}%    scratched </Text>{meter(c.scr, COLOR.scr, '▒')}
+          <Text dimColor> {c.scr}/{c.n}</Text>
+        </Text>
+        <Text wrap="truncate">
+          {tracks.map((t, i) => {
+            const k = counts(t), isFocus = t === f
+            return (
               <Text>
-                {t.sections.map(s => (
-                  <Text>
-                    {s.ids.map(x => {
-                      const [id, st] = x.split(':') as [string, State]
-                      return <Text color={COLOR[st]}>{id === nextId ? '▣' : '■'}</Text>
-                    })}{' '}
-                  </Text>
-                ))}
+                {i ? <Text color={COLOR.none}> │ </Text> : ''}
+                <Text bold={isFocus} dimColor={!isFocus}>{isFocus ? '▸' : ''}{t.name} </Text>
+                <Text color={COLOR.solid}>{k.done}</Text><Text dimColor>/{k.n}</Text>
+                {k.scr ? <Text color={COLOR.scr}> ◌{k.scr}</Text> : ''}
+                {t.level ? <Text color={isFocus ? ACCENT : undefined} dimColor={!isFocus}> {SHORT[t.level] ?? t.level}</Text> : ''}
               </Text>
-              <Text dimColor>
-                {done}/{all.length} done{scr ? ` · ${scr} scratched` : ''}{t.next ? ` · next ${t.next}` : ''}
-              </Text>
-            </Box>
-          )
-        })}
-        <Box marginTop={1}>
-          <Text>
-            {(['solid', 'ok', 'shaky', 'scr', 'none'] as State[]).map(s => (
-              <Text><Text color={COLOR[s]}>■</Text><Text dimColor> {s === 'scr' ? 'scratched' : s === 'none' ? 'not started' : s}  </Text></Text>
-            ))}
-            <Text dimColor>▣ next</Text>
-          </Text>
-        </Box>
+            )
+          })}
+        </Text>
       </Box>
     )
   })

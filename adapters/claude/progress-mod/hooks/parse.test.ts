@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { parse } from './register.tsx'
+import { focus, parse } from './register.tsx'
 
 const PROGRESS = `# Progress
 ## Current
@@ -49,9 +49,12 @@ test('parse: states, levels, next topic, spring split, untouched tracks hidden',
   expect(tracks.map(t => t.name)).toEqual(['java', 'spring', 'react'])
   expect(by.java?.level).toBe('beginner+')
   expect(by.java?.sections[0]?.ids).toEqual(['01:solid', '04:shaky', '10:none'])
-  expect(by.java?.next).toBe('10 Streams and lambdas')
+  expect(by.java?.next).toBe('10 Streams')
   expect(by.spring?.sections[0]?.ids).toEqual(['23:scr', '24:none'])
   expect(by.spring?.next).toBe('23 IoC')
   expect(by.react?.level).toBe(undefined)
   expect(by.react?.next).toBe('R01 JSX')
+  // the band's focus is the track studied most recently: spring's 23 (2026-10-15) beats react's R01
+  expect(by.java?.last).toBe('2026-09-29')
+  expect(focus(tracks)?.name).toBe('spring')
 })

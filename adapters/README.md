@@ -19,8 +19,8 @@ If you ever find yourself explaining a teaching step inside an adapter, stop —
 | Codex | `adapters/codex/scratch.md` | `~/.codex/skills/scratch/SKILL.md` |
 | Claude Code | `adapters/claude/progress-mod/` | `~/.claude/skills/learning-progress` (a link, not a copy) |
 
-`progress-mod` is a Claude Code mod, not a pointer: the `/progress` side panel, one square per
-curriculum topic coloured by its confidence in `state/PROGRESS.md`, plus each track's level. It
+`progress-mod` is a Claude Code mod, not a pointer: a three-line band above the prompt, shown in
+sessions opened in this repo — the most recent track on a beginner → senior ladder with its next topic, its lessons and scratches as two meters, then every track in one row. It
 reads the repo through the link, so it is never stale. Test it with
 `claude plugin test adapters/claude/progress-mod`.
 
