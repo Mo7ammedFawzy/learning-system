@@ -133,12 +133,19 @@ const short = (name: string) => name.split(/,| and |:/)[0]!.trim()
 export const focus = (tracks: Track[]) =>
   tracks.reduce<Track | undefined>((a, t) => (!a || (t.last ?? '') > (a.last ?? '') ? t : a), undefined)
 
+// Redraw now, and every 30 s to pick up lessons that close while the session is open. Called from
+// the first prompt too: a desktop session can admit this mod after session.start fired, and then
+// nothing redrew the band until the second message.
+let isTicking = false
+function tick($: EngineInterface) {
+  if (!isTicking) $.clock.every(30_000, () => $.ui.invalidate('ui.render'))
+  isTicking = true
+  $.ui.invalidate('ui.render')
+}
+
 export const register: Register = on => {
-  // pick up lessons that close while the session is open
-  on('session.start', async ($, e, next) => {
-    $.clock.every(30_000, () => $.ui.invalidate('ui.render'))
-    return next(e)
-  })
+  on('session.start', async ($, e, next) => { tick($); return next(e) })
+  on('prompt.submit', async ($, e, next) => { tick($); return next(e) })
 
   // Only inside the learning repo; elsewhere it would be noise above every chat.
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
