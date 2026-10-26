@@ -28,7 +28,6 @@ Read `core/BOOTSTRAP.md` and follow it exactly. `<learning-home>` is this reposi
 | `core/<track>/INTERVIEW-BANK.md` | Interview questions per topic of that track |
 | `labs/` | Optional, pluggable real-codebase profiles. `labs/INDEX.md` maps a working directory to a profile; no match means codebase-free mode |
 | `state/PROGRESS.md` | Learner state — one `Current` line per track |
-| `state/ROADMAP.md` | Generated: every topic of every track at a glance. Rewritten by `progress.ps1 -Roadmap -Write`, never by hand |
 | `state/WEAK-SPOTS.md` | Named misconceptions. Read at the warm-up and close only, not at session start |
 | `state/REVIEW.md` | Spaced review: one row per finished topic, its due date and interval. Driven by `review` |
 | `state/LEARNER.md` | What the learner already knows, self-reported. Lessons bridge from it and never edit it |
@@ -61,7 +60,7 @@ There is no build, no test suite and no application code — the system is plain
 ```powershell
 .\install.ps1              # write adapters into the global agent config dirs (-Uninstall removes)
 .\progress.ps1             # one progress bar per track, from the curricula and state/PROGRESS.md. The status line calls it
-.\progress.ps1 -Roadmap -Write  # every section and topic per track, also saved to state/ROADMAP.md. Each learning session opens with it
+.\progress.ps1 -Roadmap    # every section and topic per track. Each learning session opens with it
 # Claude Code: a three-line progress band above the prompt, in sessions opened in this repo (adapters/claude/progress-mod), linked in by the installer
 ```
 ```bash
