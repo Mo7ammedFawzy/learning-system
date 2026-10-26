@@ -84,17 +84,6 @@ lesson.
 | D06 | Building and publishing images | 2026-10-20 | — |
 | D07 | Unit and component tests with Vitest | 2026-10-20 | — |
 | D08 | End-to-end tests with Playwright | 2026-10-20 | — |
-| 10b | Streams: pipelines, `map` vs `flatMap`, parallel | 2026-10-25 | — |
-| 12 | Exceptions | 2026-10-25 | — |
-| 14 | Immutability and defensive copying | 2026-10-25 | — |
-| 16 | SQL fundamentals | 2026-10-25 | — |
-| 44 | Schema design and DDL | 2026-10-25 | — |
-| 45 | Advanced SQL and the classic query puzzles | 2026-10-25 | — |
-| 17 | Indexes, execution plans and isolation | 2026-10-25 | — |
-| 18 | JPA and Hibernate mapping | 2026-10-25 | — |
-| 19 | Persistence context and lazy loading | 2026-10-25 | — |
-| 20 | Queries | 2026-10-25 | — |
-| 22 | Performance: N+1 and caching | 2026-10-25 | — |
 
 ## Notes to self
 
@@ -120,8 +109,9 @@ lesson.
 
 - **Scratch is information only: no quiz.** Asked for on 2026-10-10, after two batches where the
   quiz came back mostly "I don't know": "just tell me the info in a good way". The goal is to get
-  productive on a real React project quickly. Teach the batch, write the cheat sheet, record the
-  rows under Scratched with `—` in the Quiz column, and stop. Questions belong to `/learn`.
+  productive on a real React project quickly. Teach the batch, write the cheat sheet, and stop. Record
+  the rows under Scratched, with `—` in the Quiz column, only once the learner says they finished
+  reading it (asked for on 2026-10-26). Questions belong to `/learn`.
 
 - **Keep lessons to 20–30 minutes.** Requested on 2026-09-16: five steps, no mandatory real-world
   task, no formal code-review step, and no drilling one detail past two rounds. If a concept will

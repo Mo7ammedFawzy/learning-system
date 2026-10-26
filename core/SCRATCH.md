@@ -68,6 +68,9 @@ misconception. No re-teach beyond that and no re-test: a miss is what a full les
 
 - Write `<learning-home>/playground/scratch-<scope>/CHEATSHEET.md` and give the path: one entry of
   4–5 lines per topic (mental model, trap, interview answer), quiz misses marked.
+- **Write nothing else to `state/`.** Running a pass does not mean the learner read it. Record the
+  batch only when the learner says they finished it — in this session or a later one — and then
+  do the steps below.
 - In `state/PROGRESS.md`, add each row to **Scratched** with today's date and its quiz result, and
   add each miss to `state/WEAK-SPOTS.md` in that file's line format.
 - Add each topic to `state/REVIEW.md` at rung 1, due tomorrow.
