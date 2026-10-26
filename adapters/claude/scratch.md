@@ -27,8 +27,11 @@ Inline pictures: where `mcp__visualize__show_widget` is available (the desktop a
 inline surface the methodology's *Delivery* section means — call `mcp__visualize__read_me` once
 first. Where it is not (a terminal), there is none.
 
-Detailed figure: the `anatomy` skill is the tool the scratch contract's close means — invoke it
-only after the learner says yes to the offer.
+Detailed figure: the background worker is the `Agent` tool with `run_in_background: true`, and
+the figure is built with the `anatomy` skill, at its Figure size. Send the Agent call in the
+same message as the line naming the batch, before the teach blocks. The brief names the topic, its
+mental model in one sentence, the output path, and says: invoke the `anatomy` skill (or read
+`~/.claude/skills/anatomy/SKILL.md` and follow it), and write nothing outside that path.
 
 If that file cannot be found, say so and stop — do not improvise a lesson from memory, and do not
 fall back to teaching without the shared methodology.

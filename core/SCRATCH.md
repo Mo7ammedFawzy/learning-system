@@ -30,6 +30,15 @@ Open with one line naming the batch, then teach. Do not ask for confirmation.
 
 ## 2. Teach — the whole batch in one turn
 
+**First, where the agent can hand work to a background worker** and has a way to build a
+**detailed figure** (a standalone, interactive page that shows a mental model as a real working
+object, much slower to make than an inline picture): start one in the background for the batch's
+hardest topic (the first ★ row, else the first row), then teach without waiting for it. It is
+saved as `playground/scratch-<scope>/<id>-figure.html`. One figure per batch, never more. It is a
+study aid for while the learner reads and for between sessions. It never replaces a block's inline
+picture. Where there is no background worker, skip it: building the figure inline would delay the
+teach turn by far more than the batch is worth.
+
 One headed block per topic, about 120 words plus one view. Do not wait between blocks and ask
 nothing inside them. Where the client can show a picture, the view is a picture of the topic's
 mental model — the same rule as a lesson's step 1 — and the snippet stays a fenced block.
@@ -80,8 +89,5 @@ misconception. No re-teach beyond that and no re-test: a miss is what a full les
 
 Then offer the next batch, or a full lesson on the weakest topic. Start neither.
 
-Where the agent can build a **detailed figure** — a standalone, interactive page that shows a
-mental model as a real working object, slower to make than an inline picture — also offer one for
-the batch's hardest topic (★ first, then the biggest quiz miss). Build it only on a yes, save it as
-`playground/scratch-<scope>/<id>-figure.html` and list it in the cheat sheet. It is a study aid
-for between sessions: it never replaces a block's inline picture and never delays the teach turn.
+If a detailed figure was started in section 2 and has finished, give its path here and list it in
+the cheat sheet. If it is still running, say so; give the path when it lands.
