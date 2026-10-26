@@ -31,7 +31,8 @@ Open with one line naming the batch, then teach. Do not ask for confirmation.
 ## 2. Teach — the whole batch in one turn
 
 One headed block per topic, about 120 words plus one view. Do not wait between blocks and ask
-nothing inside them.
+nothing inside them. Where the client can show a picture, the view is a picture of the topic's
+mental model — the same rule as a lesson's step 1 — and the snippet stays a fenced block.
 
 | Part | Size |
 |---|---|

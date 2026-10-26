@@ -58,32 +58,6 @@ lesson.
 
 | # | Topic | Date | Quiz |
 |---|---|---|---|
-| R01 | JSX | 2026-10-10 | Partial: found two of three (single root, statement in braces), missed `class` |
-| R02 | Components and props | 2026-10-10 | Miss: no prediction, and the proposed fix mutated the prop then set the same object |
-| R03 | State with `useState` | 2026-10-10 | Miss: answered for the clicked counter, not the second one |
-| R04 | The render model | 2026-10-10 | Partial: screen value right with the snapshot reason, log value never given |
-| R05 | Updating state: immutability and batching | 2026-10-10 | Miss: "I don't know" on `setTodos(todos.sort(f))`; updater queue right |
-| R06 | Events and controlled inputs | 2026-10-10 | Partial: `onClick={save()}` right with the fix, the input half not answered |
-| R07 | Lists, keys and conditional rendering | 2026-10-10 | Miss: "I don't know" on `key={index}` |
-| R08 | Purity and Strict Mode | 2026-10-10 | Miss: "I don't know" on module-level vs local mutation |
-| R09 | Structuring and lifting state | 2026-10-10 | Miss: saw `remove` skips the total, but gave the correct total (20) not the shown one (30), and fixed it with another setter |
-| R10 | `useReducer` | 2026-10-10 | Miss: "I don't know" on two dispatches then a log |
-| R11 | Context | 2026-10-10 | Miss: said a consumer reading only `theme` does not re-render when `user` changes |
-| R12 | Refs | 2026-10-10 | Miss: "I don't know" on a ref shown in JSX |
-| 23 | IoC and dependency injection | 2026-10-15 | — |
-| 24 | Beans: definition, scopes, lifecycle | 2026-10-15 | — |
-| 25 | Injection styles | 2026-10-15 | — |
-| 26 | Configuration and properties | 2026-10-15 | — |
-| 31 | REST controllers | 2026-10-15 | — |
-| 32 | Error handling | 2026-10-15 | — |
-| D01 | Images, containers and the Dockerfile | 2026-10-20 | — |
-| D02 | Docker Compose | 2026-10-20 | — |
-| D03 | A Spring Boot API in a container | 2026-10-20 | — |
-| D04 | A single-page app behind Nginx | 2026-10-20 | — |
-| D05 | GitHub Actions | 2026-10-20 | — |
-| D06 | Building and publishing images | 2026-10-20 | — |
-| D07 | Unit and component tests with Vitest | 2026-10-20 | — |
-| D08 | End-to-end tests with Playwright | 2026-10-20 | — |
 
 ## Notes to self
 
