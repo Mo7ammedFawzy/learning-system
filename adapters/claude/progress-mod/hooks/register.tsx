@@ -1,8 +1,8 @@
 import type { EngineInterface, Register } from 'claude-code'
 
-// The learning-progress band above the prompt, one powerline row: the focus track's level on a
-// beginner -> senior ladder, its gate topics to the next level with the next one marked, then every
-// track's lessons and scratches.
+// The learning-progress band above the prompt, one row about the focus track only: its level and
+// gate topics to the next level, a meter of its lessons and scratches, then the gate topics by name
+// with the next one marked.
 // Everything is read from the repo this mod sits in (adapters/claude/progress-mod -> ../../..),
 // on every draw, so it is never out of date with state/PROGRESS.md.
 
@@ -112,7 +112,7 @@ const SHORT: Record<string, string> = {
   beginner: 'beg', 'beginner+': 'beg+', intermediate: 'int', 'intermediate+': 'int+', advanced: 'adv', 'advanced+': 'adv+', senior: 'sen',
 }
 const ACCENT = '#d97757'
-const SEG = { focus: "#3a2a24", gate: "#232a3e", track: "#303030" }
+const METER = 10
 
 const counts = (t: Track) => {
   const all = t.sections.flatMap(s => s.ids)
@@ -161,39 +161,33 @@ export const register: Register = on => {
     const c = counts(f)
     const at = LEVELS.indexOf(f.level ?? '')
     const nextGate = f.gate.find(g => !passes(g))
-    const seg = (bg: string, body: unknown) => <Text backgroundColor={bg}> {body} </Text>
+    // cumulative rounding, so done + scratched cells never overshoot the meter
+    const doneW = Math.round(c.done * METER / c.n), scrW = Math.round((c.done + c.scr) * METER / c.n) - doneW
+    const dot = <Text color={COLOR.none}>  ·  </Text>
 
-    // one powerline row: [track ladder level] [road to the next level] [focus counts] [other tracks]
+    // one row, the focus track only: level -> next level, gate boxes · lesson meter · gate topics
     return (
       <Text wrap="truncate">
-        {seg(SEG.focus, <Text>
-          <Text bold>{f.name} </Text>
-          {LEVELS.map((_, i) => <Text color={i < at ? COLOR.solid : i === at ? ACCENT : COLOR.none}>{i === at ? '●' : '━'}</Text>)}
-          {f.level ? <Text color={ACCENT}> {SHORT[f.level] ?? f.level}</Text> : <Text dimColor> not assessed</Text>}
-        </Text>)}
-        {f.gate.length && LEVELS[at + 1] ? seg(SEG.gate, <Text>
-          <Text dimColor>→{SHORT[LEVELS[at + 1]!]} </Text>
+        <Text bold>{f.name} </Text>
+        {f.level ? <Text color={ACCENT}>{SHORT[f.level] ?? f.level}</Text> : <Text dimColor>not assessed</Text>}
+        {f.gate.length && LEVELS[at + 1] ? <Text>
+          <Text dimColor> → {SHORT[LEVELS[at + 1]!]}  </Text>
           {/* a scratch is shown half-filled but never counted: it does not unlock a level */}
           {f.gate.map(g => <Text color={passes(g) ? COLOR.solid : g.scr ? COLOR.scr : COLOR.none}>{passes(g) ? '■' : g.scr ? '◧' : '▢'}</Text>)}
           <Text dimColor> {f.gate.filter(passes).length}/{f.gate.length}</Text>
-          {f.gate.map(g => g === nextGate
-            ? <Text><Text color={ACCENT}> ▶ </Text><Text>{g.id} {short(g.name)}</Text></Text>
-            : <Text dimColor>{g === f.gate[0] ? ' ' : ' · '}{g.id} {short(g.name)}</Text>)}
-        </Text>) : f.next ? seg(SEG.gate, <Text><Text color={ACCENT}>▶ </Text>{f.next}</Text>) : ''}
-        {tracks.map(t => {
-          const k = counts(t), isFocus = t === f
-          return (
-            <Text>
-              <Text> </Text>
-              {seg(SEG.track, <Text>
-                {isFocus ? '' : <Text dimColor>{t.name} </Text>}
-                <Text color={COLOR.solid}>{k.done}</Text><Text dimColor>/{k.n}</Text>
-                {k.scr ? <Text color={COLOR.scr}> ◌{k.scr}</Text> : ''}
-                {t.level && !isFocus ? <Text dimColor> {SHORT[t.level] ?? t.level}</Text> : ''}
-              </Text>)}
-            </Text>
-          )
-        })}
+        </Text> : ''}
+        {dot}
+        <Text color={COLOR.solid}>{'█'.repeat(doneW)}</Text><Text color={COLOR.scr}>{'█'.repeat(scrW)}</Text>
+        <Text color={COLOR.none}>{'░'.repeat(METER - doneW - scrW)}</Text>
+        <Text> </Text><Text color={COLOR.solid}>{c.done}</Text><Text dimColor>/{c.n}</Text>
+        {c.scr ? <Text color={COLOR.scr}> ◌{c.scr}</Text> : ''}
+        <Text dimColor> {Math.round(c.done * 100 / c.n)}%</Text>
+        {dot}
+        {f.gate.length && LEVELS[at + 1]
+          ? f.gate.map(g => g === nextGate
+            ? <Text><Text color={ACCENT}>▶ </Text><Text>{g.id} {short(g.name)}</Text></Text>
+            : <Text dimColor>{g === f.gate[0] ? '' : ' · '}{g.id} {short(g.name)}</Text>)
+          : f.next ? <Text><Text color={ACCENT}>▶ </Text>{f.next}</Text> : ''}
       </Text>
     )
   })

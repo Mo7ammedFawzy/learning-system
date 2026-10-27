@@ -20,7 +20,7 @@ If you ever find yourself explaining a teaching step inside an adapter, stop —
 | Claude Code | `adapters/claude/progress-mod/` | `~/.claude/skills/learning-progress` (a link, not a copy) |
 
 `progress-mod` is a Claude Code mod, not a pointer: a one-line band above the prompt, shown in
-sessions opened in this repo — the most recent track on a beginner → senior ladder with its next topic, its lessons and scratches as two meters, then every track in one row. It
+sessions opened in this repo — only the most recently studied track: its level and the gate topics to the next level, a meter of its lessons and scratches, and the next topic. It
 reads the repo through the link, so it is never stale. Test it with
 `claude plugin test adapters/claude/progress-mod`.
 

@@ -1,5 +1,5 @@
 {
   "name": "learning-progress",
   "version": "0.1.0",
-  "description": "A one-line band above the prompt: your level from beginner to senior, the topics to the next level, and every track's progress. Reads state/PROGRESS.md of the learning system."
+  "description": "A one-line band above the prompt for the track you study: your level, the topics to the next level, and a lesson meter. Reads state/PROGRESS.md of the learning system."
 }
