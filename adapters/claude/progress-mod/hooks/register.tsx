@@ -1,7 +1,8 @@
 import type { EngineInterface, Register } from 'claude-code'
 
-// The learning-progress band above the prompt: the focus track's level on a beginner -> senior
-// ladder and its next topic, its lessons and scratches as two meters, then every track in one row.
+// The learning-progress band above the prompt, one powerline row: the focus track's level on a
+// beginner -> senior ladder, its gate topics to the next level with the next one marked, then every
+// track's lessons and scratches.
 // Everything is read from the repo this mod sits in (adapters/claude/progress-mod -> ../../..),
 // on every draw, so it is never out of date with state/PROGRESS.md.
 
@@ -111,7 +112,7 @@ const SHORT: Record<string, string> = {
   beginner: 'beg', 'beginner+': 'beg+', intermediate: 'int', 'intermediate+': 'int+', advanced: 'adv', 'advanced+': 'adv+', senior: 'sen',
 }
 const ACCENT = '#d97757'
-const W = 14
+const SEG = { focus: "#3a2a24", gate: "#232a3e", track: "#303030" }
 
 const counts = (t: Track) => {
   const all = t.sections.flatMap(s => s.ids)
@@ -156,68 +157,44 @@ export const register: Register = on => {
     const tracks = await load($, repo).catch(() => undefined)
     const f = tracks && focus(tracks)
     if (!tracks || !f) return next(e)
-    const { Box, Text } = $.ui.resolve(e)
+    const { Text } = $.ui.resolve(e)
     const c = counts(f)
-    const gateScr = f.gate.filter(g => g.scr && !passes(g)).length
     const at = LEVELS.indexOf(f.level ?? '')
-    const meter = (k: number, color: string, ch: string) => {
-      const full = Math.round(k * W / c.n)
-      return <Text><Text color={color}>{ch.repeat(full)}</Text><Text color={COLOR.none}>{'░'.repeat(W - full)}</Text></Text>
-    }
+    const nextGate = f.gate.find(g => !passes(g))
+    const seg = (bg: string, body: unknown) => <Text backgroundColor={bg}> {body} </Text>
 
+    // one powerline row: [track ladder level] [road to the next level] [focus counts] [other tracks]
     return (
-      <Box flexDirection="column">
-        <Text wrap="truncate">
-          <Text bold>{f.name}  </Text>
-          <Text dimColor>beginner </Text>
+      <Text wrap="truncate">
+        {seg(SEG.focus, <Text>
+          <Text bold>{f.name} </Text>
           {LEVELS.map((_, i) => <Text color={i < at ? COLOR.solid : i === at ? ACCENT : COLOR.none}>{i === at ? '●' : '━'}</Text>)}
-          <Text dimColor> senior  </Text>
-          {f.level ? <Text color={ACCENT}>{f.level}</Text> : <Text dimColor>not assessed</Text>}
-          {f.next ? <Text><Text color={ACCENT}>   ▶ </Text><Text>{f.next}</Text></Text> : ''}
-        </Text>
-        {f.gate.length && LEVELS[at + 1] ? (
-          // progress to the next level: one box per gate topic, the first open one is next
-          <Text wrap="truncate">
-            <Text dimColor>to </Text><Text>{LEVELS[at + 1]} </Text>
-            {/* a scratch is shown half-filled but never counted: it does not unlock a level */}
-            {f.gate.map(g => <Text color={passes(g) ? COLOR.solid : g.scr ? COLOR.scr : COLOR.none}>{passes(g) ? '■' : g.scr ? '◧' : '▢'}</Text>)}
-            <Text dimColor> {f.gate.filter(passes).length}/{f.gate.length}</Text>
-            {gateScr ? <Text color={COLOR.scr}> ◌{gateScr}</Text> : ''}
-            <Text>  </Text>
-            {f.gate.map((g, i) => {
-              const isNext = g === f.gate.find(x => !passes(x))
-              const color = passes(g) ? COLOR.solid : g.scr ? COLOR.scr : isNext ? ACCENT : undefined
-              return (
-                <Text>
-                  {i ? <Text color={COLOR.none}> · </Text> : ' '}
-                  {isNext ? <Text color={ACCENT}>▶ </Text> : ''}
-                  <Text color={color} dimColor={!color}>{g.id} {short(g.name)}</Text>
-                </Text>
-              )
-            })}
-          </Text>
-        ) : (
-          <Text wrap="truncate">
-            <Text dimColor>lessons </Text>{meter(c.done, COLOR.solid, '█')}
-            <Text dimColor> {c.done}/{c.n} {Math.round(c.done * 100 / c.n)}%    scratched </Text>{meter(c.scr, COLOR.scr, '▒')}
-            <Text dimColor> {c.scr}/{c.n}</Text>
-          </Text>
-        )}
-        <Text wrap="truncate">
-          {tracks.map((t, i) => {
-            const k = counts(t), isFocus = t === f
-            return (
-              <Text>
-                {i ? <Text color={COLOR.none}> │ </Text> : ''}
-                <Text bold={isFocus} dimColor={!isFocus}>{isFocus ? '▸' : ''}{t.name} </Text>
+          {f.level ? <Text color={ACCENT}> {SHORT[f.level] ?? f.level}</Text> : <Text dimColor> not assessed</Text>}
+        </Text>)}
+        {f.gate.length && LEVELS[at + 1] ? seg(SEG.gate, <Text>
+          <Text dimColor>→{SHORT[LEVELS[at + 1]!]} </Text>
+          {/* a scratch is shown half-filled but never counted: it does not unlock a level */}
+          {f.gate.map(g => <Text color={passes(g) ? COLOR.solid : g.scr ? COLOR.scr : COLOR.none}>{passes(g) ? '■' : g.scr ? '◧' : '▢'}</Text>)}
+          <Text dimColor> {f.gate.filter(passes).length}/{f.gate.length}</Text>
+          {f.gate.map(g => g === nextGate
+            ? <Text><Text color={ACCENT}> ▶ </Text><Text>{g.id} {short(g.name)}</Text></Text>
+            : <Text dimColor>{g === f.gate[0] ? ' ' : ' · '}{g.id} {short(g.name)}</Text>)}
+        </Text>) : f.next ? seg(SEG.gate, <Text><Text color={ACCENT}>▶ </Text>{f.next}</Text>) : ''}
+        {tracks.map(t => {
+          const k = counts(t), isFocus = t === f
+          return (
+            <Text>
+              <Text> </Text>
+              {seg(SEG.track, <Text>
+                {isFocus ? '' : <Text dimColor>{t.name} </Text>}
                 <Text color={COLOR.solid}>{k.done}</Text><Text dimColor>/{k.n}</Text>
                 {k.scr ? <Text color={COLOR.scr}> ◌{k.scr}</Text> : ''}
-                {t.level ? <Text color={isFocus ? ACCENT : undefined} dimColor={!isFocus}> {SHORT[t.level] ?? t.level}</Text> : ''}
-              </Text>
-            )
-          })}
-        </Text>
-      </Box>
+                {t.level && !isFocus ? <Text dimColor> {SHORT[t.level] ?? t.level}</Text> : ''}
+              </Text>)}
+            </Text>
+          )
+        })}
+      </Text>
     )
   })
 }

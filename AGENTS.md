@@ -61,7 +61,7 @@ There is no build, no test suite and no application code — the system is plain
 .\install.ps1              # write adapters into the global agent config dirs (-Uninstall removes)
 .\progress.ps1             # one progress bar per track, from the curricula and state/PROGRESS.md. The status line calls it
 .\progress.ps1 -Roadmap    # every section and topic per track. Each learning session opens with it
-# Claude Code: a three-line progress band above the prompt, in sessions opened in this repo (adapters/claude/progress-mod), linked in by the installer
+# Claude Code: a one-line progress band above the prompt, in sessions opened in this repo (adapters/claude/progress-mod), linked in by the installer
 ```
 ```bash
 ./install.sh               # same, Git Bash / macOS / Linux (--uninstall)
