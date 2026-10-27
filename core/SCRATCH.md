@@ -18,13 +18,13 @@ The scope is whatever follows `scratch` in the argument, resolved inside the act
 |---|---|
 | a curriculum section heading or its theme (`Track B`, `collections`) | that section's rows |
 | topic IDs or a range (`07 09`, `08-10`) | those rows |
-| *(none)* | the next uncompleted rows, in the bootstrap's "next topic" order |
+| *(none)* | the next rows in the track's `CURRICULUM.md` row order that are under neither **Completed** nor **Scratched** (a row counts as Completed once any of its lettered sub-lessons is). Scratch is for learning the track fast, in teaching order: neither the **Focus** line nor `state/SOURCES.md` reorders it — they order full lessons only |
 
 - The unit is a curriculum **row**, not the lettered sub-lessons a full lesson splits it into.
 - A batch is **3–6 rows**. A larger scope is cut into batches: say so, name the batches, do the
   first.
 - Skip rows already under **Completed** unless the learner named them.
-- Order inside the batch: rows marked ★ and rows with an open `state/SOURCES.md` row go first.
+- Order inside the batch: curriculum row order.
 
 Open with one line naming the batch, then teach. Do not ask for confirmation.
 

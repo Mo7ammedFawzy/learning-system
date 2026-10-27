@@ -10,13 +10,15 @@ Maintained by the `/learn` skill. Read at the start of every session, updated af
 
 One line per track; a lesson changes only its own track's line.
 
+**Focus** — java: 10, 12, 14, 37, 38, 40, 35, 36, 42, 23, 24, 25, 26, 27, 30, 31, 46, 33, 16, 44, 18, 19, 20, 22. Other tracks paused.
+
 **java** — Topic: 10 — Streams and lambdas, part 10b: lazy pipelines, intermediate vs terminal, `map` vs `flatMap`, `stream` vs `parallelStream` (SOURCES rows 20, 40, 41). Step: not started. (06b — `final`, nested classes — 08c — `HashMap` resizing and load factor — and 09b — iteration and fail-fast iterators — have no source rows and wait behind the PDFs.)
 
-**react** — Topic: R01 — JSX. Step: not started.
+**react** — Topic: R01 — JSX. Step: not started. Paused — focus is java.
 
-**delivery** — Topic: D01 — Images, containers and the Dockerfile. Step: not started. Install Docker Desktop first (not on this machine as of 2026-10-20).
+**delivery** — Topic: D01 — Images, containers and the Dockerfile. Step: not started. Install Docker Desktop first (not on this machine as of 2026-10-20). Paused — focus is java.
 
-**node** — Topic: N01 — The event loop and async code. Step: not started.
+**node** — Topic: N01 — The event loop and async code. Step: not started. Paused — focus is java.
 
 Last review: 2026-10-20 (placement quiz) · 2026-09-06 (topic 01).
 
@@ -91,9 +93,20 @@ lesson.
   the rows under Scratched, with `—` in the Quiz column, only once the learner says they finished
   reading it (asked for on 2026-10-26). Questions belong to `/learn`.
 
-- **Every scratch block ends with an Egyptian Arabic explanation** (asked for on 2026-10-26):
-  3–5 lines retelling the mental model and the trap, in the same pure-Arabic-line rules as above,
-  with technical terms transliterated. The cheat sheet entry carries the same lines.
+- **Every topic gets an Egyptian Arabic explanation — in scratch and in `/learn`** (asked for on
+  2026-10-26, widened to lessons on 2026-10-27): 3–5 lines retelling the mental model and the
+  trap, in the same pure-Arabic-line rules as above, with technical terms transliterated. In
+  scratch it ends every block; in a lesson it ends step 1. The cheat sheet entry or summary card
+  carries the same lines. **Make it impossible to miss**: its own heading (`بالمصري`), and a blank
+  line between Arabic lines — consecutive lines collapse into one scrambled paragraph when rendered
+  (missed on 2026-10-27 for exactly that reason).
+
+- **One focus queue: Java/Spring interviews** (decided 2026-10-27). Five open tracks and four
+  "what's next" rules caused churn — about six scratch batches written and reverted. The **Focus**
+  line under Current is the only order for `/learn next` (PDF-driven, for interviews); react, node
+  and delivery are paused until it is done. Change the Focus line, not the rules.
+  **Scratch walks curriculum row order instead** (asked for on 2026-10-27): it is for learning a
+  track fast and easily for day-to-day work, not for the PDFs.
 
 - **Keep lessons to 20–30 minutes.** Requested on 2026-09-16: five steps, no mandatory real-world
   task, no formal code-review step, and no drilling one detail past two rounds. If a concept will

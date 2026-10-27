@@ -77,6 +77,11 @@ Codebase-free mode is a normal mode, not a degraded one. Never invent file paths
 | `jobs` | Read `state/JOBS.md` and report, in a few lines, the biggest open gaps and the topics that close them. No lesson. |
 | a topic not in the curriculum | Teach it with the same five steps, then add it to the track's `CURRICULUM.md` under the nearest section, with the next free ID. |
 
+**The focus line comes first.** When `state/PROGRESS.md` has a **Focus** line, the next topic is
+its first ID that is not under Completed, and only that line's track is proposed. A track whose
+Current line says *Paused* is not offered; if the learner names it, honour it and say it is paused.
+Without a Focus line, the rule below applies.
+
 **The next topic** is always chosen inside the active track. While `state/SOURCES.md` has an open
 row whose topic ID belongs to that track, the next topic is the first topic in the track's
 `CURRICULUM.md` row order that has an open row there — topics with none wait, even if they come
