@@ -22,6 +22,7 @@ const PROGRESS = `# Progress
 |---|---|---|---|
 | R01 | JSX | 2026-10-10 | Partial |
 | 23 | IoC | 2026-10-15 | — |
+| 04 | OOP | 2026-09-28 | — |
 `
 
 const JAVA = `## Track A — Java core
@@ -59,6 +60,8 @@ test('parse: states, levels, next topic, spring split, untouched tracks hidden',
   expect(focus(tracks)?.name).toBe('spring')
   // gate topics carry their state, even from another track's curriculum
   expect(by.java?.gate.map(g => `${g.id}:${g.state}`)).toEqual(['04:shaky', '10:none'])
+  // a scratch is flagged even when a lesson part outranks it (04b shaky, 04 scratched)
+  expect(by.java?.gate.map(g => g.scr)).toEqual([true, false])
   expect(by.spring?.gate.map(g => g.name)).toEqual(['Streams', 'Beans'])
   expect(by.react?.gate).toEqual([])
 })

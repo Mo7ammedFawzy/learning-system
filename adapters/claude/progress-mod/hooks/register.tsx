@@ -7,7 +7,8 @@ import type { EngineInterface, Register } from 'claude-code'
 
 type State = 'solid' | 'ok' | 'shaky' | 'scr' | 'none'
 type Section = { name: string; ids: string[] }
-type Gate = { id: string; name: string; state: State }
+// scr: on the Scratched list, even when a lesson part outranks it in `state` (10a shaky, 10 scratched)
+type Gate = { id: string; name: string; state: State; scr: boolean }
 type Track = { name: string; level?: string; next?: string; last?: string; sections: Section[]; gate: Gate[] }
 
 const COLOR: Record<State, string> = {
@@ -26,6 +27,7 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
   const gates: Record<string, string[]> = {}
   const current: Record<string, string> = {}
   const last: Record<string, string> = {}
+  const scratched = new Set<string>()
   let section = ''
   for (const line of progress.split(/\r?\n/)) {
     if (line.startsWith('## ')) { section = line.slice(3).trim(); continue }
@@ -44,7 +46,7 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
       const conf = c[3] as State
       if (!state[id] || state[id] === 'scr' || (RANK[conf] ?? 0) > (RANK[state[id]] ?? 0)) state[id] = conf
     }
-    if (section === 'Scratched' && id && !state[id]) state[id] = 'scr'
+    if (section === 'Scratched' && id) { scratched.add(id); if (!state[id]) state[id] = 'scr' }
   }
 
   const tracks: Track[] = []
@@ -70,7 +72,7 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
   for (const t of tracks) {
     t.level = levels[t.name]
     // a gate topic can live in another track's curriculum (spring's N+1 is java's 22)
-    t.gate = (gates[t.name] ?? []).map(id => ({ id, name: names[id] ?? '', state: state[id] ?? 'none' }))
+    t.gate = (gates[t.name] ?? []).map(id => ({ id, name: names[id] ?? '', state: state[id] ?? 'none', scr: scratched.has(id) }))
     const ids = t.sections.flatMap(s => s.ids)
     const fromCurrent = current[t.name]?.split(' ')[0]
     const nextId = fromCurrent && ids.includes(fromCurrent) ? fromCurrent : ids.find(i => !RANK[state[i] ?? ''])
@@ -156,6 +158,7 @@ export const register: Register = on => {
     if (!tracks || !f) return next(e)
     const { Box, Text } = $.ui.resolve(e)
     const c = counts(f)
+    const gateScr = f.gate.filter(g => g.scr && !passes(g)).length
     const at = LEVELS.indexOf(f.level ?? '')
     const meter = (k: number, color: string, ch: string) => {
       const full = Math.round(k * W / c.n)
@@ -176,16 +179,19 @@ export const register: Register = on => {
           // progress to the next level: one box per gate topic, the first open one is next
           <Text wrap="truncate">
             <Text dimColor>to </Text><Text>{LEVELS[at + 1]} </Text>
-            {f.gate.map(g => <Text color={passes(g) ? COLOR.solid : COLOR.none}>{passes(g) ? '■' : '▢'}</Text>)}
-            <Text dimColor> {f.gate.filter(passes).length}/{f.gate.length}  </Text>
+            {/* a scratch is shown half-filled but never counted: it does not unlock a level */}
+            {f.gate.map(g => <Text color={passes(g) ? COLOR.solid : g.scr ? COLOR.scr : COLOR.none}>{passes(g) ? '■' : g.scr ? '◧' : '▢'}</Text>)}
+            <Text dimColor> {f.gate.filter(passes).length}/{f.gate.length}</Text>
+            {gateScr ? <Text color={COLOR.scr}> ◌{gateScr}</Text> : ''}
+            <Text>  </Text>
             {f.gate.map((g, i) => {
               const isNext = g === f.gate.find(x => !passes(x))
+              const color = passes(g) ? COLOR.solid : g.scr ? COLOR.scr : isNext ? ACCENT : undefined
               return (
                 <Text>
                   {i ? <Text color={COLOR.none}> · </Text> : ' '}
-                  <Text color={passes(g) ? COLOR.solid : isNext ? ACCENT : undefined} dimColor={!passes(g) && !isNext}>
-                    {isNext ? '▶ ' : ''}{g.id} {short(g.name)}
-                  </Text>
+                  {isNext ? <Text color={ACCENT}>▶ </Text> : ''}
+                  <Text color={color} dimColor={!color}>{g.id} {short(g.name)}</Text>
                 </Text>
               )
             })}
