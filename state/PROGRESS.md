@@ -64,6 +64,10 @@ lesson.
 | 10 | Streams — lazy pipelines, intermediate vs terminal, `map` vs `flatMap`, `parallelStream` | 2026-10-27 | — |
 | 12 | Exceptions — hierarchy, checked vs unchecked, `throw` vs `throws`, catch ordering | 2026-10-27 | — |
 | 14 | Immutability and defensive copying | 2026-10-27 | — |
+| 07 | Generics and erasure — erasure, invariance, PECS, bridge methods | 2026-10-28 | — |
+| 11 | Optional — return type only, `map` chains, `orElse` vs `orElseGet` | 2026-10-28 | — |
+| 13 | Records, sealed types, pattern matching — exhaustive switch, shallow immutability | 2026-10-28 | — |
+| 15 | Testing — JUnit 5 and Mockito, what to mock, spy stubbing | 2026-10-28 | — |
 
 ## Notes to self
 
