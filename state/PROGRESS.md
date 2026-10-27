@@ -106,18 +106,14 @@ lesson.
   carries the same lines. **Make it impossible to miss**: its own heading (`بالمصري`), and a blank
   line between Arabic lines — consecutive lines collapse into one scrambled paragraph when rendered
   (missed on 2026-10-27 for exactly that reason).
-  **Layout — Arabic for the idea, code on its own line under it** (picked 2026-10-28). Each Arabic
-  line is pure Arabic and names no code; when it points at code, a fenced code block follows it
-  directly, marked `// ❌` or `// ✅` where it shows a trap and its fix:
+  **Layout** (picked 2026-10-28): each Arabic line is pure Arabic and names no code; when it points
+  at code, a fenced code block follows it directly, `// ❌` the trap and `// ✅` the fix.
 
-  ````
-  ‫الفخ التاني: دي بتتنفذ دايماً، استخدم التانية.‬
-
-  ```java
-  opt.orElse(expensive());          // ❌ always runs
-  opt.orElseGet(() -> expensive()); // ✅ only when empty
-  ```
-  ````
+- **Every topic's English part is one idea per line** (picked 2026-10-28, scratch and a lesson's
+  step 1). Paragraph bullets of 3–4 sentences were a wall to read. Shape, in order, each label bold
+  on its own line: **In one line:** the takeaway · **How it works** 2–4 one-sentence bullets ·
+  **⚠️ Trap:** one line, then a `❌`/`✅` code block instead of prose · **🎤 Interview:** numbered
+  points in the order said aloud, not a quoted paragraph · then `بالمصري`.
 
 - **One focus queue: Java/Spring interviews** (decided 2026-10-27). Five open tracks and four
   "what's next" rules caused churn — about six scratch batches written and reverted. The **Focus**
