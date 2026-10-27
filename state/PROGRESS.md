@@ -83,9 +83,11 @@ lesson.
   ‫الهاش ماب مابيدورش، الهاش كود بيختار المكان والإيكوالز بيختار العنصر.‬
   ```
 
-  The Arabic half is transliterated where a term has no natural translation, so the line stays pure
-  Arabic. The English half is where the exact terms live — the Arabic is the memory hook, not the
-  source of truth.
+  A concept word with no natural translation may be transliterated (هاش ماب). **Code is never
+  transliterated** — a method, a class or type name, or an annotation (`isPresent()`, `orElse`,
+  `equals`, `List<Integer>`, `@Mock`) is always written as code, never spelled out in Arabic letters ("إيز بريزنت" is wrong;
+  asked for on 2026-10-28). If a thought needs a code token, the code goes in English, as code. The
+  English half is where the exact terms live — the Arabic is the memory hook, not the source of truth.
 
 - **Scratch is information only: no quiz.** Asked for on 2026-10-10, after two batches where the
   quiz came back mostly "I don't know": "just tell me the info in a good way". The goal is to get
@@ -95,11 +97,23 @@ lesson.
 
 - **Every topic gets an Egyptian Arabic explanation — in scratch and in `/learn`** (asked for on
   2026-10-26, widened to lessons on 2026-10-27): 3–5 lines retelling the mental model and the
-  trap, in the same pure-Arabic-line rules as above, with technical terms transliterated. In
+  trap, in the same line rules as above — concept words may be transliterated, code never is. In
   scratch it ends every block; in a lesson it ends step 1. The cheat sheet entry or summary card
   carries the same lines. **Make it impossible to miss**: its own heading (`بالمصري`), and a blank
   line between Arabic lines — consecutive lines collapse into one scrambled paragraph when rendered
   (missed on 2026-10-27 for exactly that reason).
+  **Layout — Arabic for the idea, code on its own line under it** (picked 2026-10-28). Each Arabic
+  line is pure Arabic and names no code; when it points at code, a fenced code block follows it
+  directly, marked `// ❌` or `// ✅` where it shows a trap and its fix:
+
+  ````
+  ‫الفخ التاني: دي بتتنفذ دايماً، استخدم التانية.‬
+
+  ```java
+  opt.orElse(expensive());          // ❌ always runs
+  opt.orElseGet(() -> expensive()); // ✅ only when empty
+  ```
+  ````
 
 - **One focus queue: Java/Spring interviews** (decided 2026-10-27). Five open tracks and four
   "what's next" rules caused churn — about six scratch batches written and reverted. The **Focus**
