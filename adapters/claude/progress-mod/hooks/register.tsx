@@ -1,8 +1,8 @@
 import type { EngineInterface, Register } from 'claude-code'
 
-// The learning-progress band above the prompt, one row about the focus track only: its level and
-// gate topics to the next level, a meter of its lessons and scratches, then the gate topics by name
-// with the next one marked.
+// The learning-progress band above the prompt, one row about the focus track only: its next topic
+// on the left; on the right its level, the gate topics to the next level, and a meter of its lessons
+// and scratches.
 // Everything is read from the repo this mod sits in (adapters/claude/progress-mod -> ../../..),
 // on every draw, so it is never out of date with state/PROGRESS.md.
 
@@ -129,9 +129,6 @@ export function passes(g: Gate): boolean {
   return g.state === 'solid' || g.state === 'ok'
 }
 
-/** "Concurrent collections, atomics, ThreadLocal" -> "Concurrent collections" */
-const short = (name: string) => name.split(/,| and |:/)[0]!.trim()
-
 /** The track studied most recently; the first one when none has a date. */
 export const focus = (tracks: Track[]) =>
   tracks.reduce<Track | undefined>((a, t) => (!a || (t.last ?? '') > (a.last ?? '') ? t : a), undefined)
@@ -157,38 +154,34 @@ export const register: Register = on => {
     const tracks = await load($, repo).catch(() => undefined)
     const f = tracks && focus(tracks)
     if (!tracks || !f) return next(e)
-    const { Text } = $.ui.resolve(e)
+    const { Box, Text } = $.ui.resolve(e)
     const c = counts(f)
     const at = LEVELS.indexOf(f.level ?? '')
-    const nextGate = f.gate.find(g => !passes(g))
     // cumulative rounding, so done + scratched cells never overshoot the meter
     const doneW = Math.round(c.done * METER / c.n), scrW = Math.round((c.done + c.scr) * METER / c.n) - doneW
-    const dot = <Text color={COLOR.none}>  ·  </Text>
 
-    // one row, the focus track only: level -> next level, gate boxes · lesson meter · gate topics
+    // one row, split: the next topic pinned left, the focus track's status pinned right. The row is
+    // one cell tall and clips, so a narrow window drops whole words of the topic, never adds "…"
     return (
-      <Text wrap="truncate">
-        <Text bold>{f.name} </Text>
-        {f.level ? <Text color={ACCENT}>{SHORT[f.level] ?? f.level}</Text> : <Text dimColor>not assessed</Text>}
-        {f.gate.length && LEVELS[at + 1] ? <Text>
-          <Text dimColor> → {SHORT[LEVELS[at + 1]!]}  </Text>
-          {/* a scratch is shown half-filled but never counted: it does not unlock a level */}
-          {f.gate.map(g => <Text color={passes(g) ? COLOR.solid : g.scr ? COLOR.scr : COLOR.none}>{passes(g) ? '■' : g.scr ? '◧' : '▢'}</Text>)}
-          <Text dimColor> {f.gate.filter(passes).length}/{f.gate.length}</Text>
-        </Text> : ''}
-        {dot}
-        <Text color={COLOR.solid}>{'█'.repeat(doneW)}</Text><Text color={COLOR.scr}>{'█'.repeat(scrW)}</Text>
-        <Text color={COLOR.none}>{'░'.repeat(METER - doneW - scrW)}</Text>
-        <Text> </Text><Text color={COLOR.solid}>{c.done}</Text><Text dimColor>/{c.n}</Text>
-        {c.scr ? <Text color={COLOR.scr}> ◌{c.scr}</Text> : ''}
-        <Text dimColor> {Math.round(c.done * 100 / c.n)}%</Text>
-        {dot}
-        {f.gate.length && LEVELS[at + 1]
-          ? f.gate.map(g => g === nextGate
-            ? <Text><Text color={ACCENT}>▶ </Text><Text>{g.id} {short(g.name)}</Text></Text>
-            : <Text dimColor>{g === f.gate[0] ? '' : ' · '}{g.id} {short(g.name)}</Text>)
-          : f.next ? <Text><Text color={ACCENT}>▶ </Text>{f.next}</Text> : ''}
-      </Text>
+      <Box height={1} overflow="hidden" justifyContent="space-between" gap={3}>
+        <Text>{f.next ? <Text><Text color={ACCENT}>▶ </Text><Text bold>{f.next}</Text></Text> : ''}</Text>
+        <Box flexShrink={0}>
+          <Text>
+            <Text dimColor>{f.name} </Text>
+            {f.level ? <Text color={ACCENT}>{SHORT[f.level] ?? f.level}</Text> : <Text dimColor>not assessed</Text>}
+            {f.gate.length && LEVELS[at + 1] ? <Text>
+              <Text dimColor> → {SHORT[LEVELS[at + 1]!]} </Text>
+              {/* a scratch is shown half-filled but never counted: it does not unlock a level */}
+              {f.gate.map(g => <Text color={passes(g) ? COLOR.solid : g.scr ? COLOR.scr : COLOR.none}>{passes(g) ? '■' : g.scr ? '◧' : '▢'}</Text>)}
+            </Text> : ''}
+            <Text>  </Text>
+            <Text color={COLOR.solid}>{'█'.repeat(doneW)}</Text><Text color={COLOR.scr}>{'█'.repeat(scrW)}</Text>
+            <Text color={COLOR.none}>{'░'.repeat(METER - doneW - scrW)}</Text>
+            <Text> </Text><Text color={COLOR.solid}>{c.done}</Text><Text dimColor>/{c.n}</Text>
+            {c.scr ? <Text color={COLOR.scr}> ◌{c.scr}</Text> : ''}
+          </Text>
+        </Box>
+      </Box>
     )
   })
 }
