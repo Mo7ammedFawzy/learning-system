@@ -84,14 +84,16 @@ lesson.
 
   ```
   A HashMap never searches — hashCode picks the bucket, equals picks the entry.
-  ‫الهاش ماب مابيدورش، الهاش كود بيختار المكان والإيكوالز بيختار العنصر.‬
+  ‫الـ HashMap مابيدورش، الـ hashCode بيختار الـ bucket والـ equals بيختار العنصر.‬
   ```
 
-  A concept word with no natural translation may be transliterated (هاش ماب). **Code is never
-  transliterated** — a method, a class or type name, or an annotation (`isPresent()`, `orElse`,
-  `equals`, `List<Integer>`, `@Mock`) is always written as code, never spelled out in Arabic letters ("إيز بريزنت" is wrong;
-  asked for on 2026-10-28). If a thought needs a code token, the code goes in English, as code. The
-  English half is where the exact terms live — the Arabic is the memory hook, not the source of truth.
+  **Nothing technical is ever spelled in Arabic letters** (asked for on 2026-10-28, widened to
+  concept words on 2026-11-01). A concept or term (immutable object, constructor, final, reference,
+  list, bean, proxy) and any code (`isPresent()`, `orElse`, `List<Integer>`, `@Mock`) are written in
+  English, inline in the Arabic line, with `الـ` in front where Arabic needs it: "الـ immutable
+  object", not "الأوبجكت الإيموتابل"; "الـ constructor", not "الكونستركتور". Only the glue words
+  are Arabic. The English half is where the exact terms live — the Arabic is the memory hook, not the
+  source of truth.
 
 - **Scratch is information only: no quiz.** Asked for on 2026-10-10, after two batches where the
   quiz came back mostly "I don't know": "just tell me the info in a good way". The goal is to get
@@ -101,13 +103,14 @@ lesson.
 
 - **Every topic gets an Egyptian Arabic explanation — in scratch and in `/learn`** (asked for on
   2026-10-26, widened to lessons on 2026-10-27): 3–5 lines retelling the mental model and the
-  trap, in the same line rules as above — concept words may be transliterated, code never is. In
+  trap, in the same line rules as above — every technical term stays in English, never in Arabic letters. In
   scratch it ends every block; in a lesson it ends step 1. The cheat sheet entry or summary card
   carries the same lines. **Make it impossible to miss**: its own heading (`بالمصري`), and a blank
   line between Arabic lines — consecutive lines collapse into one scrambled paragraph when rendered
   (missed on 2026-10-27 for exactly that reason).
-  **Layout** (picked 2026-10-28): each Arabic line is pure Arabic and names no code; when it points
-  at code, a fenced code block follows it directly, `// ❌` the trap and `// ✅` the fix.
+  **Layout** (picked 2026-10-28): terms and short names sit inline in English, as above; anything
+  longer than a name (a statement, a call with arguments) goes in a fenced code block right under
+  the line, `// ❌` the trap and `// ✅` the fix.
 
 - **Every topic's English part is one idea per line** (picked 2026-10-28, scratch and a lesson's
   step 1). Paragraph bullets of 3–4 sentences were a wall to read. Shape, in order, each label bold
