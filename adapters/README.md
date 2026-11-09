@@ -17,6 +17,9 @@ If you ever find yourself explaining a teaching step inside an adapter, stop —
 | Claude Code | `adapters/claude/scratch.md` | `~/.claude/skills/scratch/SKILL.md` |
 | OpenCode | `adapters/opencode/scratch.md` | `~/.config/opencode/commands/scratch.md` |
 | Codex | `adapters/codex/scratch.md` | `~/.codex/skills/scratch/SKILL.md` |
+| Claude Code | `adapters/claude/quiz.md` | `~/.claude/skills/quiz/SKILL.md` |
+| OpenCode | `adapters/opencode/quiz.md` | `~/.config/opencode/commands/quiz.md` |
+| Codex | `adapters/codex/quiz.md` | `~/.codex/skills/quiz/SKILL.md` |
 | Claude Code | `adapters/claude/progress-mod/` | `~/.claude/skills/learning-progress` (a link, not a copy) |
 
 `progress-mod` is a Claude Code mod, not a pointer: a one-line band above the prompt, shown in
@@ -25,10 +28,11 @@ reads the repo through the link, so it is never stale. Test it with
 `claude plugin test adapters/claude/progress-mod`.
 
 The `scratch` adapters are the same pointer with one difference: they hand the bootstrap the
-argument `scratch <scope>`, which its dispatch table sends to `core/SCRATCH.md`. The manual and
-verify snippets below show `/learn` only; the installer handles both.
+argument `scratch <scope>`, which its dispatch table sends to `core/SCRATCH.md`. The `quiz`
+adapters do the same with `quiz <track | topic>`, which the dispatch table sends to *The quiz*.
+The manual and verify snippets below show `/learn` only; the installer handles all three.
 
-Installed globally, so `/learn` and `/scratch` resolve from **any** directory — including while working inside an
+Installed globally, so `/learn`, `/scratch` and `/quiz` resolve from **any** directory — including while working inside an
 unrelated company repo.
 
 ## Install / reinstall

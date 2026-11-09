@@ -19,20 +19,20 @@ curriculum declares an ID prefix, so a topic ID alone identifies its track. (The
 "Track A", "Track RB" headings inside a curriculum are sections of that one topic list, not
 tracks in this sense.)
 
-Read `state/PROGRESS.md` first, then pick the track. A leading `scratch` is set aside first and
-the rules below run on what follows it (`scratch react hooks` → the `react` track, scope `hooks`):
+Read `state/PROGRESS.md` first, then pick the track. A leading `scratch` or `quiz` is set aside
+first and the rules below run on what follows it (`scratch react hooks` → the `react` track, scope `hooks`):
 
 - **The argument's first word names a track directory** (`react`, `react hooks`) → that track; the
   rest of the argument is the topic.
 - **The argument is a topic ID or name** → the track whose curriculum contains it. If a name
   matches in more than one track, ask which.
-- **No argument, `next` or `review` alone** → the track of the lesson finished or left open most
+- **No argument, `next`, `review` or `quiz` alone** → the track of the lesson finished or left open most
   recently. With no argument, report the **Current** line of every track under the roadmap before
   proposing one.
 
 **Open every learning session with the roadmap.** The first reply of a session starts with the
 output of `progress.ps1 -Roadmap`, run from `<learning-home>`, in a fenced `text` block —
-whatever the argument, including `scratch`, `review` and `tasks`. Show it once per session, not at
+whatever the argument, including `scratch`, `review`, `quiz` and `tasks`. Show it once per session, not at
 every step.
 
 Then read, in this order:
@@ -73,6 +73,7 @@ Codebase-free mode is a normal mode, not a degraded one. Never invent file paths
 | `review weak` | Re-test the open entries in `state/WEAK-SPOTS.md`, skipping step 1. |
 | `review` + a topic | Quick review of that completed topic, skipping step 1: 2–3 questions from its `SUMMARY.md` and its open weak spots, verdicts, done. About five minutes. |
 | `scratch`, with or without a scope | A fast batch pass over several topics. Read `core/SCRATCH.md` and follow it in place of sections 4 and 5 below. From `core/METHODOLOGY.md` only the *Delivery* section applies. `scratch review N` re-reads past batch *N* instead — same file. |
+| `quiz`, with or without a track or topic | Interview-style questions on finished topics, one at a time, until the learner says stop. See **The quiz** below. Skips step 1. |
 | `tasks`, with or without a task ID | Practise on a real project. See **Project tasks** below. |
 | `jobs` | Read `state/JOBS.md` and report, in a few lines, the biggest open gaps and the topics that close them. No lesson. |
 | a topic not in the curriculum | Teach it with the same five steps, then add it to the track's `CURRICULUM.md` under the nearest section, with the next free ID. |
@@ -111,6 +112,26 @@ due date and a rung on the ladder 1 → 3 → 7 → 21 → 60 days.
   the miss names a misconception not already open in `state/WEAK-SPOTS.md`; a repeat of an open one
   is tested here, not twice.
 - **Writing.** Set `Last` to today on every row asked. Commit `state/` as at close.
+
+**The quiz.** The questions an interviewer would ask, on topics the learner has already finished
+or scratched. Unlike `review`, it does not wait for a row to be due.
+
+- **Pool.** Every topic with a row in `state/REVIEW.md`. With no argument, all tracks; a track name
+  narrows it to that track, a topic ID to that topic.
+  Topics with a ticked `state/SOURCES.md` row come first; within each group, most overdue first,
+  then the lowest rung.
+  Interleave as in **The review schedule**, and never repeat a question in one session.
+- **The question — the first source that has one.** (1) A ticked row of `state/SOURCES.md` for
+  that topic: the PDF question, asked as an interviewer would. (2) A **Q** under that topic in the
+  track's `INTERVIEW-BANK.md`. (3) Only when neither exists, the topic's `SUMMARY.md` or
+  `CHEATSHEET.md`, in the shapes **The review schedule** uses. Rotate among a topic's questions
+  across sessions rather than always opening with the first.
+- **The loop.** Ask one question, reason asked for, and wait. Give the verdict, then reveal
+  *Shallow*, *Passes* and *Then* where the bank has them. On a pass, ask the *Then* follow-up; it
+  shapes the feedback, not the verdict. Then the next question, until the learner says stop.
+- **Writing.** Each question asked moves its topic's row exactly as **The review schedule** says
+  for a pass, a partial or a miss, weak spots included. At the end set `Last review` in
+  `state/PROGRESS.md` and commit `state/` as at close.
 
 **Project tasks.** `state/TASKS.md`, if it exists, lists changes to the learner's own projects,
 each needing some topics. A task is unlocked when every topic it needs is under Completed or

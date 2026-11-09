@@ -20,7 +20,7 @@ Read `core/BOOTSTRAP.md` and follow it exactly. `<learning-home>` is this reposi
 | Path | What it is |
 |---|---|
 | `core/` | The shared source of truth. Agent-neutral and codebase-neutral by contract |
-| `core/BOOTSTRAP.md` | Session-start protocol and dispatch — the entry point |
+| `core/BOOTSTRAP.md` | Session-start protocol and dispatch — the entry point. Also holds the review schedule and the `quiz` rules |
 | `core/MODE-BOUNDARY.md` | Work Mode vs Learning Mode |
 | `core/METHODOLOGY.md` | The five steps, their gates and time budget, the strict-gate hint ladder |
 | `core/SCRATCH.md` | The `/scratch` contract — a fast batch pass over several topics, one quiz at the end, no exercise |
@@ -75,7 +75,7 @@ after editing an adapter's description, since the installed copy is what an agen
 Create `core/<name>/CURRICULUM.md` (declare an ID prefix no other track uses, and link the official
 documentation each topic is taught from) and `core/<name>/INTERVIEW-BANK.md`, add a `Current` line
 to `state/PROGRESS.md`, a run section to `playground/README.md`, and the technology's name to the
-adapter descriptions (`learn` and `scratch`, for each agent). Nothing in the shared `core/` files changes.
+adapter descriptions (`learn`, `scratch` and `quiz`, for each agent). Nothing in the shared `core/` files changes.
 
 ## Arabic text output
 

@@ -34,8 +34,14 @@ SCRATCH_CLAUDE_DST="$HOME/.claude/skills/scratch/SKILL.md"
 SCRATCH_CODEX_DST="$HOME/.codex/skills/scratch/SKILL.md"
 SCRATCH_OPEN_DSTS=("$HOME/.config/opencode/commands/scratch.md" "$HOME/.config/opencode/command/scratch.md")
 
+# /quiz — interview questions on finished topics. Same pointer shape, same bootstrap.
+QUIZ_CLAUDE_DST="$HOME/.claude/skills/quiz/SKILL.md"
+QUIZ_CODEX_DST="$HOME/.codex/skills/quiz/SKILL.md"
+QUIZ_OPEN_DSTS=("$HOME/.config/opencode/commands/quiz.md" "$HOME/.config/opencode/command/quiz.md")
+
 ALL_DSTS=("$CLAUDE_DST" "$CODEX_DST" "${OPEN_DSTS[@]}"
-          "$SCRATCH_CLAUDE_DST" "$SCRATCH_CODEX_DST" "${SCRATCH_OPEN_DSTS[@]}")
+          "$SCRATCH_CLAUDE_DST" "$SCRATCH_CODEX_DST" "${SCRATCH_OPEN_DSTS[@]}"
+          "$QUIZ_CLAUDE_DST" "$QUIZ_CODEX_DST" "${QUIZ_OPEN_DSTS[@]}")
 
 # The Claude Code progress band above the prompt. A link, not a copy, so the mod reads this repo's
 # state/PROGRESS.md. Claude Code loads a plugin folder found under ~/.claude/skills.
@@ -80,6 +86,11 @@ if [ "${1:-}" != "--check" ]; then
   install_adapter "$REPO/adapters/codex/scratch.md"  "$SCRATCH_CODEX_DST"
   for d in "${SCRATCH_OPEN_DSTS[@]}"; do
     install_adapter "$REPO/adapters/opencode/scratch.md" "$d"
+  done
+  install_adapter "$REPO/adapters/claude/quiz.md" "$QUIZ_CLAUDE_DST"
+  install_adapter "$REPO/adapters/codex/quiz.md"  "$QUIZ_CODEX_DST"
+  for d in "${QUIZ_OPEN_DSTS[@]}"; do
+    install_adapter "$REPO/adapters/opencode/quiz.md" "$d"
   done
 
   # --- verify the installed copies actually point back here ---
@@ -129,4 +140,4 @@ else
 fi
 
 echo
-echo "Done. Start a new agent session and type /learn or /scratch"
+echo "Done. Start a new agent session and type /learn, /scratch or /quiz"

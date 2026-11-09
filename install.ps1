@@ -43,7 +43,15 @@ $scratchOpenDsts = @(
     (Join-Path $HOME '.config\opencode\command\scratch.md')
 )
 
-$allDsts = @($claudeDst, $codexDst) + $openDsts + @($scratchClaudeDst, $scratchCodexDst) + $scratchOpenDsts
+# /quiz - interview questions on finished topics. Same pointer shape, same bootstrap.
+$quizClaudeDst = Join-Path $HOME '.claude\skills\quiz\SKILL.md'
+$quizCodexDst  = Join-Path $HOME '.codex\skills\quiz\SKILL.md'
+$quizOpenDsts = @(
+    (Join-Path $HOME '.config\opencode\commands\quiz.md'),
+    (Join-Path $HOME '.config\opencode\command\quiz.md')
+)
+
+$allDsts = @($claudeDst, $codexDst) + $openDsts + @($scratchClaudeDst, $scratchCodexDst) + $scratchOpenDsts + @($quizClaudeDst, $quizCodexDst) + $quizOpenDsts
 
 # The Claude Code progress band above the prompt. A junction, not a copy, so the mod reads this
 # repo's state/PROGRESS.md. Claude Code loads a plugin folder found under ~/.claude/skills.
@@ -88,6 +96,11 @@ if (-not $Check) {
     Install-Adapter -Source (Join-Path $repo 'adapters\codex\scratch.md')  -Dest $scratchCodexDst
     foreach ($d in $scratchOpenDsts) {
         Install-Adapter -Source (Join-Path $repo 'adapters\opencode\scratch.md') -Dest $d
+    }
+    Install-Adapter -Source (Join-Path $repo 'adapters\claude\quiz.md') -Dest $quizClaudeDst
+    Install-Adapter -Source (Join-Path $repo 'adapters\codex\quiz.md')  -Dest $quizCodexDst
+    foreach ($d in $quizOpenDsts) {
+        Install-Adapter -Source (Join-Path $repo 'adapters\opencode\quiz.md') -Dest $d
     }
 
     # --- verify the installed copies actually point back here ---
@@ -136,4 +149,4 @@ if (Test-Path $labRoot) {
     Write-Host "  lab      nama-erp not present - lessons run in codebase-free mode (this is fine)"
 }
 
-Write-Host "`nDone. Start a new agent session and type /learn or /scratch" -ForegroundColor Green
+Write-Host "`nDone. Start a new agent session and type /learn, /scratch or /quiz" -ForegroundColor Green

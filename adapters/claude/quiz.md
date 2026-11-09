@@ -1,0 +1,31 @@
+---
+name: quiz
+description: Enter Learning Mode for interview-style questions on Java + Spring Boot, React, Node + Express, or delivery (Docker, CI/CD, frontend testing, cloud) topics the user has already finished with /learn or /scratch — PDF interview questions and interview-bank questions first, one at a time, each answer moving the topic's review schedule. Use ONLY when the user types /quiz or unmistakably asks to be quizzed on what they already learned ("quiz me on what I've learned", "give me an interview question from my lessons", "ask me something from the PDF"). Not for ordinary work — a normal question about Java, Spring, React, or any codebase must be answered directly and must NOT trigger this skill. For a new lesson use the learn skill instead.
+argument-hint: [track | topic ID]
+---
+
+# Learning Mode — quiz
+
+This is a thin adapter. All behaviour — the mode boundary, the quiz rules, the curriculum and the
+progress rules — lives in the shared learning repo and is identical for every agent. **This file
+must never describe how to teach.**
+
+Learning home:
+
+```
+C:/Projects/learning-system
+```
+
+## Do this
+
+1. Read `C:/Projects/learning-system/core/BOOTSTRAP.md`.
+2. Follow it exactly, treating `<learning-home>` as the path above.
+3. Pass `quiz` followed by the user's argument (a track, a topic ID, or nothing) to its dispatch
+   table.
+
+Inline pictures: where `mcp__visualize__show_widget` is available (the desktop app), it is the
+inline surface the methodology's *Delivery* section means — call `mcp__visualize__read_me` once
+first. Where it is not (a terminal), there is none.
+
+If that file cannot be found, say so and stop — do not improvise questions from memory, and do not
+fall back to quizzing without the shared methodology.
