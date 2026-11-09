@@ -33,3 +33,7 @@ shaky topics first, then ok, then scratched batches, oldest first.
 | 11 | java | 2026-10-29 | 1 | — |
 | 13 | java | 2026-10-29 | 1 | — |
 | 15 | java | 2026-10-29 | 1 | — |
+| 16 | java | 2026-11-10 | 1 | — |
+| 44 | java | 2026-11-10 | 1 | — |
+| 45 | java | 2026-11-10 | 1 | — |
+| 17 | java | 2026-11-10 | 1 | — |

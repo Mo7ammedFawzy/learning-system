@@ -25,9 +25,7 @@ Last review: 2026-10-20 (placement quiz) · 2026-09-06 (topic 01).
 ## Level
 
 Scale: `beginner` → `intermediate` → `advanced` → `senior`; a trailing `+` means close to the next.
-Measured by a placement quiz, not claimed. Re-assess when a curriculum track (A, B, … ) closes.
-`progress.ps1` prints this column; a track with no row is not assessed yet. *Topics* are the
-curriculum IDs that close the gap; the progress band counts how many of them are done.
+Measured by a placement quiz, not claimed. Re-assess when a curriculum track (A, B, … ) closes. `progress.ps1` prints this column; a track with no row is not assessed yet. *Topics* are the curriculum IDs that close the gap; the progress band counts how many of them are done.
 
 | Track | Level | Assessed | Topics | To reach the next level |
 |---|---|---|---|---|
@@ -56,8 +54,7 @@ curriculum IDs that close the gap; the progress band counts how many of them are
 
 ## Scratched
 
-Fast batch pass only (`/scratch`): seen once, quizzed once, not practised. Still open for a full
-lesson.
+Fast batch pass only (`/scratch`): seen once, quizzed once, not practised. Still open for a full lesson.
 
 | # | Topic | Date | Quiz |
 |---|---|---|---|
@@ -68,6 +65,10 @@ lesson.
 | 11 | Optional — return type only, `map` chains, `orElse` vs `orElseGet` | 2026-10-28 | — |
 | 13 | Records, sealed types, pattern matching — exhaustive switch, shallow immutability | 2026-10-28 | — |
 | 15 | Testing — JUnit 5 and Mockito, what to mock, spy stubbing | 2026-10-28 | — |
+| 16 | SQL fundamentals — logical order, WHERE vs HAVING, `NOT IN` with `NULL` | 2026-11-09 | — |
+| 44 | Schema design and DDL — constraints, `DELETE` vs `TRUNCATE` vs `DROP` | 2026-11-09 | — |
+| 45 | Advanced SQL — window functions, `ROW_NUMBER`/`RANK`/`DENSE_RANK`, Nth highest, duplicates | 2026-11-09 | — |
+| 17 | Indexes and isolation — B-tree seek vs scan, leftmost prefix, function on a column, isolation levels | 2026-11-09 | — |
 
 ## Notes to self
 
