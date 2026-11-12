@@ -20,7 +20,7 @@ One line per track; a lesson changes only its own track's line.
 
 **node** — Topic: N01 — The event loop and async code. Step: not started. Paused — focus is java.
 
-Last review: 2026-10-20 (placement quiz) · 2026-09-06 (topic 01).
+Last review: 2026-11-11 (quiz, scratched 10 12 14 07 11) · 2026-10-20 (placement quiz) · 2026-09-06 (topic 01).
 
 ## Level
 

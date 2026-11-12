@@ -65,6 +65,12 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
 - **"`equals` compares values" as a blanket rule. 03a drill.** `Object.equals` is `==`. It compares
   values only when the class overrides it. The follow-up "depends on Point's equals" rescued it, but
   the opening line is the one an interviewer writes down.
+  Quiz (2026-11-09): repeated. Opened with "equals compares values", then predicted
+  `a.equals(b)` true for a class with no override, guessing the default compares fields.
+- **Thinks `==` on objects goes through `hashCode` (quiz, 2026-11-09).** Explained `a == b` being
+  false as "different hash codes, so equals won't run". `==` calls no method at all: it compares the
+  two references. `hashCode` is only consulted by hash-based collections. Re-test: "which methods run
+  when you write `a == b`?". Held: 0/2
 - **Renaming a hashed key: did not reach remove-then-put unaided. 03a step 3.** First renamed to the
   same name, then `put` the new key and left the old entry orphaned. Needed hints on left-to-right
   argument evaluation, and that a fresh equal key finds the stored entry.
@@ -92,6 +98,8 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
   were inherited, `new Manager("Sara")` would build a `Manager` whose own fields (`reports`) nobody
   initialised. Each class must initialise its own part. "I don't know" after the probe. Re-test by
   asking what an object built through an inherited parent constructor would look like. Held: 0/2
+  Quiz (2026-11-10): repeated ("special methods, they cannot be overridden"). Same quiz: predicted
+  the `Child() {}` compile error and the `super(id)` fix, but never named the hidden `super()`.
 - **"A constructor returns the new instance". 04c drill.** A constructor returns nothing, not even
   `void`. It runs on an object `new` already allocated, and `new` returns the reference. This was
   drawn in step 1. It also answered part two of the question instead of part one (see the
@@ -103,6 +111,13 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
   why a getter turns composition into aggregation. The fix half was right (defensive copy
   `return new Engine(engine)`). Also first said a leaking getter was still composition because
   `new` happened inside. Re-test by asking which object outlives which.
+  Quiz (2026-11-09): repeated. Said the leaked `Engine` can be collected while `e` holds it, and
+  that "composition cannot be garbage-collected".
+- **Composition and aggregation definitions swapped (quiz, 2026-11-09).** Called composition "a
+  shared relation" and aggregation "owned, much stronger". It is the reverse: composition is
+  ownership (the part is created and held by the whole, nothing outside references it), aggregation
+  is a weaker has-a where the part is shared or outlives the whole. Re-test flat: "which of the two
+  is the stronger one, and why?". Held: 0/2
 - **Inheritance: is-a is not enough. Two rounds, capped in 04b step 2.** Gave only "use it when
   is-a holds", then "I don't know" for the second condition. `CountingSet extends HashSet` is a
   valid is-a and still counts double. The missing condition is that the parent is **designed and
@@ -173,6 +188,8 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
   at an iterator already standing there. Also gave O(1) for the `ArrayList` middle insert one line
   after writing that it is O(n); corrected on the probe. Re-test: ask what `add(i, x)` does
   *before* it links the node. Held: 0/2
+  Quiz (2026-11-09): repeated. "O(1), worst case maybe O(log n)" for `add(500_000, x)`; the
+  `ArrayList` half (O(n), shift) was right.
 - **Gives "slower" where a Big O is asked** (08a, 2026-10-07). Constant `hashCode`: said all keys
   share one bucket and it gets slower, no complexity. It is O(log n) once the bucket treeifies
   (O(n) before Java 8, or under 8 entries). Same family as the count entry above. Re-test: demand
@@ -229,6 +246,20 @@ Each lesson's warm-up re-tests one entry; two holds in a row closes it.
   `static final` list was not seen as one list for every caller, even after hint 1. `new` must run
   inside the lambda (`ArrayList::new`). Re-test: two `get()` calls, ask whether they are the same
   object. Held: 0/2
+
+- **Streams run stage by stage, like loops** (10 quiz, 2026-11-11). Predicted every `filter` line,
+  then every `map` line, for a `filter`/`map`/`findFirst` pipeline. Elements are pulled one at a
+  time through the whole chain, and `findFirst` stops after the first match: `filter ali`,
+  `filter mona`, `map mona`, nothing more. Re-test: same shape with `limit(1)` or `anyMatch`, ask
+  for the printed lines. Held: 0/2
+- **Defensive copy only on the way out** (14 quiz, 2026-11-11). Called a class immutable because
+  its getter returns `Collections.unmodifiableList(items)`, while the constructor stores the
+  caller's list. The caller keeps that reference and mutates it, and the live view shows it. Copy
+  on the way in (`List.copyOf`). Re-test: hand over a class with a safe getter and an unsafe
+  constructor, ask whether it is immutable. Held: 0/2
+- **Overloading on `List<String>` vs `List<Integer>` compiles** (07 quiz, 2026-11-11). Said yes,
+  "List accepts a generic type". Both erase to `print(List)`: name clash, compile error. Re-test:
+  ask what the two signatures look like after erasure. Held: 0/2
 
 - **"Mutate it, then call the setter with it"** (R05/R02 scratch, 2026-10-10). Asked to predict a
   component that multiplies `item.price` in its body, proposed `item.price = …; setItem(item)` as
