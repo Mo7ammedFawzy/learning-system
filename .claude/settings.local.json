@@ -25,6 +25,7 @@
     "ui-ux-pro-max@ui-ux-pro-max-skill": false
   },
   "outputStyle": "Learning",
+  "disableClaudeAiConnectors": true,
   "permissions": {
     "allow": [
       "Bash(./check.sh)",
