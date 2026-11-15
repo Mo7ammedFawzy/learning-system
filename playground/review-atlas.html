@@ -99,7 +99,8 @@ for (int x : list) total += x;                                // ✅ iterator: O
 <h2>16 — SQL fundamentals</h2>
 <p class="meta">Due 2026-11-16 · rung 1 · scratched</p>
 <p class="model">SQL runs FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY, and <code>NULL</code> compared to anything is UNKNOWN.</p>
-<div class="pending">Figure pending — being built in the background.</div>
+<iframe loading="lazy" src="atlas/16-figure.html" title="16 figure"></iframe>
+<a class="open" href="atlas/16-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>WHERE Id NOT IN (SELECT ManagerId FROM Emp)    -- ❌ one NULL → empty result
