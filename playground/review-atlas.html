@@ -46,7 +46,8 @@ ol { padding-left:22px; }
 <h2>03a — equals and hashCode</h2>
 <p class="meta">Due 2026-11-16 · rung 1 · completed, shaky</p>
 <p class="model">A <code>HashMap</code> never searches: <code>hashCode</code> picks the bucket, <code>equals</code> picks the entry inside it.</p>
-<div class="pending">Figure pending — being built in the background.</div>
+<iframe loading="lazy" src="atlas/03a-figure.html" title="03a figure"></iframe>
+<a class="open" href="atlas/03a-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>set.add(new Sku("A-1")); set.add(new Sku("A-1"));  // ❌ size 2 — equals without hashCode
