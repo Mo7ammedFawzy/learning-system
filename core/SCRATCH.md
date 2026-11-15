@@ -109,6 +109,13 @@ lesson and not a quiz.
   `playground/<id>-*/SUMMARY.md`): mental model, trap, interview answer and the learner-language lines, about a
   third of a teach block, with a picture where the client can show one. One turn, nothing asked.
   Close with one line suggesting `review` in `core/BOOTSTRAP.md` to move those rows.
+- **The atlas.** `playground/review-atlas.html` holds one section per topic ever re-read, most
+  overdue first: the mental model in view, then trap, interview answer and learner-language lines
+  behind a reveal toggle, so the learner recalls before reading. At each re-read, add a section for
+  every topic not yet in it and re-sort by `state/REVIEW.md`. Where the agent can build a detailed
+  figure in the background (section 2), start one for each re-read topic that has none, saved as
+  `playground/atlas/<id>-figure.html`; until it lands, the section shows a "figure pending" note.
+  Grown a batch at a time, never built for every topic at once.
 - **Recorded at the end of the turn**, nothing asked first. On each re-read row of `state/REVIEW.md`,
   set `Last` to today and `Due` to tomorrow, and leave `Rung` unchanged: a re-read is not a test, so
   it never climbs the ladder. It queues the topic for tomorrow's `review` question and rotates it out

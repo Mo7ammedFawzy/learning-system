@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review atlas</title>
+<!--
+  One section per topic re-read in a scratch review, most overdue first (state/REVIEW.md order).
+  The figure is embedded from its own file; trap, interview answer and the Arabic lines sit behind
+  a reveal toggle: recall first, then open. Updated after every scratch review — see core/SCRATCH.md.
+-->
+<style>
+:root { --bg:#fbfaf7; --card:#fff; --text:#1f1e1b; --muted:#6b6a64; --line:#e3e1d9; --accent:#534AB7; --bad:#a32d2d; --good:#3b6d11; }
+@media (prefers-color-scheme: dark) { :root { --bg:#191917; --card:#22221f; --text:#ecebe6; --muted:#a3a29b; --line:#3a3935; --accent:#afa9ec; --bad:#f09595; --good:#97c459; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:16px/1.65 system-ui, sans-serif; }
+main { max-width:960px; margin:0 auto; padding:24px 16px 80px; }
+h1 { font-size:24px; font-weight:600; margin:0 0 4px; }
+nav { display:flex; flex-wrap:wrap; gap:6px; margin:16px 0 28px; }
+nav a { font:13px ui-monospace, monospace; padding:3px 9px; border:1px solid var(--line); border-radius:999px; color:var(--text); text-decoration:none; }
+section { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; margin:0 0 24px; }
+h2 { font-size:19px; font-weight:600; margin:0; }
+.meta { color:var(--muted); font-size:13px; margin:2px 0 12px; }
+.model { font-size:17px; margin:0 0 14px; }
+iframe { width:100%; height:720px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
+.pending { padding:18px; border:1px dashed var(--line); border-radius:8px; color:var(--muted); font-size:14px; }
+.open { font-size:13px; color:var(--accent); }
+details { margin-top:14px; border-top:1px solid var(--line); padding-top:12px; }
+summary { cursor:pointer; color:var(--accent); font-weight:600; }
+pre { background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:10px 12px; overflow-x:auto; font:13px/1.5 ui-monospace, monospace; }
+code { font-family:ui-monospace, monospace; font-size:.92em; }
+ol { padding-left:22px; }
+.ar { direction:rtl; text-align:right; margin:6px 0; }
+.sub { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:12px 0 4px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Review atlas</h1>
+<p class="meta">Read the mental model, say the trap and the interview answer out loud, then open the reveal. Order: most overdue first, as of 2026-11-15.</p>
+<nav>
+  <a href="#t09a">09a</a><a href="#t10a">10a</a><a href="#t13">13</a><a href="#t15">15</a><a href="#t02a">02a</a><a href="#t02b">02b</a><a href="#t04a">04a</a><a href="#t05a">05a</a><a href="#t05b">05b</a><a href="#t06a">06a</a><a href="#t08b">08b</a><a href="#t01">01</a>
+</nav>
+
+<section id="t09a">
+<h2>09a — Comparable vs Comparator</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · completed, shaky</p>
+<p class="model"><code>Comparable</code> is one natural order inside the class; <code>Comparator</code> is any number of orders outside it.</p>
+<iframe loading="lazy" src="09a-comparable-comparator/figure.html" title="09a figure"></iframe>
+<a class="open" href="09a-comparable-comparator/figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>new TreeSet&lt;&gt;(comparingInt(String::length))                 // ❌ "pea" dropped — same length as "fig"
+comparingInt(String::length).thenComparing(naturalOrder())  // ✅ zero only when truly equal</pre>
+<p class="sub">Interview</p>
+<ol><li><code>Comparable</code>: one natural order, <code>compareTo(other)</code>, one argument because <code>this</code> is the other side.</li><li><code>Comparator</code>: separate object, <code>compare(a, b)</code>, many orders, works on classes you don't own.</li><li>In <code>TreeSet</code>/<code>TreeMap</code> the comparison, not <code>equals</code>, decides a duplicate.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ Comparable جوه الـ class، ترتيب واحد بس.</p>
+<p class="ar">الـ TreeSet لو الـ compare رجّع صفر بيعتبره نفس العنصر ويرميه.</p>
+</details>
+</section>
+
+<section id="t10a">
+<h2>10a — Lambdas, functional interfaces, method references</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · completed, shaky</p>
+<p class="model">A lambda is the body of the one abstract method of a functional interface — and it captures a copy of each local's value.</p>
+<iframe loading="lazy" src="atlas/10a-figure.html" title="10a figure"></iframe>
+<a class="open" href="atlas/10a-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>Supplier&lt;List&lt;Book&gt;&gt; s = () -&gt; EMPTY;     // ❌ same list on every get()
+Supplier&lt;List&lt;Book&gt;&gt; s = ArrayList::new;  // ✅ new list on every get()
+String::startsWith  ==  (a, b) -&gt; a.startsWith(b)   // first argument is the receiver</pre>
+<p class="sub">Interview</p>
+<ol><li>A functional interface has one abstract method; a lambda or method reference implements it.</li><li>The target type infers the parameter types.</li><li>Captured locals are effectively final because the value is copied and may run later, on another thread.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">أي local variable بتقراه الـ lambda لازم يكون effectively final، لأنها بتاخد نسخة من القيمة.</p>
+<p class="ar">خلي بالك من الـ Supplier اللي بيرجّع نفس الـ object كل مرة.</p>
+</details>
+</section>
+
+<section id="t13">
+<h2>13 — Records, sealed types, pattern matching</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · scratched</p>
+<p class="model">A record is a named tuple of final fields; a sealed interface is a closed list of subtypes, so a <code>switch</code> can be checked for exhaustiveness.</p>
+<iframe loading="lazy" src="atlas/13-figure.html" title="13 figure"></iframe>
+<a class="open" href="atlas/13-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>record Order(List&lt;Item&gt; items) {}                                        // ❌ the list still changes
+record Order(List&lt;Item&gt; items) { Order { items = List.copyOf(items); } }  // ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>Records: data carriers, <code>equals</code>/<code>hashCode</code>/<code>toString</code> free, shallowly immutable.</li><li>Sealed + pattern <code>switch</code>: exhaustive, compiler-checked, no <code>default</code>.</li><li>Not JPA entities: final fields, no no-arg constructor.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ sealed بيقفل الأنواع، فالـ switch مش محتاج default.</p>
+<p class="ar">الـ list اللي جوه الـ record لسه بتتغير.</p>
+</details>
+</section>
+
+<section id="t15">
+<h2>15 — Testing: JUnit 5 and Mockito</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · scratched</p>
+<p class="model">A unit test swaps the class's collaborators for mocks and checks one behaviour: arrange, act, assert.</p>
+<iframe loading="lazy" src="atlas/15-figure.html" title="15 figure"></iframe>
+<a class="open" href="atlas/15-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>when(spy.load()).thenReturn(x);   // ❌ the real load() runs while stubbing
+doReturn(x).when(spy).load();     // ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>JUnit runs it, Mockito fakes collaborators.</li><li>Mock boundaries you don't own or that are slow — never the class under test.</li><li>Verify outcomes over interactions; a spy needs <code>doReturn</code>.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">اعمل mock للي مش بتاعك أو البطيء، مش للـ class نفسه.</p>
+<p class="ar">مع الـ spy استخدم الـ doReturn.</p>
+</details>
+</section>
+
+<section id="t02a">
+<h2>02a — Strings: immutability, the pool, <code>==</code> vs <code>equals</code></h2>
+<p class="meta">Due 2026-11-16 · rung 3 · completed, ok</p>
+<p class="model">A <code>String</code> never changes; the only questions are which object you hold and whether it came from the pool.</p>
+<iframe loading="lazy" src="atlas/02a-figure.html" title="02a figure"></iframe>
+<a class="open" href="atlas/02a-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>if (cmd == "REFUND")                         // ❌ green with literals, red with socket input
+if ("REFUND".equals(cmd))                    // ✅ and null-safe
+static final String V; static { V = "1"; }   // ❌ not a constant: blank final</pre>
+<p class="sub">Interview</p>
+<ol><li><code>"hi"</code> + <code>new String("hi")</code> = two objects, <code>==</code> false.</li><li><code>intern()</code> returns the pooled instance — memory tool, not a comparison tool.</li><li>Tests pass by accident because literals are pooled; runtime strings never are.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ == بيقارن الـ reference، مش النص، استخدم الـ equals.</p>
+<p class="ar">الـ constant لازم يتعمله initialize في نفس سطر الـ declaration.</p>
+</details>
+</section>
+
+<section id="t02b">
+<h2>02b — <code>StringBuilder</code> and loop concatenation</h2>
+<p class="meta">Due 2026-11-16 · rung 3 · completed, ok</p>
+<p class="model"><code>+</code> already compiles to one builder per expression — in a loop that is one per iteration, each copying everything so far.</p>
+<iframe loading="lazy" src="atlas/02b-figure.html" title="02b figure"></iframe>
+<a class="open" href="atlas/02b-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>for (...) sb = new StringBuilder(sb).append(x);                 // ❌ still O(n²): copy in the constructor
+StringBuilder sb = new StringBuilder(); for (...) sb.append(x);  // ✅ hoisted</pre>
+<p class="sub">Interview</p>
+<ol><li>One expression, one builder.</li><li>A loop: n builders, each copying the accumulator — O(n²).</li><li>Hoist the builder (amortised O(1) append), or <code>String.join</code> / <code>Collectors.joining</code>.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ += جوه loop بينسخ كل اللي اتجمع قبل كده في كل لفّة.</p>
+<p class="ar">الحل: StringBuilder واحد برّه الـ loop.</p>
+</details>
+</section>
+
+<section id="t04a">
+<h2>04a — Abstract class vs interface</h2>
+<p class="meta">Due 2026-11-16 · rung 3 · completed, ok</p>
+<p class="model">An interface is a type a class takes on many times; an abstract class is a partial implementation with state, and a class gets one.</p>
+<iframe loading="lazy" src="atlas/04a-figure.html" title="04a figure"></iframe>
+<a class="open" href="atlas/04a-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>interface Exporter { int count = 0; default void run() { count++; } }  // ❌ static final, can't assign
+interface Exporter { void bump(); default void run() { bump(); } }     // ✅ hook; each class owns a field</pre>
+<p class="sub">Interview</p>
+<ol><li>Shared state or a constructor, no other superclass → abstract class.</li><li>A capability for unrelated classes → interface.</li><li>Both → interface for the type, default method reaches state through an abstract accessor.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ interface مفيهوش state، أي field فيه بيبقى constant.</p>
+<p class="ar">الـ private method في الـ interface محدش يناديها غير الـ interface نفسه.</p>
+</details>
+</section>
+
+<section id="t05a">
+<h2>05a — Overriding vs overloading, static hiding</h2>
+<p class="meta">Due 2026-11-16 · rung 3 · completed, ok</p>
+<p class="model">The compiler picks the signature from declared types; the JVM picks the body from the real object — instance methods only.</p>
+<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>public boolean equals(Tag o)                // ❌ overload — contains() still runs Object.equals
+@Override public boolean equals(Object o) { return o instanceof Tag t &amp;&amp; name.equals(t.name); }  // ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>Overloading: compile time, declared argument types.</li><li>Overriding: runtime, the receiver's object.</li><li>Static methods are hidden, never overridden — runtime-varying behaviour goes in an <code>@Override</code> instance method.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ static method مابتتعملهاش override، بتتعملها hiding.</p>
+<p class="ar">حط الـ @Override دايماً.</p>
+</details>
+</section>
+
+<section id="t05b">
+<h2>05b — Dynamic dispatch, the four OOP concepts, varargs</h2>
+<p class="meta">Due 2026-11-16 · rung 3 · completed, ok</p>
+<p class="model">A method runs where it is written, but <code>this</code> is always the real object.</p>
+<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>new TestConfig().show();                   // "test" — show() calls this.env()
+Arrays.asList(new int[]{1,2,3}).size();    // 1 — an int[] is one object
+f(5) with f(Integer) and f(int...)         // f(Integer): boxing beats varargs</pre>
+<p class="sub">Interview</p>
+<ol><li>Encapsulation: the class enforces its own rules (not just getters/setters).</li><li>Abstraction: what, not how. Inheritance: reuse.</li><li>Polymorphism: one call site, many bodies — the compiler checks, the JVM picks.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">أي method بتتنادى من غير object قدامها يبقى قصدك this، وبتروح للـ subclass.</p>
+<p class="ar">الـ boxing بيكسب الـ varargs.</p>
+</details>
+</section>
+
+<section id="t06a">
+<h2>06a — <code>static</code> and class initialisation</h2>
+<p class="meta">Due 2026-11-16 · rung 3 · completed, ok</p>
+<p class="model">A static member belongs to the class, and the JVM initialises the class once, top to bottom, on first active use.</p>
+<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>static final Registry INSTANCE = new Registry();  // ctor: count 0 → 1
+static int count = 10;                            // ❌ then overwritten — count is 10, not 11</pre>
+<p class="sub">Interview</p>
+<ol><li>One copy per class.</li><li>Initialised once by the JVM, at runtime, in written order; reading a constant variable triggers nothing.</li><li>Static methods are hidden, never overridden.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ static بيتعمله initialize مرة واحدة بس، مش مع كل new.</p>
+<p class="ar">ترتيب السطور مهم، السطر اللي تحت ممكن يمسح اللي فوق.</p>
+</details>
+</section>
+
+<section id="t08b">
+<h2>08b — Maps</h2>
+<p class="meta">Due 2026-11-16 · rung 3 · completed, ok</p>
+<p class="model">The backing structure decides order, cost and <code>null</code>.</p>
+<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>Map&lt;String,Integer&gt; t = new TreeMap&lt;&gt;(String.CASE_INSENSITIVE_ORDER);
+t.put("Java", 1); t.put("java", 2);   // size 1, {Java=2} — equals never asked</pre>
+<p class="sub">Interview</p>
+<ol><li><code>HashMap</code>: O(1) avg, O(log n) worst (treeified bucket), no order, one <code>null</code> key.</li><li><code>LinkedHashMap</code>: insertion order. <code>TreeMap</code>: sorted, O(log n), no <code>null</code> key.</li><li><code>Hashtable</code>: every method synchronized, no nulls, O(n) worst — use <code>ConcurrentHashMap</code>.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الفرق بين الـ HashMap والـ Hashtable إن الـ Hashtable كله synchronized.</p>
+<p class="ar">الـ TreeMap بيستخدم الـ comparator بس.</p>
+</details>
+</section>
+
+<section id="t01">
+<h2>01 — Types, values and references</h2>
+<p class="meta">Due 2026-11-16 · rung 7 · completed, solid</p>
+<p class="model">A variable never holds an object — it holds a primitive value or an object's address.</p>
+<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>Integer c = 128, d = 128;  c == d    // ❌ false — two objects; equals
+int n = counts.get(key);             // ❌ NPE when absent — hidden intValue()
+counts.getOrDefault(key, 0)          // ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>Always pass-by-value; the reference is copied. Proof: <code>swap</code> can't be written.</li><li><code>unmodifiableList</code> is a live view; <code>List.copyOf</code> a frozen snapshot.</li><li><code>new ArrayList&lt;&gt;(x)</code> is shallow — elements still shared.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ Java دايماً pass-by-value، والـ reference هو اللي بيتنسخ.</p>
+<p class="ar">الـ == على الـ Integer بيشتغل لحد 127 بس.</p>
+</details>
+</section>
+</main>
+</body>
+</html>

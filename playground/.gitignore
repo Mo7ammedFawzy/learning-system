@@ -8,3 +8,6 @@
 !figure.mjs
 # A sandbox holds node_modules, whose README.md files the rule above would otherwise re-include.
 /*-sandbox/
+# The review atlas and the figures it embeds.
+!/review-atlas.html
+!/atlas/*-figure.html
