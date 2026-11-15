@@ -72,7 +72,7 @@ Codebase-free mode is a normal mode, not a degraded one. Never invent file paths
 | `review` | Run the due rows of `state/REVIEW.md` — see **The review schedule** below — then re-test any open `state/WEAK-SPOTS.md` entries on those topics. Skips step 1. |
 | `review weak` | Re-test the open entries in `state/WEAK-SPOTS.md`, skipping step 1. |
 | `review` + a topic | Quick review of that completed topic, skipping step 1: 2–3 questions from its `SUMMARY.md` and its open weak spots, verdicts, done. About five minutes. |
-| `scratch`, with or without a scope | A fast batch pass over several topics. Read `core/SCRATCH.md` and follow it in place of sections 4 and 5 below. From `core/METHODOLOGY.md` only the *Delivery* section applies. `scratch review N` re-reads past batch *N* instead — same file. |
+| `scratch`, with or without a scope | A fast batch pass over several topics. Read `core/SCRATCH.md` and follow it in place of sections 4 and 5 below. From `core/METHODOLOGY.md` only the *Delivery* section applies. `scratch review` re-reads the most overdue topics, `scratch review N` past batch *N*, instead — same file. |
 | `quiz`, with or without a track or topic | Interview-style questions on finished topics, one at a time, until the learner says stop. See **The quiz** below. Skips step 1. |
 | `tasks`, with or without a task ID | Practise on a real project. See **Project tasks** below. |
 | `jobs` | Read `state/JOBS.md` and report, in a few lines, the biggest open gaps and the topics that close them. No lesson. |

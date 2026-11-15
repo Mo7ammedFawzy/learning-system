@@ -18,7 +18,7 @@ The scope is whatever follows `scratch` in the argument, resolved inside the act
 |---|---|
 | a curriculum section heading or its theme (`Track B`, `collections`) | that section's rows |
 | topic IDs or a range (`07 09`, `08-10`) | those rows |
-| `review N` | not a new batch — re-read past batch *N*; see **Reviewing a past batch** below |
+| `review`, `review N` | not a new batch — re-read the most overdue topics, or past batch *N*; see **Reviewing a past batch** below |
 | *(none)* | the next rows in the track's `CURRICULUM.md` row order that are under neither **Completed** nor **Scratched** (a row counts as Completed once any of its lettered sub-lessons is). Scratch is for learning the track fast, in teaching order: neither the **Focus** line nor `state/SOURCES.md` reorders it — they order full lessons only |
 
 - The unit is a curriculum **row**, not the lettered sub-lessons a full lesson splits it into.
@@ -95,13 +95,18 @@ the cheat sheet. If it is still running, say so; give the path when it lands.
 
 ## Reviewing a past batch
 
-`review N` (`scratch review 2`, `scratch java review 2`) re-reads one batch already recorded. It
-is a re-read, not a lesson and not a quiz.
+`review` (`scratch review`, `scratch java review`) re-reads the topics most in need of it;
+`review N` (`scratch review 2`) re-reads one batch already recorded. Both are a re-read, not a
+lesson and not a quiz.
 
+- **No `N`: most overdue.** The 6 rows of `state/REVIEW.md` with the oldest `Due` date (ties:
+  lowest rung first), completed and scratched topics alike — all tracks, or the named track only.
+  Open with one line naming them. With nothing due, take the 6 due soonest and say so.
 - **Batch N.** In the active track's rows under **Scratched** in `state/PROGRESS.md`, rows that
   share a date are one batch, numbered oldest first from 1. Without a track, take the track of the
-  most recent scratch. With no `N`, list the batches — number, date, topic IDs — and stop.
-- **Content.** Per topic, from its cheat sheet entry: mental model, trap, interview answer and the
-  learner-language lines, about a third of a teach block, with a picture where the client can
-  show one. One turn, nothing asked.
+  most recent scratch.
+- **Content.** Per topic, from its cheat sheet entry (for a completed topic, its
+  `playground/<id>-*/SUMMARY.md`): mental model, trap, interview answer and the learner-language lines, about a
+  third of a teach block, with a picture where the client can show one. One turn, nothing asked.
+  Close with one line suggesting `review` in `core/BOOTSTRAP.md` to move those rows.
 - **Writes nothing** to `state/`. Review rows move only through `review` in `core/BOOTSTRAP.md`.
