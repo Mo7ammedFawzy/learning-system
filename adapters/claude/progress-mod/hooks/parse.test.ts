@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { focus, parse } from './register.tsx'
+import { focus, memory, parse } from './register.tsx'
 
 const PROGRESS = `# Progress
 ## Current
@@ -64,4 +64,21 @@ test('parse: states, levels, next topic, spring split, untouched tracks hidden',
   expect(by.java?.gate.map(g => g.scr)).toEqual([true, false])
   expect(by.spring?.gate.map(g => g.name)).toEqual(['Streams', 'Beans'])
   expect(by.react?.gate).toEqual([])
+  // the next scratch batch skips completed (01, 04) and scratched (23) rows
+  expect(by.java?.scratch).toBe('10 Streams')
+  expect(by.spring?.scratch).toBe('24 Beans')
+  expect(by.react?.scratch).toBe('R02 Props')
+})
+
+test('memory: forgetting curve over the track\'s REVIEW.md rows', async () => {
+  const review = `| # | Track | Due | Rung | Last |
+|---|---|---|---|---|
+| 01 | java | 2026-11-20 | 7 | 2026-11-13 |
+| 02 | java | 2026-11-11 | 1 | — |
+| R01 | react | 2026-11-01 | 3 | — |`
+  // 01: reviewed today, 100%. 02: never reviewed, last seen 11-10, 3 days at rung 1 -> 0.7^3 = 34%
+  expect(memory(review, 'java', '2026-11-13')).toBe(67)
+  // on its due date a row keeps 70%
+  expect(memory(review, 'react', '2026-11-01')).toBe(70)
+  expect(memory(review, 'node', '2026-11-13')).toBe(undefined)
 })

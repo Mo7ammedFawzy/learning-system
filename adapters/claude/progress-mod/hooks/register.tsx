@@ -10,7 +10,7 @@ type State = 'solid' | 'ok' | 'shaky' | 'scr' | 'none'
 type Section = { name: string; ids: string[] }
 // scr: on the Scratched list, even when a lesson part outranks it in `state` (10a shaky, 10 scratched)
 type Gate = { id: string; name: string; state: State; scr: boolean }
-type Track = { name: string; level?: string; next?: string; last?: string; sections: Section[]; gate: Gate[] }
+type Track = { name: string; level?: string; next?: string; scratch?: string; last?: string; sections: Section[]; gate: Gate[] }
 
 const COLOR: Record<State, string> = {
   solid: '#5fb36b', ok: '#d9b44a', shaky: '#e0674f', scr: '#7489e0', none: '#4a4a4a',
@@ -78,10 +78,34 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
     const fromCurrent = current[t.name]?.split(' ')[0]
     const nextId = fromCurrent && ids.includes(fromCurrent) ? fromCurrent : ids.find(i => !RANK[state[i] ?? ''])
     t.next = nextId && `${nextId} ${names[nextId]}`.trim()
+    // the next scratch batch: rows under neither Completed nor Scratched, in row order, 6 at most
+    const batch = ids.filter(i => !state[i]).slice(0, 6)
+    const word = (i: string) => (names[i] ?? '').split(/[ :/(]/)[0]
+    // short, so the row stays one line: "47 PostgreSQL +5"
+    const a = batch[0]
+    t.scratch = a && `${a} ${word(a)}${batch.length > 1 ? ` +${batch.length - 1}` : ''}`
     t.last = ids.map(i => last[i] ?? '').sort().at(-1) || undefined
   }
   return tracks.filter(t => t.level || t.sections.some(s => s.ids.some(i => state[i])))
     .map(t => ({ ...t, sections: t.sections.map(s => ({ ...s, ids: s.ids.map(i => `${i}:${state[i] ?? 'none'}`) })) }))
+}
+
+/**
+ * How much of a track is still remembered, 0-100, from state/REVIEW.md rows `| id | track | due | rung | last |`.
+ * Undefined when the track has no rows.
+ */
+export function memory(review: string, track: string, today: string): number | undefined {
+  const day = (s: string) => Date.parse(s) / 864e5
+  const kept = review.split(/\r?\n/).filter(l => l.startsWith('| ')).map(rowCells)
+    .filter(c => c[1] === track && /^\d{4}-/.test(c[2] ?? '') && Number(c[3]) > 0)
+    .map(c => {
+      const rung = Number(c[3])
+      // a row never reviewed was last seen one rung before its due date
+      const last = /^\d{4}-/.test(c[4] ?? '') ? day(c[4]!) : day(c[2]!) - rung
+      // ponytail: toy forgetting curve, 70% kept on the due date; fit it to quiz results if it feels off
+      return Math.pow(0.7, Math.max(0, day(today) - last) / rung)
+    })
+  return kept.length ? Math.round(100 * kept.reduce((a, k) => a + k, 0) / kept.length) : undefined
 }
 
 // The installers link ~/.claude/skills/learning-progress to this folder, so follow the link
@@ -96,14 +120,15 @@ async function inRepo($: EngineInterface, repo: string): Promise<boolean> {
   return slash(await $.session.cwd()).startsWith(slash(repo))
 }
 
-async function load($: EngineInterface, repo: string): Promise<Track[]> {
+async function load($: EngineInterface, repo: string): Promise<{ tracks: Track[]; review: string }> {
   const curricula: Record<string, string> = {}
   for (const d of await $.fs.list(`${repo}/core`)) {
     if (d.kind !== 'dir') continue
     const f = `${repo}/core/${d.name}/CURRICULUM.md`
     if (await $.fs.exists(f)) curricula[d.name] = await $.fs.read(f)
   }
-  return parse(await $.fs.read(`${repo}/state/PROGRESS.md`), curricula)
+  const review = await $.fs.read(`${repo}/state/REVIEW.md`).catch(() => '')
+  return { tracks: parse(await $.fs.read(`${repo}/state/PROGRESS.md`), curricula), review }
 }
 
 
@@ -151,9 +176,11 @@ export const register: Register = on => {
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const repo = await repoOf($)
     if (e.props.hasSurvey || !(await inRepo($, repo))) return next(e)
-    const tracks = await load($, repo).catch(() => undefined)
-    const f = tracks && focus(tracks)
-    if (!tracks || !f) return next(e)
+    const loaded = await load($, repo).catch(() => undefined)
+    const f = loaded && focus(loaded.tracks)
+    if (!loaded || !f) return next(e)
+    const mem = memory(loaded.review, f.name, new Date().toLocaleDateString('sv'))
+    const memColor = mem === undefined ? COLOR.none : mem >= 70 ? COLOR.solid : mem >= 40 ? COLOR.ok : COLOR.shaky
     const { Box, Text } = $.ui.resolve(e)
     const c = counts(f)
     const at = LEVELS.indexOf(f.level ?? '')
@@ -164,21 +191,27 @@ export const register: Register = on => {
     // one cell tall and clips, so a narrow window drops whole words of the topic, never adds "…"
     return (
       <Box height={1} overflow="hidden" justifyContent="space-between" gap={3}>
-        <Text>{f.next ? <Text><Text color={ACCENT}>▶ </Text><Text bold>{f.next}</Text></Text> : ''}</Text>
+        {/* truncate: the desktop band does not clip a wrapped second line, it shows half of it */}
+        <Text wrap="truncate-end">
+          {f.next ?<Text><Text color={ACCENT}>▶ </Text><Text bold>{f.next}</Text></Text> : ''}
+          {/* the next scratch batch by its first ID only, to keep the row short */}
+          {f.scratch ? <Text color={COLOR.scr}>  ⚡{f.scratch.split(' ')[0]}</Text> : ''}
+        </Text>
         <Box flexShrink={0}>
           <Text>
-            <Text dimColor>{f.name} </Text>
-            {f.level ? <Text color={ACCENT}>{SHORT[f.level] ?? f.level}</Text> : <Text dimColor>not assessed</Text>}
+            {f.level ? <Text color={ACCENT}>{SHORT[f.level] ?? f.level}</Text> : <Text dimColor>{f.name}</Text>}
             {f.gate.length && LEVELS[at + 1] ? <Text>
-              <Text dimColor> → {SHORT[LEVELS[at + 1]!]} </Text>
+              <Text dimColor>→{SHORT[LEVELS[at + 1]!]} </Text>
               {/* a scratch is shown half-filled but never counted: it does not unlock a level */}
               {f.gate.map(g => <Text color={passes(g) ? COLOR.solid : g.scr ? COLOR.scr : COLOR.none}>{passes(g) ? '■' : g.scr ? '◧' : '▢'}</Text>)}
             </Text> : ''}
-            <Text>  </Text>
+            <Text> </Text>
+            {/* full blocks only: the desktop band is HTML, so a ▀ + backgroundColor half-cell never lines up */}
             <Text color={COLOR.solid}>{'█'.repeat(doneW)}</Text><Text color={COLOR.scr}>{'█'.repeat(scrW)}</Text>
             <Text color={COLOR.none}>{'░'.repeat(METER - doneW - scrW)}</Text>
             <Text> </Text><Text color={COLOR.solid}>{c.done}</Text><Text dimColor>/{c.n}</Text>
             {c.scr ? <Text color={COLOR.scr}> ◌{c.scr}</Text> : ''}
+            {mem !== undefined ? <Text color={memColor}> {mem}%</Text> : ''}
           </Text>
         </Box>
       </Box>
