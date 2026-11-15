@@ -118,7 +118,8 @@ WHERE NOT EXISTS (SELECT 1 FROM Emp m WHERE m.ManagerId = e.Id)  -- ✅</pre>
 <h2>44 — Schema design and DDL</h2>
 <p class="meta">Due 2026-11-16 · rung 1 · scratched</p>
 <p class="model"><code>DELETE</code> removes the rows you choose, <code>TRUNCATE</code> empties the table and keeps its structure, <code>DROP</code> removes the table.</p>
-<div class="pending">Figure pending — being built in the background.</div>
+<iframe loading="lazy" src="atlas/44-figure.html" title="44 figure"></iframe>
+<a class="open" href="atlas/44-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>BEGIN TRAN; TRUNCATE TABLE Orders; ROLLBACK;  -- ✅ rows are back in SQL Server
