@@ -39,8 +39,112 @@ ol { padding-left:22px; }
 <h1>Review atlas</h1>
 <p class="meta">Read the mental model, say the trap and the interview answer out loud, then open the reveal. Order: most overdue first, as of 2026-11-15.</p>
 <nav>
-  <a href="#t09a">09a</a><a href="#t10a">10a</a><a href="#t13">13</a><a href="#t15">15</a><a href="#t02a">02a</a><a href="#t02b">02b</a><a href="#t04a">04a</a><a href="#t05a">05a</a><a href="#t05b">05b</a><a href="#t06a">06a</a><a href="#t08b">08b</a><a href="#t01">01</a>
+  <a href="#t03a">03a</a><a href="#t04b">04b</a><a href="#t08a">08a</a><a href="#t16">16</a><a href="#t44">44</a><a href="#t45">45</a><a href="#t09a">09a</a><a href="#t10a">10a</a><a href="#t13">13</a><a href="#t15">15</a><a href="#t02a">02a</a><a href="#t02b">02b</a><a href="#t04a">04a</a><a href="#t05a">05a</a><a href="#t05b">05b</a><a href="#t06a">06a</a><a href="#t08b">08b</a><a href="#t01">01</a>
 </nav>
+
+<section id="t03a">
+<h2>03a — equals and hashCode</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · completed, shaky</p>
+<p class="model">A <code>HashMap</code> never searches: <code>hashCode</code> picks the bucket, <code>equals</code> picks the entry inside it.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>set.add(new Sku("A-1")); set.add(new Sku("A-1"));  // ❌ size 2 — equals without hashCode
+@Override public int hashCode() { return code.hashCode(); }  // ✅ same fields as equals</pre>
+<p class="sub">Interview</p>
+<ol><li>Equal objects ⇒ equal hash codes; equal hashes do not imply equal objects.</li><li>Override both or neither: <code>equals</code> alone gives duplicates and <code>null</code> from <code>get</code>.</li><li>A key's hash must not change while it is in the map — the entry is never re-filed.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ hashCode بيختار الـ bucket، والـ equals بيختار العنصر جواه.</p>
+<p class="ar">لو الـ hashCode غلط، الـ equals مش هيتنادى أصلاً.</p>
+</details>
+</section>
+
+<section id="t04b">
+<h2>04b — Composition over inheritance</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · completed, shaky</p>
+<p class="model">Inheritance ties you to how the parent is implemented; composition ties you only to what it promises.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>public final List&lt;Item&gt; items = new ArrayList&lt;&gt;();   // ❌ final freezes the reference, not the list
+private final List&lt;Item&gt; items = new ArrayList&lt;&gt;();  // ✅ getter returns List.copyOf(items)</pre>
+<p class="sub">Interview</p>
+<ol><li><code>extends</code> only when is-a holds and the parent is designed for extension (or you own it).</li><li>Otherwise wrap: a private field plus forwarding methods.</li><li>Composition: the part never leaks, so it dies with the whole.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ is-a لوحدها مش كفاية، لازم الأب يكون معمول للـ extension.</p>
+<p class="ar">الـ final مابيقفلش الـ list، بيقفل الـ reference بس.</p>
+</details>
+</section>
+
+<section id="t08a">
+<h2>08a — List and Set</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · completed, shaky</p>
+<p class="model">The interface is the promise, the backing structure is the price.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>for (int i = 0; i &lt; list.size(); i++) total += list.get(i);  // ❌ LinkedList: O(n²)
+for (int x : list) total += x;                                // ✅ iterator: O(n)</pre>
+<p class="sub">Interview</p>
+<ol><li><code>ArrayList</code> is the default: O(1) index, amortised O(1) append.</li><li><code>LinkedList</code> is O(1) only at the ends or at an iterator; the middle is an O(n) walk.</li><li><code>LinkedHashSet</code>: "Linked" buys insertion order, not a different cost.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ get على الـ LinkedList بيمشي من الأول كل مرة.</p>
+<p class="ar">استخدم الـ for-each، الـ iterator فاكر هو واقف فين.</p>
+</details>
+</section>
+
+<section id="t16">
+<h2>16 — SQL fundamentals</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · scratched</p>
+<p class="model">SQL runs FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY, and <code>NULL</code> compared to anything is UNKNOWN.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>WHERE Id NOT IN (SELECT ManagerId FROM Emp)    -- ❌ one NULL → empty result
+WHERE NOT EXISTS (SELECT 1 FROM Emp m WHERE m.ManagerId = e.Id)  -- ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>Logical order: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY.</li><li><code>WHERE</code> for rows, <code>HAVING</code> for aggregates over groups.</li><li><code>NULL = NULL</code> is UNKNOWN: use <code>IS NULL</code>; prefer <code>NOT EXISTS</code> on a nullable column.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ WHERE على الـ rows قبل الـ GROUP BY، والـ HAVING على الـ groups بعده.</p>
+<p class="ar">لو فيه NULL واحد جوه الـ NOT IN، النتيجة هتطلع فاضية.</p>
+</details>
+</section>
+
+<section id="t44">
+<h2>44 — Schema design and DDL</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · scratched</p>
+<p class="model"><code>DELETE</code> removes the rows you choose, <code>TRUNCATE</code> empties the table and keeps its structure, <code>DROP</code> removes the table.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>BEGIN TRAN; TRUNCATE TABLE Orders; ROLLBACK;  -- ✅ rows are back in SQL Server
+TRUNCATE TABLE Customers;                     -- ❌ refused when a FOREIGN KEY references it</pre>
+<p class="sub">Interview</p>
+<ol><li><code>DELETE</code> is DML; <code>TRUNCATE</code> and <code>DROP</code> are DDL.</li><li><code>TRUNCATE</code>: no <code>WHERE</code>, page-logged, resets <code>IDENTITY</code>, no triggers, blocked by a referencing FK.</li><li>Both roll back inside a transaction in SQL Server.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ TRUNCATE بيرجّع الـ IDENTITY للأول.</p>
+<p class="ar">في الـ SQL Server، الـ TRUNCATE جوه transaction ينفع يتعمله rollback.</p>
+</details>
+</section>
+
+<section id="t45">
+<h2>45 — Advanced SQL: window functions</h2>
+<p class="meta">Due 2026-11-16 · rung 1 · scratched</p>
+<p class="model">A window function computes a value per row from related rows without collapsing them; the ranking functions differ only on ties.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>-- salaries 100, 100, 90 — "2nd highest"
+ROW_NUMBER() = 2   -- ❌ the second 100
+RANK() = 2         -- ❌ nothing (1, 1, 3)
+DENSE_RANK() = 2   -- ✅ 90</pre>
+<p class="sub">Interview</p>
+<ol><li><code>GROUP BY</code> collapses rows; <code>OVER()</code> keeps every row.</li><li><code>ROW_NUMBER</code> unique, <code>RANK</code> gaps after ties, <code>DENSE_RANK</code> no gaps.</li><li>Delete duplicates: <code>ROW_NUMBER() OVER (PARTITION BY key ORDER BY Id)</code>, delete where <code>rn &gt; 1</code>.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ RANK بيسيب فجوة بعد التعادل، والـ DENSE_RANK مابيسيبش.</p>
+<p class="ar">لو عايز تاني أعلى salary استخدم الـ DENSE_RANK.</p>
+</details>
+</section>
 
 <section id="t09a">
 <h2>09a — Comparable vs Comparator</h2>
