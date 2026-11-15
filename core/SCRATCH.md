@@ -109,4 +109,8 @@ lesson and not a quiz.
   `playground/<id>-*/SUMMARY.md`): mental model, trap, interview answer and the learner-language lines, about a
   third of a teach block, with a picture where the client can show one. One turn, nothing asked.
   Close with one line suggesting `review` in `core/BOOTSTRAP.md` to move those rows.
-- **Writes nothing** to `state/`. Review rows move only through `review` in `core/BOOTSTRAP.md`.
+- **Recorded at the end of the turn**, nothing asked first. On each re-read row of `state/REVIEW.md`,
+  set `Last` to today and `Due` to tomorrow, and leave `Rung` unchanged: a re-read is not a test, so
+  it never climbs the ladder. It queues the topic for tomorrow's `review` question and rotates it out
+  of the next `scratch review`. Prepend the date and the IDs to `Last review` in `state/PROGRESS.md`,
+  and commit `state/` as at close.

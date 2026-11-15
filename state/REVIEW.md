@@ -2,8 +2,8 @@
 
 One row per completed or scratched topic: when it is next due for a review question. The rules
 that move a row live in `core/BOOTSTRAP.md` under **The review schedule**. Read when a session
-starts with `next`, no argument or `review`; written at a lesson or scratch close and at the end
-of a `review`.
+starts with `next`, no argument or `review`; written at a lesson or scratch close, at the end
+of a `review`, and after a `scratch review` re-read (`Last` and `Due` only, never `Rung`).
 
 `Rung` is the current interval in days. The ladder is 1 → 3 → 7 → 21 → 60.
 
@@ -16,12 +16,12 @@ shaky topics first, then ok, then scratched batches, oldest first.
 | 04b | java | 2026-11-10 | 1 | 2026-11-09 |
 | 04c | java | 2026-11-11 | 1 | 2026-11-10 |
 | 08a | java | 2026-11-10 | 1 | 2026-11-09 |
-| 09a | java | 2026-10-26 | 1 | — |
-| 10a | java | 2026-10-26 | 1 | — |
-| 02a | java | 2026-10-27 | 3 | — |
-| 02b | java | 2026-10-27 | 3 | — |
-| 04a | java | 2026-10-27 | 3 | — |
-| 05a | java | 2026-10-28 | 3 | — |
+| 09a | java | 2026-11-16 | 1 | 2026-11-15 |
+| 10a | java | 2026-11-16 | 1 | 2026-11-15 |
+| 02a | java | 2026-11-16 | 3 | 2026-11-15 |
+| 02b | java | 2026-11-16 | 3 | 2026-11-15 |
+| 04a | java | 2026-11-16 | 3 | 2026-11-15 |
+| 05a | java | 2026-11-16 | 3 | 2026-11-15 |
 | 05b | java | 2026-10-28 | 3 | — |
 | 06a | java | 2026-10-28 | 3 | — |
 | 08b | java | 2026-10-29 | 3 | — |
