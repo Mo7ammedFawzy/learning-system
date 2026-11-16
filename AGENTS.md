@@ -50,11 +50,13 @@ Read `core/BOOTSTRAP.md` and follow it exactly. `<learning-home>` is this reposi
 
 ## Commands
 
-There is no build, no test suite and no application code — the system is plain markdown.
+There is no build and no application code — the system is plain markdown plus two small scripts.
 
 ```bash
-./check.sh                 # invariant 1, stale paths, topic IDs vs interview banks, installers. Runs on every commit
+./check.sh                 # invariant 1, stale paths, topic IDs vs banks, dark figures, review.mjs, installers. Runs on every commit
 ./check.sh --links         # the same, plus every documentation link resolves. Run after editing a curriculum
+node review.mjs reread 11 03a          # move state/REVIEW.md rows by the ladder rules (also pass | partial | miss)
+claude plugin test adapters/claude/progress-mod   # the progress band's tests (hooks/parse.test.ts). Run after editing the band
 ```
 
 ```powershell
@@ -82,6 +84,7 @@ adapter descriptions (`learn`, `scratch` and `quiz`, for each agent). Nothing in
 Every figure built in this repo (the `anatomy` skill, or any other way) uses the **light theme**:
 build with `--light`, or ship `data-theme="light"` on the page. The anatomy kit defaults to dark,
 so say so in every brief that hands a figure to another agent. Never auto-switch to dark.
+`./check.sh` fails on any page under `playground/` that opens dark.
 
 ## Arabic text output
 

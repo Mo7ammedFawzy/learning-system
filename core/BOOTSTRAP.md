@@ -97,6 +97,7 @@ it ends.
 
 **The review schedule.** `state/REVIEW.md` holds one row per completed or scratched topic, with a
 due date and a rung on the ladder 1 → 3 → 7 → 21 → 40 days. 40 days is the target: a topic at rung 40 is held.
+`node review.mjs <pass|partial|miss> <id>...` from the learning home moves rows by the rules below.
 
 - **Which rows.** At most five due rows per session, most overdue first. **Interleave them**: never
   two in a row from the same topic, and mix tracks when more than one is due — the learner has to

@@ -58,6 +58,18 @@ done
 lines=$(wc -l < "$p")
 [ "$lines" -le 150 ] || bad "$p is $lines lines (cap 150): move detail to state/WEAK-SPOTS.md or trim Completed notes"
 
+# --- figures are light: no page ships dark or switches itself to dark (the anatomy kit defaults to dark) ---
+pages=$(git ls-files -co --exclude-standard -- 'playground/*.html')
+if [ -n "$pages" ]; then
+  out=$(echo "$pages" | xargs grep -lE '<body[^>]*data-theme="dark"|dataset\.theme *=[^;]*"dark"')
+  [ -n "$out" ] && bad "figures that open dark: build with --light, or set data-theme=\"light\"" "$out"
+fi
+
+# --- the review ladder script still follows the rules ---
+if command -v node >/dev/null 2>&1; then
+  out=$(node review.mjs --test 2>&1) || bad "review.mjs --test failed" "$out"
+fi
+
 # --- the installers run to the end on this machine, without installing anything ---
 out=$(bash install.sh --check 2>&1) || bad "install.sh --check failed" "$out"
 if command -v powershell >/dev/null 2>&1; then

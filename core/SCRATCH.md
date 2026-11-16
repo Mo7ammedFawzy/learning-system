@@ -120,6 +120,7 @@ lesson and not a quiz.
   set `Last` to today and `Due` to tomorrow, and move `Rung` one step up the ladder, **no higher than
   7**: a re-read refreshes the topic, so it earns some credit, but only a passed `review` question
   takes a topic to 21 and 40. A row already at 7 or above keeps its rung. At most one climb per topic
-  per day. It queues the topic for tomorrow's `review` question and rotates it out of the next
+  per day. `node review.mjs reread <id>...` from the learning home applies this; do not edit the rows
+  by hand. It queues the topic for tomorrow's `review` question and rotates it out of the next
   `scratch review`. Prepend the date and the IDs to `Last review` in `state/PROGRESS.md`,
   and commit `state/` as at close.

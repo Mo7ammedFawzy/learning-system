@@ -1,0 +1,295 @@
+<!doctype html>
+<!-- PROTOTYPE, throwaway. A 3D look at the five lesson steps: one room and one character per step.
+     Scripted sample lesson (10b, lazy pipelines); nothing is saved, no agent behind it.
+     Step wording and gates follow core/METHODOLOGY.md. -->
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson World</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;font-family:system-ui,"Segoe UI",sans-serif;background:linear-gradient(#1e1b4b,#4c1d95 55%,#be185d);color:#fff}
+canvas{display:block}
+#hud{position:fixed;top:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:#0009;backdrop-filter:blur(6px);padding:6px 10px;border-radius:999px;z-index:5;max-width:calc(100% - 24px);overflow-x:auto}
+.pip{border:0;border-radius:999px;padding:6px 11px;font:600 12px system-ui;cursor:pointer;white-space:nowrap;color:#fff;background:#ffffff1a}
+.pip.done{background:#16a34a}.pip.cur{background:#3b82f6;box-shadow:0 0 12px #3b82f6}.pip.lock{opacity:.4;cursor:default}
+#free{background:#ffffff26}
+#weak{position:fixed;top:62px;right:12px;background:#7f1d1dcc;padding:8px 12px;border-radius:10px;font-size:12px;max-width:280px;display:none;z-index:5}
+#panel{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:min(780px,calc(100% - 32px));max-height:52vh;overflow:auto;background:#0f172aee;border:1px solid #ffffff22;border-radius:18px;padding:16px 18px;z-index:5;box-shadow:0 10px 40px #0008}
+#who{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+#who .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:18px}
+#who b{font-size:15px}#who span{font-size:12px;color:#94a3b8}
+#text{font-size:15px;line-height:1.55;min-height:24px;cursor:pointer}
+#text code,#code{font-family:ui-monospace,Consolas,monospace}
+#text code{background:#ffffff1a;padding:1px 5px;border-radius:4px}
+#code{display:none;background:#020617;border:1px solid #1e293b;border-radius:10px;padding:10px 12px;margin:10px 0 0;font-size:13px;white-space:pre;overflow-x:auto;color:#a5f3fc}
+#opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+#opts button{border:1px solid #ffffff33;background:#1e293b;color:#fff;border-radius:10px;padding:9px 13px;font:14px system-ui;cursor:pointer;text-align:left}
+#opts button:hover{background:#334155}#opts button.go{background:#2563eb;border-color:#2563eb}
+#opts button:disabled{opacity:.35;cursor:not-allowed}
+#tip{position:fixed;pointer-events:none;background:#000d;padding:5px 9px;border-radius:6px;font-size:12px;display:none;z-index:6}
+</style></head><body>
+<div id="hud"></div><div id="weak"></div><div id="tip"></div>
+<div id="panel"><div id="who"></div><div id="text"></div><div id="code"></div><div id="opts"></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ======================= the scripted lesson =======================
+// Each room is a small dialogue graph. An option: {t, next, fx?, need?}. next 'END' = the room's gate is met.
+const ROOMS = [
+ {key:'W', name:'Warm-up', who:'Gatekeeper', role:'one review question from your weak spots', icon:'🏮', color:0xf59e0b, pos:[-13, -7], prop:'lantern',
+  nodes:{
+   start:{say:'Welcome back. Before today\'s topic, one warm-up from `WEAK-SPOTS.md`. Answer flat — just the thing asked.', opts:[{t:'Ask me', next:'q'}]},
+   q:{say:'What does a constructor return?', opts:[{t:'The new instance', next:'wrong'},{t:'void', next:'wrong'},{t:'Nothing — not even void', next:'right'}]},
+   right:{say:'✅ Held. "A constructor returns the new instance" goes to Held 1/2. One more hold closes it.', opts:[{t:'On to the lesson →', next:'END'}]},
+   wrong:{say:'❌ A constructor returns nothing, not even `void`. `new` creates the object; the constructor only initialises it. The entry stays open — no re-teach here, that is what a review session is for.', fx:'weak:A constructor returns the new instance (still open)', opts:[{t:'On to the lesson →', next:'END'}]},
+  }},
+ {key:'1', name:'Teach', who:'Professor', role:'step 1 — one concept', icon:'📖', color:0x3b82f6, pos:[0, -7], prop:'teacher',
+  nodes:{
+   start:{say:'Today: **10b — lazy pipelines**. Before I explain anything — what prints?', code:'Stream.of("a", "b", "c")\n      .peek(s -> System.out.println("peek " + s))\n      .map(String::toUpperCase);\nSystem.out.println("done");',
+     opts:[{t:'peek a, peek b, peek c, done', next:'p_wrong'},{t:'only "done"', next:'p_right'},{t:'It does not compile', next:'p_wrong'}]},
+   p_right:{say:'Right — only `done`. Now let us see why.', opts:[{t:'Go on', next:'model'}]},
+   p_wrong:{say:'It prints only `done`. Nothing ran. That surprise is today\'s lesson.', opts:[{t:'Why?', next:'model'}]},
+   model:{say:'**Mental model:** a stream pipeline is a *recipe*, not a run. Intermediate operations (`map`, `filter`, `peek`) only describe work. Nothing flows until a **terminal** operation (`forEach`, `collect`, `count`, `findFirst`) pulls elements through.', opts:[{t:'Show me it running', next:'snippet'}]},
+   snippet:{say:'Add a terminal op and watch the order: element by element, not stage by stage.', code:'Stream.of("a", "b")\n      .filter(s -> { System.out.println("filter " + s); return true; })\n      .map(s ->    { System.out.println("map " + s);    return s; })\n      .forEach(s -> {});\n// filter a, map a, filter b, map b',
+     opts:[{t:'What breaks if I don\'t know this?', next:'failure'}]},
+   failure:{say:'**The failure it prevents:** a pipeline with no terminal op silently does nothing — the log line, the save, the side effect you counted on never happens. No error, no warning.', opts:[{t:'Where does the rule stop?', next:'boundary'}]},
+   boundary:{say:'**The boundary:** `sorted()` and `distinct()` are *stateful* — `sorted` must see every element before it can pass one on, so the one-by-one flow stops there. And a stream is single-use: a second terminal op throws `IllegalStateException`.', opts:[{t:'Source?', next:'source'}]},
+   source:{say:'📚 **Source:** the `java.util.stream` package Javadoc, "Stream operations and pipelines". That is the whole concept. Next door, the Examiner checks it landed.', opts:[{t:'Walk to the Examiner →', next:'END'}]},
+  }},
+ {key:'2', name:'Check', who:'Examiner', role:'step 2 — 2–3 questions, one re-test each', icon:'❓', color:0xef4444, pos:[13, -7], prop:'examiner',
+  nodes:{
+   start:{say:'Two questions. At least one is predict-the-output. A wrong answer gets re-taught and re-tested **once**.', opts:[{t:'Ready', next:'q1'}]},
+   q1:{say:'**Q1 — predict:** what does `seen` hold?', code:'List<Integer> seen = new ArrayList<>();\nStream.of(1, 2, 3, 4)\n      .map(x -> { seen.add(x); return x * 2; })\n      .filter(x -> x > 4)\n      .findFirst();\nSystem.out.println(seen);',
+     opts:[{t:'[1, 2, 3, 4]', next:'q1_wrong'},{t:'[1, 2, 3]', next:'q1_right'},{t:'[]', next:'q1_wrong'}]},
+   q1_right:{say:'✅ `[1, 2, 3]`. `findFirst` pulled 1 (→2, no), 2 (→4, no), 3 (→6, yes) and stopped. 4 was never pulled.', opts:[{t:'Next question', next:'q2'}]},
+   q1_wrong:{say:'❌ Not quite. The stages do not each run over the whole list. `findFirst` pulls **one element at a time** through the whole pipeline and stops at the first match: 1→2 no, 2→4 no, 3→6 yes — stop. So `[1, 2, 3]`. Re-test:',
+     code:'List<Integer> seen = new ArrayList<>();\nStream.of(5, 1, 7, 2).peek(seen::add).anyMatch(x -> x > 6);\nSystem.out.println(seen);',
+     opts:[{t:'[5, 1, 7]', next:'q1r_right'},{t:'[5, 1, 7, 2]', next:'q1r_wrong'}]},
+   q1r_right:{say:'✅ Re-test passed: `anyMatch` stops at 7.', opts:[{t:'Next question', next:'q2'}]},
+   q1r_wrong:{say:'❌ It is `[5, 1, 7]` — `anyMatch` short-circuits at 7. Two rounds is the cap, so I stop drilling and record it as a named misconception.', fx:'weak:Thinks each stage runs over the whole list before the next', opts:[{t:'Next question', next:'q2'}]},
+   q2:{say:'**Q2 — spot the bug:**', code:'Stream<String> names = users.stream().map(User::name);\nlong n = names.count();\nList<String> list = names.toList();',
+     opts:[{t:'Nothing is wrong', next:'q2_wrong'},{t:'IllegalStateException on the second terminal op', next:'q2_right'},{t:'list is empty because count() consumed it', next:'q2_wrong'}]},
+   q2_right:{say:'✅ A stream is single-use: `count()` consumed it, `toList()` throws. Fix: call `users.stream()` again, or collect once and reuse the list.', opts:[{t:'Gate passed — to the workshop →', next:'END'}]},
+   q2_wrong:{say:'❌ A stream is single-use. `count()` is terminal and closes it; `toList()` then throws `IllegalStateException: stream has already been operated upon or closed`. Re-test: can you call `forEach` twice on the same `Stream` variable?',
+     opts:[{t:'No, the second call throws', next:'q2_right'},{t:'Yes', next:'q2r_wrong'}]},
+   q2r_wrong:{say:'❌ No — the second call throws. Recorded.', fx:'weak:Treats a Stream like a reusable collection', opts:[{t:'To the workshop →', next:'END'}]},
+  }},
+ {key:'3', name:'Practice', who:'Coach', role:'step 3 — a 10-minute exercise, strict hints', icon:'🛠', color:0x10b981, pos:[13, 7], prop:'coach',
+  nodes:{
+   start:{say:'Bug report from production: *"Orders get processed, but the audit line never prints."*\n**Goal:** one `audit <id>` line per paid order. **Expected:** `audit 1`, `audit 3`. **Out of scope:** parallel streams, collectors.\nStarter file: `Streams10b.java` in your IDE scratches.',
+     code:'orders.stream()\n      .filter(Order::paid)\n      .peek(o -> System.out.println("audit " + o.id()));',
+     opts:[{t:'💡 Hint', next:'h1'},{t:'✍️ I attempted it', next:'attempt'},{t:'Show solution', next:'solution', need:'attempt'}]},
+   h1:{say:'💡 **Hint 1/3:** what makes a pipeline actually *run*?', opts:[{t:'💡 Another hint', next:'h2'},{t:'✍️ I attempted it', next:'attempt'}]},
+   h2:{say:'💡 **Hint 2/3:** look at the last line. It is an intermediate op — the pipeline has no terminal operation.', opts:[{t:'💡 Last hint', next:'h3'},{t:'✍️ I attempted it', next:'attempt'}]},
+   h3:{say:'💡 **Hint 3/3:** the structure, key part blank:', code:'orders.stream()\n      .filter(Order::paid)\n      .________(o -> System.out.println("audit " + o.id()));', opts:[{t:'✍️ I attempted it', next:'attempt'}]},
+   attempt:{fx:'flag:attempt', say:'▶ Ran your version. Output: `audit 1`, `audit 3` — ✅ correct. You moved the side effect into the **terminal** op (`forEach`) instead of keeping it in `peek` — that is the part most people miss. Nothing else to fix.',
+     code:'orders.stream()\n      .filter(Order::paid)\n      .forEach(o -> System.out.println("audit " + o.id()));',
+     opts:[{t:'Show the reference solution', next:'solution', need:'attempt'},{t:'To the Scribe →', next:'END'}]},
+   solution:{say:'Reference: `forEach` as the terminal op. `peek` is meant for debugging — the Javadoc says so — and it only runs when something downstream pulls.', opts:[{t:'To the Scribe →', next:'END'}]},
+  }},
+ {key:'4', name:'Summary', who:'Scribe', role:'step 4 — the revision card', icon:'📜', color:0xa855f7, pos:[0, 7], prop:'scribe',
+  nodes:{
+   start:{say:'I wrote your card. This is what you read on the way to an interview.', code:() => `# 10b — Lazy pipelines
+Mental model:  a stream is a recipe; the terminal op runs it.
+Key rule:      intermediate = lazy, terminal = runs;
+               elements flow one by one, short-circuits stop early.
+Classic trap:  stream.peek(System.out::println);   // prints nothing
+Interview (30s): Nothing runs until a terminal op. Elements then
+               flow one at a time, so findFirst/anyMatch stop early
+               and infinite streams work. sorted() is the exception.
+My mistake:    ${S.weak.filter(w => !w.includes('constructor')).join('\n               ') || 'none this lesson'}
+Source:        java.util.stream package Javadoc`,
+     opts:[{t:'Saved as SUMMARY.md — to the interview →', next:'END'}]},
+  }},
+ {key:'5', name:'Interview', who:'Interviewer', role:'step 5 — the drill', icon:'🎤', color:0x64748b, pos:[-13, 7], prop:'interviewer',
+  nodes:{
+   start:{say:'Let\'s do this like the real thing. I grade the *reason*, not just the claim.\n**"Streams are lazy" — what does that mean, and why does it matter?**',
+     opts:[{t:'They are faster because they are lazy.', next:'probe'},{t:'Nothing runs until a terminal op; then elements flow one at a time, so short-circuit ops stop early.', next:'pass'}]},
+   probe:{say:'🤨 That is the **shallow answer** — it sounds right and fails. *Why* would lazy be faster? Give me a case.',
+     opts:[{t:'findFirst on a million elements stops after the first match', next:'pass'},{t:'I\'m not sure', next:'reveal'}]},
+   reveal:{say:'Here is what passes:', opts:[{t:'Show me', next:'pass'}]},
+   pass:{say:'✅ **The answer that passes:** intermediate ops build a pipeline; nothing runs until a terminal op. Then elements flow one at a time, so `findFirst`/`anyMatch` stop early, infinite streams like `Stream.iterate` work, and a pipeline with no terminal op does nothing.',
+     opts:[{t:'And then?', next:'follow'}]},
+   follow:{say:'🔁 **The follow-up they ask next:** *"Is `sorted()` lazy?"* — Not really: it is stateful and must buffer every element before passing one on. That second question is where the real signal is.',
+     opts:[{t:'🎉 Finish the lesson', next:'END'}]},
+  }},
+];
+
+// ======================= lesson engine =======================
+const S = {room:0, node:'start', done:new Set(), weak:[], flags:{}};
+const $ = id => document.getElementById(id);
+const md = s => s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>');
+let typing;
+function show() {
+  const R = ROOMS[S.room], n = R.nodes[S.node];
+  if (n.fx) { const [k, v] = n.fx.split(/:(.*)/); if (k === 'weak' && !S.weak.includes(v)) S.weak.push(v); if (k === 'flag') S.flags[v] = true; }
+  $('who').innerHTML = `<div class="av" style="background:#${R.color.toString(16).padStart(6, '0')}">${R.icon}</div><div><b>${R.who}</b><br><span>${R.role}</span></div>`;
+  const code = typeof n.code === 'function' ? n.code() : n.code;
+  $('code').style.display = code ? 'block' : 'none'; $('code').textContent = code || '';
+  // type the text out; a click skips the animation
+  clearInterval(typing); const plain = n.say.replace(/\*\*|`|\*/g, ''); let i = 0; talking = true;
+  const finish = () => { clearInterval(typing); talking = false; $('text').innerHTML = md(n.say); };
+  $('text').onclick = finish;
+  typing = setInterval(() => { i += 2; $('text').textContent = plain.slice(0, i); if (i >= plain.length) finish(); }, 16);
+  $('opts').innerHTML = '';
+  n.opts.forEach(o => { const b = document.createElement('button'); b.textContent = o.t;
+    if (o.next === 'END') b.className = 'go';
+    if (o.need && !S.flags[o.need]) { b.disabled = true; b.title = 'Strict gate: attempt it first'; }
+    b.onclick = () => o.next === 'END' ? finishRoom() : (S.node = o.next, show());
+    $('opts').appendChild(b); });
+  hud();
+}
+function finishRoom() {
+  S.done.add(S.room); light(S.room);
+  if (S.room === ROOMS.length - 1) {
+    $('who').innerHTML = '<div class="av" style="background:#16a34a">🏆</div><div><b>Lesson complete</b><br><span>10b closed — progress updated</span></div>';
+    $('text').innerHTML = md(`All five gates passed. ${S.weak.length ? `Weak spots recorded: **${S.weak.length}** — the Gatekeeper will re-test one next session.` : 'No new weak spots.'}`);
+    $('code').style.display = 'none';
+    $('opts').innerHTML = ''; const b = document.createElement('button'); b.className = 'go'; b.textContent = '↻ Walk the lesson again';
+    b.onclick = () => { S.room = 0; S.node = 'start'; S.done.clear(); S.weak = []; S.flags = {}; ROOMS.forEach((_, i) => light(i, false)); show(); }; $('opts').appendChild(b);
+    hud(); return;
+  }
+  goRoom(S.room + 1);
+}
+function goRoom(i) { S.room = i; S.node = 'start'; freeLook = false; show(); }
+const reachable = i => i === 0 || S.done.has(i - 1);
+function hud() {
+  $('hud').innerHTML = ROOMS.map((r, i) => `<button class="pip ${S.done.has(i) ? 'done' : ''} ${i === S.room ? 'cur' : ''} ${reachable(i) ? '' : 'lock'}" data-i="${i}">${S.done.has(i) ? '✓' : reachable(i) ? r.icon : '🔒'} ${r.key === 'W' ? '' : r.key + ' · '}${r.name}</button>`).join('')
+    + `<button class="pip" id="free">${freeLook ? '🎯 Follow' : '🌐 Free look'}</button>`;
+  $('hud').querySelectorAll('[data-i]').forEach(b => b.onclick = () => reachable(+b.dataset.i) && goRoom(+b.dataset.i));
+  $('free').onclick = () => { freeLook = !freeLook; hud(); };
+  $('weak').style.display = S.weak.length ? 'block' : 'none';
+  $('weak').innerHTML = '<b>⚠️ Weak spots this session</b><br>' + S.weak.map(w => '• ' + w).join('<br>');
+}
+
+// ======================= the 3D world =======================
+const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0x4c1d95, 40, 95);
+const cam = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, .1, 300);
+const ren = new THREE.WebGLRenderer({antialias: true, alpha: true});
+ren.setPixelRatio(devicePixelRatio); ren.setSize(innerWidth, innerHeight); ren.shadowMap.enabled = true; document.body.prepend(ren.domElement);
+addEventListener('resize', () => { cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); ren.setSize(innerWidth, innerHeight); });
+scene.add(new THREE.HemisphereLight(0xfdf4ff, 0x312e81, .75));
+const sun = new THREE.DirectionalLight(0xffffff, .9); sun.position.set(15, 30, 12); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, {left: -30, right: 30, top: 30, bottom: -30}); scene.add(sun);
+
+const mat = (c, o = {}) => new THREE.MeshStandardMaterial({color: c, flatShading: true, roughness: .8, ...o});
+const mesh = (g, m, x = 0, y = 0, z = 0) => { const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; return o; };
+function label(text, sub) {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 160; const g = c.getContext('2d');
+  g.fillStyle = '#0f172acc'; g.beginPath(); g.roundRect ? g.roundRect(6, 6, 500, 148, 30) : g.rect(6, 6, 500, 148); g.fill();
+  g.fillStyle = '#fff'; g.font = 'bold 54px system-ui'; g.textAlign = 'center'; g.fillText(text, 256, 72);
+  g.fillStyle = '#cbd5e1'; g.font = '34px system-ui'; g.fillText(sub, 256, 124);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(c), depthWrite: false})); s.scale.set(4.6, 1.45, 1); return s;
+}
+function board() { // the Professor's chalkboard
+  const c = document.createElement('canvas'); c.width = 512; c.height = 320; const g = c.getContext('2d');
+  g.fillStyle = '#14532d'; g.fillRect(0, 0, 512, 320); g.strokeStyle = '#a16207'; g.lineWidth = 18; g.strokeRect(0, 0, 512, 320);
+  g.fillStyle = '#f8fafc'; g.font = 'bold 40px Comic Sans MS, cursive'; g.fillText('Streams are LAZY', 40, 70);
+  g.font = '26px monospace'; ['.filter(...)  // recipe', '.map(...)     // recipe', '.forEach(...) // RUN!'].forEach((l, i) => g.fillText(l, 40, 140 + i * 50));
+  return new THREE.CanvasTexture(c);
+}
+
+function character(R) {
+  const g = new THREE.Group(), body = mat(R.color), skin = mat(0xfcd9b6), dark = mat(0x1e293b);
+  g.add(mesh(new THREE.CylinderGeometry(.55, .8, 1.7, 7), body, 0, 1.05, 0));
+  const head = mesh(new THREE.IcosahedronGeometry(.55, 1), skin, 0, 2.3, 0); g.add(head);
+  [-.2, .2].forEach(x => head.add(mesh(new THREE.SphereGeometry(.08, 6, 6), dark, x, .08, .5)));
+  const mouth = mesh(new THREE.BoxGeometry(.22, .05, .05), dark, 0, -.18, .52); head.add(mouth);
+  const armL = mesh(new THREE.CylinderGeometry(.13, .13, .9, 6), body, -.75, 1.3, 0), armR = armL.clone(); armR.position.x = .75;
+  armL.rotation.z = .35; armR.rotation.z = -.35; g.add(armL, armR);
+  const hat = {lantern: [new THREE.ConeGeometry(.6, .7, 6), 0x7c2d12], teacher: [new THREE.BoxGeometry(1, .12, 1), 0x111827],
+    examiner: [new THREE.CylinderGeometry(.5, .5, .5, 7), 0x7f1d1d], coach: [new THREE.CylinderGeometry(.62, .62, .18, 8), 0xfacc15],
+    scribe: [new THREE.ConeGeometry(.5, 1, 6), 0x581c87], interviewer: [new THREE.CylinderGeometry(.45, .55, .25, 8), 0x334155]}[R.prop];
+  g.add(mesh(hat[0], mat(hat[1]), 0, 2.85, 0));
+  return {g, head, mouth};
+}
+function props(R, room) {
+  const P = R.prop, add = o => (room.add(o), o);
+  if (P === 'lantern') { add(mesh(new THREE.BoxGeometry(.4, .55, .4), mat(0xfde047, {emissive: 0xfacc15, emissiveIntensity: 1}), 1.05, 1.2, .3));
+    const l = new THREE.PointLight(0xfbbf24, 1.4, 9); l.position.set(1.05, 1.4, .6); add(l);
+    add(mesh(new THREE.BoxGeometry(.6, 3.2, .6), mat(0x78350f), -2, 1.6, -1.5)); add(mesh(new THREE.BoxGeometry(.6, 3.2, .6), mat(0x78350f), 2, 1.6, -1.5));
+    add(mesh(new THREE.BoxGeometry(4.6, .5, .7), mat(0x78350f), 0, 3.3, -1.5)); }
+  if (P === 'teacher') { const b = mesh(new THREE.BoxGeometry(4, 2.5, .15), new THREE.MeshStandardMaterial({map: board()}), -2, 2.2, -1.9); add(b);
+    add(mesh(new THREE.BoxGeometry(.5, .12, .65), mat(0xdc2626), .95, 1.05, .45)); }
+  if (P === 'examiner') { const q = new THREE.Group();
+    const arc = mesh(new THREE.TorusGeometry(.45, .13, 8, 16, Math.PI * 1.4), mat(0xfde047, {emissive: 0xf59e0b, emissiveIntensity: .7})); arc.rotation.z = -Math.PI * .45; q.add(arc);
+    q.add(mesh(new THREE.CylinderGeometry(.13, .13, .45, 6), arc.material, 0, -.62, 0)); q.add(mesh(new THREE.SphereGeometry(.15, 8, 8), arc.material, 0, -1.08, 0));
+    q.position.set(1.7, 3.6, 0); add(q); room.userData.spin = q;
+    add(mesh(new THREE.BoxGeometry(1.8, .9, 1), mat(0x7f1d1d), -1.9, .9, -.8)); }
+  if (P === 'coach') { add(mesh(new THREE.BoxGeometry(2.8, .2, 1.3), mat(0x92400e), 1.8, 1.25, -.8));
+    [[.6, -.3], [3, -.3], [.6, -1.3], [3, -1.3]].forEach(([x, z]) => add(mesh(new THREE.BoxGeometry(.15, 1.1, .15), mat(0x78350f), x, .6, z)));
+    add(mesh(new THREE.BoxGeometry(1.1, .7, .1), mat(0x0f172a, {emissive: 0x22d3ee, emissiveIntensity: .35}), 1.6, 1.75, -1.3));
+    const w = mesh(new THREE.CylinderGeometry(.07, .07, .9, 6), mat(0x9ca3af, {metalness: .7}), 2.6, 1.42, -.6); w.rotation.z = Math.PI / 2; add(w);
+    add(mesh(new THREE.TorusGeometry(.16, .06, 6, 10), w.material, 3.1, 1.42, -.6)); }
+  if (P === 'scribe') { const s = mesh(new THREE.CylinderGeometry(.18, .18, 1.6, 10), mat(0xfef3c7), .95, 1.3, .4); s.rotation.z = Math.PI / 2; add(s);
+    add(mesh(new THREE.BoxGeometry(1.5, 1.9, .05), mat(0xfef9c3), -1.9, 1.9, -1.2));
+    add(mesh(new THREE.BoxGeometry(2.2, 2.6, .6), mat(0x713f12), 2.2, 1.3, -1.4)); }
+  if (P === 'interviewer') { add(mesh(new THREE.BoxGeometry(3.2, .18, 1.4), mat(0x1f2937), 0, 1.15, 1.3));
+    [[-1.4, .8], [1.4, .8], [-1.4, 1.8], [1.4, 1.8]].forEach(([x, z]) => add(mesh(new THREE.BoxGeometry(.15, 1.05, .15), mat(0x111827), x, .6, z)));
+    add(mesh(new THREE.CylinderGeometry(.04, .04, .6, 6), mat(0x9ca3af), .6, 1.5, 1.4)); add(mesh(new THREE.SphereGeometry(.16, 8, 8), mat(0x111827), .6, 1.85, 1.4));
+    add(mesh(new THREE.BoxGeometry(.9, .9, .9), mat(0x475569), 0, .65, 2.8)); }
+}
+
+const rooms = [], chars = [], walks = [];
+ROOMS.forEach((R, i) => {
+  const room = new THREE.Group(); room.position.set(R.pos[0], 0, R.pos[1]); scene.add(room);
+  const top = mesh(new THREE.CylinderGeometry(4.6, 4.2, .7, 9), mat(0x4ade80), 0, -.35, 0); top.userData.room = i; room.add(top);
+  room.add(mesh(new THREE.CylinderGeometry(4.2, .4, 4.5, 9), mat(0x78716c), 0, -2.95, 0));
+  const ring = mesh(new THREE.TorusGeometry(4.65, .12, 6, 36), mat(R.color, {emissive: R.color, emissiveIntensity: .25}), 0, .02, 0); ring.rotation.x = Math.PI / 2; room.add(ring); room.userData.ring = ring;
+  for (let k = 0; k < 5; k++) { const a = k * 1.3 + i, r = 3.3; room.add(mesh(new THREE.ConeGeometry(.35, .9, 5), mat(0x15803d), Math.cos(a) * r, .4, Math.sin(a) * r)); }
+  const c = character(R); room.add(c.g); chars.push(c); props(R, room);
+  const lb = label(`${R.icon} ${R.name}`, R.who); lb.position.set(0, 3.9, -.5); room.add(lb);
+  rooms.push(room);
+});
+for (let i = 0; i < ROOMS.length - 1; i++) { // walkway from room i to i+1, lit when room i is done
+  const a = new THREE.Vector3(ROOMS[i].pos[0], -.1, ROOMS[i].pos[1]), b = new THREE.Vector3(ROOMS[i + 1].pos[0], -.1, ROOMS[i + 1].pos[1]);
+  const len = a.distanceTo(b) - 9, w = mesh(new THREE.BoxGeometry(1.4, .25, len), mat(0x334155, {emissive: 0x000000}));
+  w.position.copy(a.clone().add(b).multiplyScalar(.5)); w.lookAt(b.x, w.position.y, b.z); scene.add(w); walks.push(w);
+}
+function light(i, on = true) { const w = walks[i]; if (w) { w.material.color.set(on ? 0xfde047 : 0x334155); w.material.emissive.set(on ? 0xf59e0b : 0x000000); w.material.emissiveIntensity = on ? .6 : 0; }
+  rooms[i].userData.ring.material.emissiveIntensity = on ? .9 : .25; }
+// clouds and sparkles for depth
+for (let k = 0; k < 14; k++) { const cl = new THREE.Group(), m = mat(0xffffff, {transparent: true, opacity: .85});
+  for (let j = 0; j < 4; j++) cl.add(mesh(new THREE.IcosahedronGeometry(1 + Math.random(), 0), m, j * 1.3, Math.random() * .6, Math.random()));
+  cl.position.set((Math.random() - .5) * 90, -6 - Math.random() * 10, (Math.random() - .5) * 70); cl.userData.v = .005 + Math.random() * .01; scene.add(cl); cl.name = 'cloud'; }
+const sp = new THREE.BufferGeometry(), pts = []; for (let k = 0; k < 600; k++) pts.push((Math.random() - .5) * 120, Math.random() * 50 - 5, (Math.random() - .5) * 120);
+sp.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)); scene.add(new THREE.Points(sp, new THREE.PointsMaterial({color: 0xfdf4ff, size: .15})));
+
+// ======================= camera, input, loop =======================
+let freeLook = false, talking = false, yaw = .5, pitch = .75, dist = 48, drag = null;
+const camPos = new THREE.Vector3(0, 30, 40), camLook = new THREE.Vector3();
+ren.domElement.addEventListener('pointerdown', e => drag = {x: e.clientX, y: e.clientY, moved: false});
+addEventListener('pointerup', e => { if (drag && !drag.moved) pick(e); drag = null; });
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2(), tops = () => rooms.map(r => r.children[0]);
+ren.domElement.addEventListener('pointermove', e => {
+  if (drag) { const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; if (!freeLook) { freeLook = true; hud(); } }
+    yaw -= dx * .006; pitch = Math.min(1.3, Math.max(.2, pitch + dy * .005)); drag.x = e.clientX; drag.y = e.clientY; }
+  mouse.set(e.clientX / innerWidth * 2 - 1, -e.clientY / innerHeight * 2 + 1); ray.setFromCamera(mouse, cam);
+  const h = ray.intersectObjects(tops())[0], tip = $('tip');
+  if (h) { const i = h.object.userData.room; tip.style.display = 'block'; tip.style.left = e.clientX + 12 + 'px'; tip.style.top = e.clientY + 12 + 'px';
+    tip.textContent = `${ROOMS[i].who} — ${S.done.has(i) ? 'done, click to revisit' : reachable(i) ? 'click to enter' : 'locked: finish the step before'}`; ren.domElement.style.cursor = reachable(i) ? 'pointer' : 'not-allowed'; }
+  else { tip.style.display = 'none'; ren.domElement.style.cursor = 'grab'; }
+});
+ren.domElement.addEventListener('wheel', e => { dist = Math.min(90, Math.max(18, dist * (e.deltaY > 0 ? 1.08 : .93))); if (!freeLook) { freeLook = true; hud(); } });
+function pick(e) { mouse.set(e.clientX / innerWidth * 2 - 1, -e.clientY / innerHeight * 2 + 1); ray.setFromCamera(mouse, cam);
+  const h = ray.intersectObjects(tops())[0]; if (h && reachable(h.object.userData.room)) goRoom(h.object.userData.room); }
+
+const clock = new THREE.Clock();
+(function loop() {
+  requestAnimationFrame(loop); const t = clock.getElapsedTime();
+  let wantPos, wantLook;
+  if (freeLook) { wantLook = new THREE.Vector3(0, 0, 0); wantPos = new THREE.Vector3(Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch)).multiplyScalar(dist); }
+  else { const p = rooms[S.room].position; wantLook = new THREE.Vector3(p.x, -.6, p.z); wantPos = new THREE.Vector3(p.x + 2.5, 6, p.z + 12.5); } // look low so the character sits above the panel
+  camPos.lerp(wantPos, .05); camLook.lerp(wantLook, .07); cam.position.copy(camPos); cam.lookAt(camLook);
+  chars.forEach((c, i) => {
+    const active = i === S.room;
+    c.g.position.y = active ? Math.abs(Math.sin(t * 3)) * .18 : Math.sin(t * 1.5 + i) * .04;
+    const face = Math.atan2(cam.position.x - rooms[i].position.x, cam.position.z - rooms[i].position.z);
+    c.g.rotation.y += ((active ? face : Math.sin(t * .4 + i) * .5) - c.g.rotation.y) * .08;
+    c.mouth.scale.y = active && talking ? 1 + Math.abs(Math.sin(t * 18)) * 5 : 1;
+    c.head.rotation.z = active ? Math.sin(t * 2) * .08 : 0;
+  });
+  rooms.forEach((r, i) => { r.position.y = Math.sin(t * .6 + i * 1.1) * .25; if (r.userData.spin) r.userData.spin.rotation.y = t * 1.5; });
+  scene.children.forEach(o => { if (o.name === 'cloud') { o.position.x += o.userData.v; if (o.position.x > 50) o.position.x = -50; } });
+  ren.render(scene, cam);
+})();
+show();
+</script></body></html>
