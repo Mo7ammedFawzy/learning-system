@@ -70,15 +70,18 @@ test('parse: states, levels, next topic, spring split, untouched tracks hidden',
   expect(by.react?.scratch).toBe('R02 Props')
 })
 
-test('memory: forgetting curve over the track\'s REVIEW.md rows', async () => {
+test('memory: share of the 40-day target held, over the track\'s REVIEW.md rows', async () => {
   const review = `| # | Track | Due | Rung | Last |
 |---|---|---|---|---|
 | 01 | java | 2026-11-20 | 7 | 2026-11-13 |
 | 02 | java | 2026-11-11 | 1 | — |
-| R01 | react | 2026-11-01 | 3 | — |`
-  // 01: reviewed today, 100%. 02: never reviewed, last seen 11-10, 3 days at rung 1 -> 0.7^3 = 34%
-  expect(memory(review, 'java', '2026-11-13')).toBe(67)
-  // on its due date a row keeps 70%
-  expect(memory(review, 'react', '2026-11-01')).toBe(70)
-  expect(memory(review, 'node', '2026-11-13')).toBe(undefined)
+| R01 | react | 2026-11-01 | 3 | — |
+| N01 | node | 2026-12-23 | 40 | 2026-11-13 |`
+  // 01: reviewed today at rung 7 -> 7/40 = 17.5%. 02: rung 1, last seen 11-10, 3 days -> 1/40 * 0.7^3 = 0.9%
+  expect(memory(review, 'java', '2026-11-13')).toBe(9)
+  // on its due date a rung-3 row: 3/40 * 0.7 = 5%
+  expect(memory(review, 'react', '2026-11-01')).toBe(5)
+  // at the target rung, seen today: fully held
+  expect(memory(review, 'node', '2026-11-13')).toBe(100)
+  expect(memory(review, 'delivery', '2026-11-13')).toBe(undefined)
 })

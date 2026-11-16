@@ -96,7 +96,7 @@ again this session. Any `review` session sets `Last review` in `state/PROGRESS.m
 it ends.
 
 **The review schedule.** `state/REVIEW.md` holds one row per completed or scratched topic, with a
-due date and a rung on the ladder 1 → 3 → 7 → 21 → 60 days.
+due date and a rung on the ladder 1 → 3 → 7 → 21 → 40 days. 40 days is the target: a topic at rung 40 is held.
 
 - **Which rows.** At most five due rows per session, most overdue first. **Interleave them**: never
   two in a row from the same topic, and mix tracks when more than one is due — the learner has to
@@ -105,7 +105,7 @@ due date and a rung on the ladder 1 → 3 → 7 → 21 → 60 days.
   Prediction, Trap Card or Debugger shape, with a picture where the client can show one. Reason
   asked for. Verdict as in step 2, but no re-test round.
 - **A pass** — right, with the reason — moves the row one rung up and sets `Due` to today plus the
-  new rung. Past 60 it stays at 60.
+  new rung. Past 40 it stays at 40.
 - **A partial** — right answer, reason missing or wrong — moves the row one rung down (not below 1)
   and sets `Due` to today plus that rung.
 - **A miss** — wrong or blank — moves the row to rung 1, due tomorrow. Add a weak spot only when

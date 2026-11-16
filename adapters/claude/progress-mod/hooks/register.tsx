@@ -90,9 +90,13 @@ export function parse(progress: string, curricula: Record<string, string>): Trac
     .map(t => ({ ...t, sections: t.sections.map(s => ({ ...s, ids: s.ids.map(i => `${i}:${state[i] ?? 'none'}`) })) }))
 }
 
+/** A topic is held once it survives a 40-day gap — the top rung of the review ladder. */
+export const TARGET_DAYS = 40
+
 /**
- * How much of a track is still remembered, 0-100, from state/REVIEW.md rows `| id | track | due | rung | last |`.
- * Undefined when the track has no rows.
+ * How much of a track is held, 0-100, against the 40-day target, from state/REVIEW.md rows
+ * `| id | track | due | rung | last |`. Per row: rung / 40 (how much of the target is earned),
+ * times what is still kept since it was last seen. Undefined when the track has no rows.
  */
 export function memory(review: string, track: string, today: string): number | undefined {
   const day = (s: string) => Date.parse(s) / 864e5
@@ -103,7 +107,7 @@ export function memory(review: string, track: string, today: string): number | u
       // a row never reviewed was last seen one rung before its due date
       const last = /^\d{4}-/.test(c[4] ?? '') ? day(c[4]!) : day(c[2]!) - rung
       // ponytail: toy forgetting curve, 70% kept on the due date; fit it to quiz results if it feels off
-      return Math.pow(0.7, Math.max(0, day(today) - last) / rung)
+      return Math.min(rung, TARGET_DAYS) / TARGET_DAYS * Math.pow(0.7, Math.max(0, day(today) - last) / rung)
     })
   return kept.length ? Math.round(100 * kept.reduce((a, k) => a + k, 0) / kept.length) : undefined
 }

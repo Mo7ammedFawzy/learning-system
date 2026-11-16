@@ -5,7 +5,7 @@ that move a row live in `core/BOOTSTRAP.md` under **The review schedule**. Read 
 starts with `next`, no argument or `review`; written at a lesson or scratch close, at the end
 of a `review`, and after a `scratch review` re-read (`Last` and `Due` only, never `Rung`).
 
-`Rung` is the current interval in days. The ladder is 1 → 3 → 7 → 21 → 60.
+`Rung` is the current interval in days. The ladder is 1 → 3 → 7 → 21 → 40; 40 days is the target.
 
 Seeded 2026-10-25 from `state/PROGRESS.md`, staggered so the backlog is not all due at once:
 shaky topics first, then ok, then scratched batches, oldest first.
