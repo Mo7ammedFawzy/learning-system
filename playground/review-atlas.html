@@ -371,7 +371,8 @@ counts.getOrDefault(key, 0)          // ✅</pre>
 <h2>17 — Indexes and isolation</h2>
 <p class="meta">Due 2026-11-17 · rung 1 · scratched</p>
 <p class="model">An index is a sorted B-tree copy of some columns: a filter on its leading column becomes a seek through a few pages instead of a scan — and every write pays to maintain it.</p>
-<div class="pending">Figure pending — being built in the background.</div>
+<iframe loading="lazy" src="atlas/17-figure.html" title="17 figure"></iframe>
+<a class="open" href="atlas/17-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>WHERE YEAR(created_at) = 2026                                    -- ❌ function on the column → scan
