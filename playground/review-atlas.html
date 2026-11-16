@@ -443,7 +443,8 @@ catch (Exception e) {}                            // ❌ empty — swallows the 
 <h2>14 — Immutability and defensive copying</h2>
 <p class="meta">Due 2026-11-17 · rung 1 · scratched</p>
 <p class="model"><code>final</code> freezes the reference, not the object — so an immutable class copies every mutable thing on the way in and on the way out.</p>
-<div class="pending">Figure pending — being built in the background.</div>
+<iframe loading="lazy" src="atlas/14-figure.html" title="14 figure"></iframe>
+<a class="open" href="atlas/14-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>this.items = Collections.unmodifiableList(items);  // ❌ a view — the caller still mutates it
