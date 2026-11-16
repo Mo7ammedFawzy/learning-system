@@ -77,6 +77,12 @@ documentation each topic is taught from) and `core/<name>/INTERVIEW-BANK.md`, ad
 to `state/PROGRESS.md`, a run section to `playground/README.md`, and the technology's name to the
 adapter descriptions (`learn`, `scratch` and `quiz`, for each agent). Nothing in the shared `core/` files changes.
 
+## Figures are light
+
+Every figure built in this repo (the `anatomy` skill, or any other way) uses the **light theme**:
+build with `--light`, or ship `data-theme="light"` on the page. The anatomy kit defaults to dark,
+so say so in every brief that hands a figure to another agent. Never auto-switch to dark.
+
 ## Arabic text output
 
 Some clients do not set RTL paragraph direction (the Claude Code remote client is one), so Arabic
