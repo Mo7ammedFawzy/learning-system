@@ -426,7 +426,8 @@ List&lt;X&gt; out = s.parallel().toList();                       // ✅</pre>
 <h2>12 — Exceptions</h2>
 <p class="meta">Due 2026-11-17 · rung 1 · scratched</p>
 <p class="model">A thrown exception falls through the catch clauses top to bottom and lands in the first one that matches its type or a supertype — so the narrowest catch goes first.</p>
-<div class="pending">Figure pending — being built in the background.</div>
+<iframe loading="lazy" src="atlas/12-figure.html" title="12 figure"></iframe>
+<a class="open" href="atlas/12-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>catch (Exception e) {} catch (IOException e) {}   // ❌ compile error — already caught
