@@ -160,6 +160,20 @@ export function passes(g: Gate): boolean {
 export const focus = (tracks: Track[]) =>
   tracks.reduce<Track | undefined>((a, t) => (!a || (t.last ?? '') > (a.last ?? '') ? t : a), undefined)
 
+/** How the host opens a file with its default app: the page lands in the default browser. */
+export function opener(file: string): string[] {
+  if (/^[A-Za-z]:[\\/]/.test(file)) return ['explorer.exe', file.replace(/\//g, '\\')]
+  return [file.startsWith('/Users/') ? 'open' : 'xdg-open', file]
+}
+
+// Rebuild the dashboard's data from the state files, then open the page, so it is never stale.
+async function openDashboard($: EngineInterface, repo: string) {
+  const built = await $.process.run(['node', `${repo}/dashboard.mjs`], { cwd: repo }).catch(() => undefined)
+  if (!built || built.exitCode !== 0) $.ui.toast('dashboard.mjs failed: opening the last data')
+  // explorer.exe exits 1 even when it opened the file, so its exit code says nothing
+  await $.process.run(opener(`${repo}/playground/dashboard.html`)).catch(() => $.ui.toast('Could not open playground/dashboard.html'))
+}
+
 // Redraw now, and every 30 s to pick up lessons that close while the session is open. Called from
 // the first prompt too: a desktop session can admit this mod after session.start fired, and then
 // nothing redrew the band until the second message.
@@ -183,7 +197,7 @@ export const register: Register = on => {
     if (!loaded || !f) return next(e)
     const mem = memory(loaded.review, f.name, new Date().toLocaleDateString('sv'))
     const memColor = mem === undefined ? COLOR.none : mem >= 70 ? COLOR.solid : mem >= 40 ? COLOR.ok : COLOR.shaky
-    const { Box, Text } = $.ui.resolve(e)
+    const { Box, Button, Text } = $.ui.resolve(e)
     const c = counts(f)
     const at = LEVELS.indexOf(f.level ?? '')
     // cumulative rounding, so done + scratched cells never overshoot the meter
@@ -214,7 +228,10 @@ export const register: Register = on => {
             <Text> </Text><Text color={COLOR.solid}>{c.done}</Text><Text dimColor>/{c.n}</Text>
             {c.scr ? <Text color={COLOR.scr}> ◌{c.scr}</Text> : ''}
             {mem !== undefined ? <Text color={memColor}> {mem}%</Text> : ''}
+            <Text> </Text>
           </Text>
+          {/* the whole dashboard (playground/dashboard.html), rebuilt from the state files on press */}
+          <Button key="dashboard" label="▦ dashboard" plain onPress={() => { void openDashboard($, repo) }} />
         </Box>
       </Box>
     )

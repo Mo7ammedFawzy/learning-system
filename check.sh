@@ -70,6 +70,8 @@ fi
 # --- the review ladder script still follows the rules ---
 if command -v node >/dev/null 2>&1; then
   out=$(node review.mjs --test 2>&1) || bad "review.mjs --test failed" "$out"
+  # the dashboard's data still parses out of the state files (writes the untracked playground/dashboard-data.js)
+  out=$(node dashboard.mjs 2>&1) || bad "dashboard.mjs failed" "$out"
 fi
 
 # --- the installers run to the end on this machine, without installing anything ---

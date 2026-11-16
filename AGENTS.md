@@ -36,6 +36,7 @@ Read `core/BOOTSTRAP.md` and follow it exactly. `<learning-home>` is this reposi
 | `state/JOBS.md` | Job postings mapped to the topics that close each gap. Reference only — it never reorders lessons |
 | `sources/` | Interview-prep PDFs the learner wants finished first |
 | `playground/` | Summary cards per lesson (tracked). `playground/README.md` names where exercise code goes and how to run it |
+| `playground/dashboard.html` | Every topic, progress, study calendar, summaries and figures on one page. Its data comes from `node dashboard.mjs` (untracked `dashboard-data.js`) |
 | `adapters/` | Thin per-agent entry points — pointers only, never methodology |
 
 ## Two invariants
@@ -56,6 +57,7 @@ There is no build and no application code — the system is plain markdown plus 
 ./check.sh                 # invariant 1, stale paths, topic IDs vs banks, dark figures, review.mjs, installers. Runs on every commit
 ./check.sh --links         # the same, plus every documentation link resolves. Run after editing a curriculum
 node review.mjs reread 11 03a          # move state/REVIEW.md rows by the ladder rules (also pass | partial | miss)
+node dashboard.mjs                     # refresh playground/dashboard.html's data (every topic, progress, calendar, summaries, figures)
 claude plugin test adapters/claude/progress-mod   # the progress band's tests (hooks/parse.test.ts). Run after editing the band
 ```
 
@@ -63,7 +65,8 @@ claude plugin test adapters/claude/progress-mod   # the progress band's tests (h
 .\install.ps1              # write adapters into the global agent config dirs (-Uninstall removes)
 .\progress.ps1             # one progress bar per track, from the curricula and state/PROGRESS.md. The status line calls it
 .\progress.ps1 -Roadmap    # every section and topic per track. Each learning session opens with it
-# Claude Code: a one-line progress band above the prompt, in sessions opened in this repo (adapters/claude/progress-mod), linked in by the installer
+# Claude Code: a one-line progress band above the prompt, in sessions opened in this repo (adapters/claude/progress-mod), linked in by the installer.
+# Its "▦ dashboard" button runs dashboard.mjs and opens playground/dashboard.html
 ```
 ```bash
 ./install.sh               # same, Git Bash / macOS / Linux (--uninstall)

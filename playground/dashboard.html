@@ -1,0 +1,234 @@
+<!doctype html>
+<!-- The learning dashboard: every topic of every track as a cell, the study calendar beside it, and a
+     drawer with each topic's summary card and figure. Draws window.DASHBOARD from dashboard-data.js,
+     which `node dashboard.mjs` writes (the progress band's dashboard button runs it first).
+     Layout chosen in playground/PROTOTYPE-dashboard.html, variant M. -->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learning Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="dashboard-data.js"></script>
+<style>
+:root {
+  --bg:#f7f6f2; --card:#fff; --text:#1f1e1b; --muted:#6b6a64; --faint:#a19f97; --line:#e5e3db; --soft:#efeee8;
+  --accent:#534AB7; --due:#c2412d;
+  --g0:#ebedf0; --g1:#9be9a8; --g2:#40c463; --g3:#30a14e; --g4:#216e39;
+}
+* { box-sizing:border-box; }
+html, body { margin:0; background:var(--bg); color:var(--text); font:15px/1.55 system-ui,"Segoe UI",sans-serif; }
+code { font:13px ui-monospace,Consolas,monospace; background:var(--soft); padding:1px 5px; border-radius:4px; }
+pre { background:#faf9f5; border:1px solid var(--line); border-radius:8px; padding:10px 12px; overflow-x:auto; }
+pre code { background:none; padding:0; }
+.ar-summary { direction:rtl; text-align:right; margin:0; padding:10px 16px; background:#eaf6ec; border-bottom:1px solid var(--line); font-size:14px; color:#1f4d2b; }
+.wrap { max-width:1400px; margin:0 auto; padding:20px 16px 60px; }
+.head { display:flex; flex-wrap:wrap; gap:8px 14px; align-items:baseline; margin-bottom:12px; }
+.head h1 { margin:0; font-size:24px; }
+.muted { color:var(--muted); font-size:14px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+.grid { display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:16px; align-items:start; }
+.side { position:sticky; top:12px; display:flex; flex-direction:column; gap:16px; }
+@media (max-width:900px) { .grid { grid-template-columns:minmax(0,1fr); } .side { position:static; order:-1; min-width:0; } }
+.legend { display:flex; flex-wrap:wrap; gap:10px; font-size:12.5px; color:var(--muted); }
+.legend span { display:inline-flex; gap:5px; align-items:center; }
+.sw { width:14px; height:14px; border-radius:3px; display:inline-block; }
+.pill { display:inline-flex; align-items:center; gap:5px; font-size:12px; padding:1px 8px; border-radius:99px; background:var(--soft); color:var(--muted); white-space:nowrap; }
+.pill.due { background:#fbe9e5; color:var(--due); font-weight:600; }
+.hov { height:24px; font-size:14px; color:var(--muted); margin:2px 0 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.track { display:grid; grid-template-columns:90px 1fr; gap:12px; align-items:start; margin-bottom:18px; }
+.track b { text-transform:capitalize; }
+.secs { display:flex; flex-wrap:wrap; gap:12px 14px; }
+.sec-l { font-size:10.5px; color:var(--faint); text-transform:uppercase; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cells { display:flex; flex-wrap:wrap; gap:4px; }
+.pt { width:88px; height:88px; border-radius:6px; padding:4px 6px; display:flex; flex-direction:column; cursor:pointer; transition:transform .1s; }
+.pt:hover { transform:scale(1.06); position:relative; z-index:2; }
+.pt-top { display:flex; justify-content:space-between; font-size:10px; height:12px; opacity:.85; }
+.pt-id { font:700 22px/1.1 ui-monospace,Consolas,monospace; text-align:center; margin:2px 0 3px; }
+.pt-name { font-size:9.5px; line-height:1.15; text-align:center; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.cal { width:16px; height:16px; border-radius:4px; cursor:pointer; }
+.cal:hover { outline:1px solid #0004; }
+.day { margin-top:10px; font-size:13.5px; min-height:22px; color:var(--muted); }
+.day .pill { margin:2px; cursor:pointer; }
+.due-row { display:flex; gap:8px; align-items:center; padding:4px 0; border-bottom:1px solid var(--soft); font-size:13.5px; cursor:pointer; }
+#drawer { position:fixed; top:0; right:0; bottom:0; width:min(680px,100vw); background:var(--card); border-left:1px solid var(--line);
+  box-shadow:-10px 0 30px #0002; transform:translateX(105%); transition:transform .25s ease; z-index:60; overflow:auto; padding:18px 20px 60px; }
+#drawer.open { transform:none; }
+#drawer .close { float:right; border:0; background:var(--soft); border-radius:8px; padding:4px 10px; cursor:pointer; }
+.fig { width:100%; height:460px; border:1px solid var(--line); border-radius:10px; background:#fff; display:block; margin-bottom:14px; }
+.md { font-size:14.5px; }
+.md h1 { font-size:20px; } .md h2 { font-size:17px; margin-top:22px; } .md h3 { font-size:15px; }
+.md table { border-collapse:collapse; margin:8px 0; font-size:13.5px; } .md td, .md th { border:1px solid var(--line); padding:4px 8px; text-align:left; }
+.md [dir="rtl"] { text-align:right; }
+.weak { background:#fff7ea; border:1px solid #f0dcb4; border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:13.5px; }
+.empty { color:var(--faint); font-style:italic; }
+</style>
+</head>
+<body>
+<p class="ar-summary">‫كل مواضيع كل track في مربعات، كل ما الأخضر يغمق يبقى انت ماشي فيه أكتر. على اليمين الأيام اللي ذاكرت فيها والمراجعات المستحقة، ودوس على أي موضوع يفتحلك الملخص والـ figure.‬</p>
+<div id="app" class="wrap"></div>
+<aside id="drawer"></aside>
+<script>
+const D = window.DASHBOARD;
+const app = document.getElementById('app');
+if (!D) {
+  app.innerHTML = '<h1>No data yet</h1><p>Run <code>node dashboard.mjs</code> in the repo root, then reload this page.</p>';
+  throw new Error('dashboard-data.js missing');
+}
+
+// ---------------- the model ----------------
+const TODAY = new Date().toLocaleDateString('en-CA');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+const tick = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+const GREEN = ['var(--g0)', 'var(--g1)', 'var(--g2)', 'var(--g3)', 'var(--g4)'];
+// One green scale for cells and calendar: how far along a topic is.
+const STATUS = {
+  'not-started': { label:'Not started', level:0 },
+  'scratched':   { label:'Scratched',   level:1 },
+  'in-progress': { label:'In progress', level:1 },
+  'shaky':       { label:'Done · shaky', level:2 },
+  'ok':          { label:'Done · ok',    level:3 },
+  'solid':       { label:'Done · solid', level:4 },
+};
+
+// A curriculum row ("02") can be taught in parts ("02a", "02b"): every part found anywhere joins its row.
+const partIds = new Set([...D.completed.map(c => c.id), ...D.scratched.map(s => s.id), ...D.review.map(r => r.id),
+  ...Object.keys(D.summaries), ...Object.keys(D.figures)]);
+const byId = (list, id) => list.find(x => x.id === id);
+
+// Same rule as the progress band: a split topic shows its weakest finished part.
+function statusOf(topic) {
+  if (topic.isCurrent) return 'in-progress';
+  const conf = topic.parts.map(p => p.completed?.confidence).filter(Boolean);
+  if (conf.length) return conf.includes('shaky') ? 'shaky' : conf.includes('ok') ? 'ok' : 'solid';
+  return topic.parts.some(p => p.scratched) ? 'scratched' : 'not-started';
+}
+
+const TOPICS = [];
+for (const track of D.tracks) for (const section of track.sections) for (const t of section.topics) {
+  const parts = [...partIds].filter(p => p === t.id || new RegExp(`^${t.id}[a-z]$`).test(p)).sort().map(id => ({
+    id, completed: byId(D.completed, id), scratched: byId(D.scratched, id), review: byId(D.review, id),
+    summary: D.summaries[id], figure: D.figures[id], weak: D.weak.filter(w => w.topic === id),
+  }));
+  const cur = D.current[track.name] || '';
+  const topic = { ...t, track: track.name, section: section.title, parts,
+    isCurrent: new RegExp(`^Topic: ${t.id}[a-z]? `).test(cur) && !/Step: not started/.test(cur) };
+  topic.status = statusOf(topic);
+  topic.nextDue = parts.map(p => p.review?.due).filter(Boolean).sort()[0] || '';
+  topic.due = !!topic.nextDue && topic.nextDue <= TODAY;
+  topic.summaries = parts.filter(p => p.summary);
+  topic.figures = parts.filter(p => p.figure);
+  topic.weak = parts.flatMap(p => p.weak);
+  TOPICS.push(topic);
+}
+const key = t => `${t.track}:${t.id}`;
+const find = k => TOPICS.find(t => key(t) === k);
+const isDone = t => STATUS[t.status].level >= 1 && t.status !== 'in-progress';
+const sectionName = s => s.replace(/^Track /, '');
+const sectionsOf = track => track.sections.map(s => ({ title: s.title, topics: TOPICS.filter(t => t.track === track.name && t.section === s.title) }));
+
+// ---------------- the study calendar ----------------
+const events = {};
+const addEvent = (day, id, what) => (events[day] ||= []).push({ id, what, t: TOPICS.find(x => x.parts.some(p => p.id === id)) });
+for (const c of D.completed) (c.date.match(/\d{4}-\d{2}-\d{2}/g) || []).forEach((d, i) => addEvent(d, c.id, i ? 'reviewed' : 'lesson'));
+for (const s of D.scratched) addEvent(s.date, s.id, 'scratched');
+for (const r of D.review) if (r.last) addEvent(r.last, r.id, 're-read');
+
+function calendar() {
+  const days = Object.keys(events).sort();
+  const start = new Date((days[0] || TODAY) + 'T00:00'); start.setDate(start.getDate() - start.getDay());
+  const end = new Date(TODAY + 'T00:00'); end.setDate(end.getDate() + 6 - end.getDay());
+  const weeks = [];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 7)) weeks.push(new Date(d));
+  const shown = weeks.slice(-14); // the last 14 weeks fit the side column
+  const level = n => n === 0 ? 0 : n <= 2 ? 1 : n <= 5 ? 2 : n <= 9 ? 3 : 4;
+  return `<div style="display:inline-grid;grid-template-columns:22px repeat(${shown.length},16px);grid-template-rows:18px repeat(7,16px);gap:4px">
+    ${shown.map((w, i) => `<div style="grid-row:1;grid-column:${i + 2};font-size:11px;color:var(--muted);white-space:nowrap">${i === 0 || shown[i - 1].getMonth() !== w.getMonth() ? w.toLocaleString('en', { month:'short' }) : ''}</div>`).join('')}
+    ${'SMTWTFS'.split('').map((l, r) => `<div style="grid-row:${r + 2};grid-column:1;font-size:11px;color:var(--muted);line-height:16px">${l}</div>`).join('')}
+    ${shown.flatMap((w, c) => [...Array(7)].map((_, r) => {
+      const d = new Date(w); d.setDate(d.getDate() + r);
+      const k = d.toLocaleDateString('en-CA'), n = (events[k] || []).length;
+      return `<div class="cal" data-day="${k}" title="${k}: ${n} item${n === 1 ? '' : 's'}" style="grid-row:${r + 2};grid-column:${c + 2};background:${k > TODAY ? 'transparent' : GREEN[level(n)]};${k === TODAY ? 'outline:2px solid var(--accent);outline-offset:1px;' : ''}"></div>`;
+    })).join('')}
+  </div>`;
+}
+
+// ---------------- the topic drawer ----------------
+const md = text => (window.marked ? marked.parse(text) : `<pre>${esc(text)}</pre>`).replace(/<(p|li|h[1-6]|td|blockquote)>/g, '<$1 dir="auto">');
+const duePill = t => t.due ? `<span class="pill due">Due ${t.nextDue === TODAY ? 'today' : t.nextDue}</span>` : t.nextDue ? `<span class="pill">Review ${t.nextDue}</span>` : '';
+const statusPill = t => `<span class="pill"><span class="sw" style="width:10px;height:10px;background:${GREEN[STATUS[t.status].level]}"></span>${STATUS[t.status].label}</span>`;
+const drawer = document.getElementById('drawer');
+function open(t) {
+  const meta = t.parts.map(p => `<li><b>${p.id}</b> — ${p.completed ? `done ${esc(p.completed.date)}, <b>${esc(p.completed.confidence)}</b>` : p.scratched ? `scratched ${esc(p.scratched.date)}` : 'no record'}${p.review ? ` · review ${p.review.due} (every ${p.review.rung} days)` : ''}</li>`).join('');
+  drawer.innerHTML = `<button class="close">✕</button>
+    <div style="font-size:12px;color:var(--muted);text-transform:capitalize">${t.track} · ${esc(sectionName(t.section))}</div>
+    <h2 style="margin:2px 0 8px">${t.id} · ${esc(t.title)} ${t.star === 'core' ? '★' : t.star === 'senior' ? '☆' : ''}</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">${statusPill(t)}${duePill(t)}${t.isCurrent ? '<span class="pill" style="color:var(--accent)">Current lesson</span>' : ''}</div>
+    <p style="color:var(--muted);margin:0 0 10px">${tick(t.objective)}</p>
+    ${meta ? `<ul style="margin:0 0 12px;padding-left:18px;font-size:13.5px">${meta}</ul>` : ''}
+    ${t.weak.length ? `<div class="weak"><b>Weak spots</b><ul style="margin:4px 0 0;padding-left:18px">${t.weak.map(w => `<li>${tick(w.label)} <span class="pill">${w.held}/2 held</span></li>`).join('')}</ul></div>` : ''}
+    ${t.figures.map(p => `<iframe class="fig" loading="lazy" src="${p.figure}" title="${p.id} figure"></iframe>`).join('')}
+    ${t.summaries.map(p => `<div class="md"><span class="pill">${p.id} · ${p.summary.kind}</span>${md(p.summary.md)}</div>`).join('') || '<p class="empty">No summary card yet.</p>'}`;
+  drawer.classList.add('open'); drawer.scrollTop = 0;
+}
+
+// ---------------- the page ----------------
+const cell = t => `<div class="pt" data-open="${key(t)}" style="background:${GREEN[STATUS[t.status].level]};color:${STATUS[t.status].level >= 3 ? '#fff' : '#1f3d27'};${t.due ? 'outline:2px solid var(--due);outline-offset:1px;' : ''}${t.isCurrent ? 'box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--accent);' : ''}">
+  <div class="pt-top"><span>${t.star === 'core' ? '★' : t.star === 'senior' ? '☆' : ''}</span><span>${t.figures.length ? '▣' : ''}</span></div>
+  <div class="pt-id">${t.id}</div><div class="pt-name">${esc(t.title)}</div></div>`;
+const due = TOPICS.flatMap(t => t.parts.filter(p => p.review && p.review.due <= TODAY).map(p => ({ t, p }))).sort((a, b) => a.p.review.due.localeCompare(b.p.review.due));
+const studyDays = Object.keys(events).length;
+const legendLevels = ['Not started', 'Scratched', 'Done · shaky', 'Done · ok', 'Done · solid'];
+
+app.innerHTML = `
+  <div class="head"><h1>Learning dashboard</h1>
+    <span class="muted">${TOPICS.filter(isDone).length} of ${TOPICS.length} topics touched · ${studyDays} study days · updated ${new Date(D.generated).toLocaleString('en-GB', { dateStyle:'medium', timeStyle:'short' })}</span></div>
+  <div class="grid">
+    <section class="card" style="min-width:0">
+      <div class="head" style="margin-bottom:4px"><h2 style="margin:0;font-size:16px">Every topic</h2>
+        <div class="legend">${legendLevels.map((l, i) => `<span><span class="sw" style="background:${GREEN[i]}"></span>${l}</span>`).join('')}
+          <span><span class="sw" style="outline:2px solid var(--due);background:var(--card)"></span>Review due</span></div></div>
+      <div style="font-size:12px;color:var(--muted)">★ asked in most interviews · ▣ has figure · purple ring = current lesson</div>
+      <div class="hov">Hover a topic; click it for its summary and figure.</div>
+      ${D.tracks.map(track => { const list = TOPICS.filter(t => t.track === track.name); return `
+        <div class="track"><div><b>${track.name}</b><div class="muted" style="font-size:12px">${list.filter(isDone).length}/${list.length}</div></div>
+          <div class="secs">${sectionsOf(track).map(s => `<div style="max-width:${Math.min(s.topics.length, 5) * 92}px">
+            <div class="sec-l" title="${esc(s.title)}">${esc(sectionName(s.title))}</div><div class="cells">${s.topics.map(cell).join('')}</div></div>`).join('')}</div>
+        </div>`; }).join('')}
+    </section>
+    <div class="side">
+      <section class="card" style="overflow-x:auto">
+        <h2 style="margin:0 0 8px;font-size:16px">Study days</h2>
+        ${calendar()}
+        <div style="display:flex;gap:4px;align-items:center;font-size:11px;color:var(--muted);margin-top:8px">Less ${GREEN.map(c => `<span class="sw" style="width:12px;height:12px;background:${c}"></span>`).join('')} More</div>
+        <div class="day">Click a day to see what you did.</div>
+      </section>
+      <section class="card">
+        <h2 style="margin:0 0 6px;font-size:16px">Due for review <span class="pill due">${due.length}</span></h2>
+        <div style="max-height:240px;overflow:auto">${due.map(({ t, p }) => `<div class="due-row" data-open="${key(t)}"><code>${p.id}</code><span style="flex:1">${esc(t.title)}</span><span class="pill">${p.review.due === TODAY ? 'today' : p.review.due}</span></div>`).join('') || '<p class="empty">Nothing due.</p>'}</div>
+      </section>
+    </div>
+  </div>`;
+
+const hov = app.querySelector('.hov');
+app.addEventListener('mouseover', e => {
+  const el = e.target.closest('.pt'); if (!el) return;
+  const t = find(el.dataset.open);
+  hov.textContent = `${t.id} · ${t.title} — ${STATUS[t.status].label}${t.nextDue ? ' · review ' + t.nextDue : ''}${t.figures.length ? ' · has figure' : ''}`;
+});
+document.addEventListener('click', e => {
+  const o = e.target.closest('[data-open]');
+  if (o) return open(find(o.dataset.open));
+  const c = e.target.closest('.cal');
+  if (c) {
+    const list = events[c.dataset.day] || [];
+    app.querySelector('.day').innerHTML = `<b style="color:var(--text)">${c.dataset.day}</b> — ` + (list.length
+      ? list.map(x => `<span class="pill" ${x.t ? `data-open="${key(x.t)}"` : ''}>${x.id} · ${x.what}</span>`).join('') : 'nothing recorded.');
+    return;
+  }
+  if (e.target.closest('.close') || !e.target.closest('#drawer')) drawer.classList.remove('open');
+});
+addEventListener('keydown', e => { if (e.key === 'Escape') drawer.classList.remove('open'); });
+</script>
+</body>
+</html>

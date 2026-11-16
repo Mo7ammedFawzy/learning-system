@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { focus, memory, parse } from './register.tsx'
+import { focus, memory, opener, parse } from './register.tsx'
 
 const PROGRESS = `# Progress
 ## Current
@@ -84,4 +84,11 @@ test('memory: how much is still remembered, over the track\'s REVIEW.md rows', a
   // seen today: fully remembered
   expect(memory(review, 'node', '2026-11-13')).toBe(100)
   expect(memory(review, 'delivery', '2026-11-13')).toBe(undefined)
+})
+
+test('the dashboard opens with the host default app', () => {
+  expect(opener('C:/Projects/learning-system/playground/dashboard.html'))
+    .toEqual(['explorer.exe', String.raw`C:\Projects\learning-system\playground\dashboard.html`])
+  expect(opener('/Users/me/ls/playground/dashboard.html')).toEqual(['open', '/Users/me/ls/playground/dashboard.html'])
+  expect(opener('/home/me/ls/playground/dashboard.html')).toEqual(['xdg-open', '/home/me/ls/playground/dashboard.html'])
 })
