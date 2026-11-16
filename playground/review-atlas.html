@@ -374,7 +374,8 @@ List&lt;? extends Number&gt; n = …; n.add(1);   // ❌ producer — read only<
 <h2>11 — Optional</h2>
 <p class="meta">Due 2026-11-17 · rung 3 · scratched</p>
 <p class="model"><code>Optional</code> is a return type that says "may be empty" — you chain on the box instead of opening it.</p>
-<div class="pending">Figure pending — being built in the background.</div>
+<iframe loading="lazy" src="atlas/11-figure.html" title="11 figure"></iframe>
+<a class="open" href="atlas/11-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>opt.orElse(loadDefault())            // ❌ loadDefault() runs even when a value is present
