@@ -111,7 +111,7 @@ html{color-scheme:dark}
 body[data-theme="light"]{color-scheme:light}
 body{margin:0;background:var(--anatomy-page);color:var(--anatomy-text);font:14px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 .iso-page{width:min(650px,100% - 32px);margin:64px auto 96px}
-</style></head><body class="iso" data-theme="light"><main class="iso-page"><style>
+</style></head><body class="iso" data-theme="light"><main class="iso-page"><aside class="ar-summary" dir="rtl" lang="ar" style="max-width:880px;margin:0 auto 16px;padding:12px 18px;border-radius:10px;background:rgba(0,0,0,.035);border:1px solid rgba(0,0,0,.09);font:15px/1.85 'Segoe UI',Tahoma,system-ui,sans-serif;color:#1f2328;text-align:right"><strong style="display:block;margin-bottom:2px">باختصار</strong><p style="margin:0">الـ <bdi dir="ltr">exception</bdi> بيقع من فوق لتحت ويعدّي على الـ <bdi dir="ltr">catch</bdi> بالترتيب، وبيقف في أول <bdi dir="ltr">catch</bdi> نوعه نفس النوع أو <bdi dir="ltr">supertype</bdi>.</p><p style="margin:0">لو حطيت <bdi dir="ltr">catch (Exception)</bdi> فوق <bdi dir="ltr">catch (IOException)</bdi>، اللي تحت عمره ما هيتوصل، فالـ <bdi dir="ltr">javac</bdi> بيرفض الكود.</p><p style="margin:0">في الـ <bdi dir="ltr">try-with-resources</bdi>، الـ <bdi dir="ltr">resources</bdi> بتتقفل بالعكس قبل أي <bdi dir="ltr">catch</bdi>، ولو <bdi dir="ltr">close</bdi> فشلت بتركب معاه كـ <bdi dir="ltr">suppressed exception</bdi>.</p></aside><style>
 .iso-page{margin:14px auto 14px!important;width:min(680px,100% - 24px)!important}
 .iso-figure{margin:0}
 .iso-plate{padding:44px 20px 42px}

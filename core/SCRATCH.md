@@ -38,7 +38,7 @@ hardest topic (the first ★ row, else the first row), then teach without waitin
 saved as `playground/scratch-<scope>/<id>-figure.html`. One figure per batch, never more. It is a
 study aid for while the learner reads and for between sessions. It never replaces a block's inline
 picture. When `state/PROGRESS.md` names a second teaching language, every detailed figure (here and
-in the atlas) shows under its title a short summary of the whole figure in that language: 2–4 lines
+in the atlas) shows at the top of the page a short summary of the whole figure in that language: 2–4 lines
 saying what the object is, what each part stands for and what moving it shows, so the figure reads
 at a glance. The teaching agent writes those lines to that file's language rules and hands them to
 the builder verbatim, set right-to-left where the language is. Where there is no background worker, skip it: building the figure inline would delay the

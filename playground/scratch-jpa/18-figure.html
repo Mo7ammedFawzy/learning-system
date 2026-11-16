@@ -111,7 +111,7 @@ html{color-scheme:dark}
 body[data-theme="light"]{color-scheme:light}
 body{margin:0;background:var(--anatomy-page);color:var(--anatomy-text);font:14px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 .iso-page{width:min(650px,100% - 32px);margin:64px auto 96px}
-</style></head><body class="iso" data-theme="light"><main class="iso-page"><style>
+</style></head><body class="iso" data-theme="light"><main class="iso-page"><aside class="ar-summary" dir="rtl" lang="ar" style="max-width:880px;margin:0 auto 16px;padding:12px 18px;border-radius:10px;background:rgba(0,0,0,.035);border:1px solid rgba(0,0,0,.09);font:15px/1.85 'Segoe UI',Tahoma,system-ui,sans-serif;color:#1f2328;text-align:right"><strong style="display:block;margin-bottom:2px">باختصار</strong><p style="margin:0">في علاقة <bdi dir="ltr">@OneToMany</bdi> و <bdi dir="ltr">@ManyToOne</bdi> من الناحيتين، الـ <bdi dir="ltr">foreign key</bdi> موجود في ناحية الـ <bdi dir="ltr">many</bdi>، فهي الـ <bdi dir="ltr">owning side</bdi>.</p><p style="margin:0">وقت الـ <bdi dir="ltr">flush</bdi>، الـ <bdi dir="ltr">Hibernate</bdi> بيبني الـ <bdi dir="ltr">INSERT</bdi> من <bdi dir="ltr">line.getOrder()</bdi> بس، والـ <bdi dir="ltr">collection</bdi> اللي في الـ <bdi dir="ltr">Order</bdi> مابيبصلهاش.</p><p style="margin:0">لو ضفت الـ <bdi dir="ltr">line</bdi> في <bdi dir="ltr">order.getLines()</bdi> بس، الـ <bdi dir="ltr">order_id</bdi> هيتكتب <bdi dir="ltr">NULL</bdi>، فاعمل الناحيتين في <bdi dir="ltr">helper</bdi> واحد.</p></aside><style>
 .jp-recess{fill:var(--anatomy-shade-0);stroke:none}
 .jp-bore{fill:var(--anatomy-halo);stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight)}
 .jp-lamp .iso-fill,.jp-lamp .iso-top{transition:fill .35s}

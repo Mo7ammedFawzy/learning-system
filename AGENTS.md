@@ -85,7 +85,7 @@ Every figure built in this repo (the `anatomy` skill, or any other way) uses the
 build with `--light`, or ship `data-theme="light"` on the page. The anatomy kit defaults to dark,
 so say so in every brief that hands a figure to another agent. Never auto-switch to dark.
 `./check.sh` fails on any page under `playground/` that opens dark. Each figure also carries a short
-Arabic summary of the whole figure under its title (`core/SCRATCH.md` section 2).
+Arabic summary of the whole figure at the top of the page (`core/SCRATCH.md` section 2); `./check.sh` fails without it.
 
 ## Arabic text output
 

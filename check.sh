@@ -63,6 +63,8 @@ pages=$(git ls-files -co --exclude-standard -- 'playground/*.html')
 if [ -n "$pages" ]; then
   out=$(echo "$pages" | xargs grep -lE '<body[^>]*data-theme="dark"|dataset\.theme *=[^;]*"dark"')
   [ -n "$out" ] && bad "figures that open dark: build with --light, or set data-theme=\"light\"" "$out"
+  out=$(echo "$pages" | xargs grep -l 'class="iso-figure"' | xargs -r grep -L 'class="ar-summary"')
+  [ -n "$out" ] && bad "figures with no learner-language summary (core/SCRATCH.md section 2)" "$out"
 fi
 
 # --- the review ladder script still follows the rules ---
