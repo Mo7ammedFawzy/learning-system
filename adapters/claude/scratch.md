@@ -28,7 +28,8 @@ inline surface the methodology's *Delivery* section means — call `mcp__visuali
 first. Where it is not (a terminal), there is none.
 
 Detailed figure: the background worker is the `Agent` tool with `run_in_background: true`, and
-the figure is built with the `anatomy` skill, at its Figure size. Send the Agent call in the
+the figure is built with the `anatomy` skill, at its Figure size, in its light theme (`--light`;
+the kit defaults to dark). Send the Agent call in the
 same message as the line naming the batch, before the teach blocks. The brief names the topic, its
 mental model in one sentence, the output path, and says: invoke the `anatomy` skill (or read
 `~/.claude/skills/anatomy/SKILL.md` and follow it), and write nothing outside that path.
