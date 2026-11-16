@@ -37,9 +37,9 @@ ol { padding-left:22px; }
 <body>
 <main>
 <h1>Review atlas</h1>
-<p class="meta">Read the mental model, say the trap and the interview answer out loud, then open the reveal. Order: most overdue first, as of 2026-11-15.</p>
+<p class="meta">Read the mental model, say the trap and the interview answer out loud, then open the reveal. Order: most overdue first, as of 2026-11-16.</p>
 <nav>
-  <a href="#t03a">03a</a><a href="#t04b">04b</a><a href="#t08a">08a</a><a href="#t16">16</a><a href="#t44">44</a><a href="#t45">45</a><a href="#t09a">09a</a><a href="#t10a">10a</a><a href="#t13">13</a><a href="#t15">15</a><a href="#t02a">02a</a><a href="#t02b">02b</a><a href="#t04a">04a</a><a href="#t05a">05a</a><a href="#t05b">05b</a><a href="#t06a">06a</a><a href="#t08b">08b</a><a href="#t01">01</a>
+  <a href="#t03a">03a</a><a href="#t04b">04b</a><a href="#t08a">08a</a><a href="#t16">16</a><a href="#t44">44</a><a href="#t45">45</a><a href="#t09a">09a</a><a href="#t10a">10a</a><a href="#t13">13</a><a href="#t15">15</a><a href="#t02a">02a</a><a href="#t02b">02b</a><a href="#t04a">04a</a><a href="#t05a">05a</a><a href="#t05b">05b</a><a href="#t06a">06a</a><a href="#t08b">08b</a><a href="#t01">01</a><a href="#t17">17</a><a href="#t04c">04c</a><a href="#t10">10</a><a href="#t12">12</a><a href="#t14">14</a><a href="#t07">07</a>
 </nav>
 
 <section id="t03a">
@@ -364,6 +364,113 @@ counts.getOrDefault(key, 0)          // ✅</pre>
 <p class="sub">بالمصري</p>
 <p class="ar">الـ Java دايماً pass-by-value، والـ reference هو اللي بيتنسخ.</p>
 <p class="ar">الـ == على الـ Integer بيشتغل لحد 127 بس.</p>
+</details>
+</section>
+
+<section id="t17">
+<h2>17 — Indexes and isolation</h2>
+<p class="meta">Due 2026-11-17 · rung 1 · scratched</p>
+<p class="model">An index is a sorted B-tree copy of some columns: a filter on its leading column becomes a seek through a few pages instead of a scan — and every write pays to maintain it.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>WHERE YEAR(created_at) = 2026                                    -- ❌ function on the column → scan
+WHERE created_at &gt;= '2026-01-01' AND created_at &lt; '2027-01-01'   -- ✅ range → seek</pre>
+<p class="sub">Interview</p>
+<ol><li>B-tree; a filter on the leading column is a seek.</li><li>Every insert/update/delete maintains it.</li><li>One clustered (the table's order); non-clustered point back — key lookup.</li><li>Lost by a function on the column, or by skipping the leftmost column of a composite.</li><li>Isolation: READ UNCOMMITTED (dirty) · READ COMMITTED, the default (non-repeatable) · REPEATABLE READ (phantoms) · SERIALIZABLE (none).</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ clustered index هو ترتيب الجدول نفسه، علشان كده واحد بس.</p>
+<p class="ar">لو حطيت function على الـ column في الـ WHERE، الـ index بيبطل يتستخدم.</p>
+</details>
+</section>
+
+<section id="t04c">
+<h2>04c — Constructors</h2>
+<p class="meta">Due 2026-11-17 · rung 1 · completed, shaky</p>
+<p class="model">A constructor is not a method: it initialises an object <code>new</code> already allocated, its first line is always <code>super(...)</code>, and it is never inherited.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>class Parent { Parent(String n) {} }
+class Child extends Parent { }                          // ❌ javac inserts super(); Parent() doesn't exist
+class Child extends Parent { Child() { super("x"); } }  // ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>Not inherited — an inherited parent constructor would leave the child's own fields uninitialised.</li><li>Every constructor starts with <code>super(...)</code>, implicitly <code>super()</code>.</li><li>No <code>final</code>/<code>static</code>/<code>abstract</code>: never inherited, needs <code>this</code>, must have a body.</li><li>It returns nothing — <code>new</code> returns the reference.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ constructor مش method، ومابيتورثش.</p>
+<p class="ar">أول سطر فيه دايماً super، ولو انت ماكتبتهاش الـ compiler بيكتبها.</p>
+</details>
+</section>
+
+<section id="t10">
+<h2>10 — Streams</h2>
+<p class="meta">Due 2026-11-17 · rung 1 · scratched</p>
+<p class="model">A stream is a lazy pipeline: intermediate ops only describe work; the terminal op pulls each element through every stage, one at a time.</p>
+<iframe loading="lazy" src="atlas/10-figure.html" title="10 figure"></iframe>
+<a class="open" href="atlas/10-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>list.stream().filter(x -&gt; { log(x); return true; });   // ❌ no terminal op → logs nothing
+List&lt;X&gt; out = new ArrayList&lt;&gt;(); s.parallel().forEach(out::add);  // ❌ loses elements
+List&lt;X&gt; out = s.parallel().toList();                       // ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>Lazy; the terminal op triggers it.</li><li>Elements flow one by one, so <code>findFirst</code> short-circuits.</li><li><code>map</code> 1→1, <code>flatMap</code> 1→0..n flattened.</li><li><code>parallelStream</code> uses the common ForkJoinPool — large, CPU-bound, stateless work only.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ stream خط إنتاج متوصف بس، ومن غير terminal operation مفيش حاجة بتشتغل.</p>
+<p class="ar">الـ parallel stream مش أسرع على طول، وبيبوظ لو بتكتب في list مشتركة.</p>
+</details>
+</section>
+
+<section id="t12">
+<h2>12 — Exceptions</h2>
+<p class="meta">Due 2026-11-17 · rung 1 · scratched</p>
+<p class="model">A thrown exception falls through the catch clauses top to bottom and lands in the first one that matches its type or a supertype — so the narrowest catch goes first.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>catch (Exception e) {} catch (IOException e) {}   // ❌ compile error — already caught
+catch (IOException e) {} catch (Exception e) {}   // ✅ narrow first
+catch (Exception e) {}                            // ❌ empty — swallows the bug</pre>
+<p class="sub">Interview</p>
+<ol><li><code>Error</code>: the JVM is failing — don't catch.</li><li>Checked: recoverable, outside your code, compiler-enforced (catch or declare).</li><li>Unchecked: <code>RuntimeException</code>, usually a bug.</li><li><code>throw</code> raises one object; <code>throws</code> declares what may escape.</li><li>try-with-resources closes in reverse; a <code>close()</code> failure is suppressed.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ checked exception الـ compiler بيجبرك تمسكه أو تعلنه.</p>
+<p class="ar">الـ catch الأضيق ييجي الأول، وإلا الكود مش هيعمل compile.</p>
+</details>
+</section>
+
+<section id="t14">
+<h2>14 — Immutability and defensive copying</h2>
+<p class="meta">Due 2026-11-17 · rung 1 · scratched</p>
+<p class="model"><code>final</code> freezes the reference, not the object — so an immutable class copies every mutable thing on the way in and on the way out.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>this.items = Collections.unmodifiableList(items);  // ❌ a view — the caller still mutates it
+this.items = List.copyOf(items);                   // ✅ a snapshot</pre>
+<p class="sub">Interview</p>
+<ol><li><code>final</code> class, <code>private final</code> fields, no setters.</li><li>Defensive copies in and out; "change" returns a new object.</li><li>Thread-safe without locks, safe as a map key; cost: an object per change.</li><li>Records are only shallowly immutable.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ final بيثبت الـ reference بس، مش الـ list اللي بيشاور عليها.</p>
+<p class="ar">علشان كده تعمل copy وانت داخل و copy وانت خارج.</p>
+</details>
+</section>
+
+<section id="t07">
+<h2>07 — Generics and erasure</h2>
+<p class="meta">Due 2026-11-17 · rung 1 · scratched</p>
+<p class="model">Generics are a compile-time check only: the type argument is checked, then erased, so at runtime every <code>List&lt;X&gt;</code> is the same raw <code>List</code>.</p>
+<div class="pending">Figure pending — being built in the background.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>void f(List&lt;String&gt; a) {}
+void f(List&lt;Integer&gt; b) {}     // ❌ same erasure → compile error
+List&lt;? extends Number&gt; n = …; n.add(1);   // ❌ producer — read only</pre>
+<p class="sub">Interview</p>
+<ol><li>Compile-time safety, erased at runtime.</li><li>Invariant: <code>List&lt;Dog&gt;</code> is not a <code>List&lt;Animal&gt;</code>.</li><li>PECS: producer <code>extends</code>, consumer <code>super</code>.</li><li>Erasure is why there is no <code>new T[]</code> and no <code>instanceof List&lt;String&gt;</code>.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ generics فحص وقت الـ compile بس، ووقت التشغيل الـ type بيتمسح.</p>
+<p class="ar">الـ List of Dog مش List of Animal، حتى لو الـ Dog هو Animal.</p>
 </details>
 </section>
 </main>
