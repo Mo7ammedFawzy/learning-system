@@ -450,7 +450,8 @@ interface Exporter { void bump(); default void run() { bump(); } }     // ✅ ho
 <h2>05b — Dynamic dispatch, the four OOP concepts, varargs</h2>
 <p class="meta">Due 2026-11-18 · rung 7 · completed, ok</p>
 <p class="model">A method runs where it is written, but <code>this</code> is always the real object.</p>
-<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<iframe loading="lazy" src="atlas/05b-figure.html" title="05b figure"></iframe>
+<a class="open" href="atlas/05b-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>new TestConfig().show();                   // "test" — show() calls this.env()
