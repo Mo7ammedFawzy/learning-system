@@ -5,7 +5,7 @@ Rebuild `playground/dashboard.html` so it looks and works like an interactive co
 Vocabulary follows [GLOSSARY.md](../../GLOSSARY.md): topic, part, figure, frame, summary card.
 
 Reference prototype: [playground/PROTOTYPE-dashboard-v2.html](../../playground/PROTOTYPE-dashboard-v2.html)
-(commit `745ca23`; `?tabs=A|B` flips the open tab choice). Serve the folder over http to see the figure colours.
+(commit `745ca23`; open it with `?tabs=B`). Serve the folder over http to see the figure colours.
 
 ## Decisions
 
@@ -15,11 +15,11 @@ Reference prototype: [playground/PROTOTYPE-dashboard-v2.html](../../playground/P
 | 2 | **Copy the measured look, not the reference site's code** (tokens below) |
 | 3 | **One HTML file, no build step.** `dashboard.mjs` stays the only script and still writes `dashboard-data.js`; the progress band's dashboard button keeps opening the page from disk |
 | 4 | **Words on the page:** topic, part, figure, frame, summary card. Never "lesson" for a menu item, never "step" for a figure screen |
-| 5 | **Tabs: to confirm.** You said B (Learn · Progress, due list inside Progress) in one session and A (Learn · Progress · Review) in the other; the prototype defaults to A |
+| 5 | **Two tabs: Learn · Progress.** "Due for review" stays inside Progress, beside the calendar. (The prototype opens on A; use `?tabs=B`) |
 | 6 | **Nested sidebar tree:** tracks → sections → topics, each folder showing done/total |
 | 7 | **Stage content:** the topic's figure fills the stage; with no figure, its summary card does; with neither, a "not studied yet" state with the objective. The right panel holds id, title, objective, status, review date, parts, weak spots, and the summary card when the stage shows the figure |
 | 8 | **On load:** open the last-opened topic (localStorage, wrapped in try/catch); fall back to the current topic of the focused track |
-| 9 | **Figure frame, not new frames.** The stage shows each existing anatomy figure in the reference layout: crumb, title, chips, live metric tiles parsed from the figure's readout, the legend, and ◀ ▶ buttons that press the figure's own arrow keys. No new click-through frames are authored. The stage never scrolls. *(◀ ▶ revises the earlier "no Next/Back" decision; to confirm)* |
+| 9 | **Figure frame, not new frames.** The stage shows each existing anatomy figure in the reference layout: crumb, title, chips, live metric tiles parsed from the figure's readout, the legend, and ◀ ▶ buttons that press the figure's own arrow keys. No new click-through frames are authored. The stage never scrolls. (◀ ▶ replaces the earlier "no Next/Back" decision) |
 | 10 | **Figure colours.** Figures keep their drawings, re-coloured from the course palette (same-size parts share a colour, the base board stays paper) with dark 1.2px outlines. The styles ship inside the figures (a shared stylesheet in `playground/atlas/` or a kit theme), so they work from disk. A full redraw of topic 10 was tried and set aside |
 | 11 | **Right panel fits without scrolling** (text clamped). "Read more" and "Open summary card" open a slide-in reader |
 | 12 | **Topics with several figures** show one named button per part ("02a String pool vs heap") |
@@ -45,12 +45,9 @@ Reference prototype: [playground/PROTOTYPE-dashboard-v2.html](../../playground/P
 | Card | radius 12px, border 1.2px `--line`, `box-shadow: inset 0 1px 0 #ffffffa6, 0 10px 22px -16px rgba(80,60,35,.35)` |
 | Section folders | one colour each, cycling green, violet, orange, mint |
 
-## Open before the build
+## Note for the build
 
-- **Tabs (decision 5):** A or B.
-- **◀ ▶ buttons (decision 9):** confirm they replace the earlier "no Next/Back" rule.
-
-The prototype re-colours figures by injecting CSS into their iframes, which works only over http.
+Nothing is open. The prototype re-colours figures by injecting CSS into their iframes, which works only over http.
 Decision 10 moves that stylesheet into the figures themselves.
 
 ## Done when
