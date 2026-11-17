@@ -23,6 +23,8 @@ Reference prototype: [playground/PROTOTYPE-dashboard-v2.html](../../playground/P
 | 10 | **Figure colours.** Figures keep their drawings, re-coloured from the course palette (same-size parts share a colour, the base board stays paper) with dark 1.2px outlines. The styles ship inside the figures (a shared stylesheet in `playground/atlas/` or a kit theme), so they work from disk. A full redraw of topic 10 was tried and set aside |
 | 11 | **Right panel fits without scrolling** (text clamped). "Read more" and "Open summary card" open a slide-in reader |
 | 12 | **Topics with several figures** show one named button per part ("02a String pool vs heap") |
+| 13 | **Figure side panels** (code listings, consoles, controls and notes beside a drawing) use the course look: a card, the current line as a green pop pill, pop buttons, notes as dark-bordered callouts. Long lines wrap, so nothing scrolls sideways. Known gap: figure 12's side panel (878px) is taller than the frame and scrolls vertically inside its card |
+| 14 | **The right panel shows the figure's Arabic summary** (its `.ar-summary`, right-to-left, under "باختصار") instead of the English caption. The English caption moves to the Read more reader, after the Arabic |
 | — | Light only (no dark mode, no toggle), Arabic summary at the top of the page, `./check.sh` passes |
 
 ## Layout
@@ -59,6 +61,8 @@ Decision 10 moves that stylesheet into the figures themselves.
 - [ ] The stage follows decision 7 for a topic with a figure, one with only a summary card, and one with neither
 - [ ] Figures show in the course colours when opened from disk; ◀ ▶ and the metric tiles follow the figure; the stage and right panel never scroll
 - [ ] A topic with several figures shows one named button per part
+- [ ] No figure scrolls sideways (all 26 checked); figure 12's side panel is the only one that scrolls vertically
+- [ ] The right panel shows the figure's Arabic summary; Read more shows the Arabic, then the English caption
 - [ ] Reloading reopens the last topic; on first visit (cleared storage) it opens the focused track's current topic
 - [ ] `./check.sh` passes
 - [ ] `playground/PROTOTYPE-dashboard-v2.html` is deleted once the real page lands
