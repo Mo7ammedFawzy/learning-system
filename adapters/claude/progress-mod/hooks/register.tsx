@@ -196,6 +196,8 @@ export const register: Register = on => {
     const f = loaded && focus(loaded.tracks)
     if (!loaded || !f) return next(e)
     const mem = memory(loaded.review, f.name, new Date().toLocaleDateString('sv'))
+    // shown as what is left to review (100 - remembered); colour still keyed on remembered
+    const toReview = mem === undefined ? undefined : 100 - mem
     const memColor = mem === undefined ? COLOR.none : mem >= 70 ? COLOR.solid : mem >= 40 ? COLOR.ok : COLOR.shaky
     const { Box, Button, Text } = $.ui.resolve(e)
     const c = counts(f)
@@ -227,7 +229,7 @@ export const register: Register = on => {
             <Text color={COLOR.none}>{'░'.repeat(METER - doneW - scrW)}</Text>
             <Text> </Text><Text color={COLOR.solid}>{c.done}</Text><Text dimColor>/{c.n}</Text>
             {c.scr ? <Text color={COLOR.scr}> ◌{c.scr}</Text> : ''}
-            {mem !== undefined ? <Text color={memColor}> {mem}%</Text> : ''}
+            {toReview !== undefined ? <Text color={memColor}> ↻{toReview}%</Text> : ''}
             <Text> </Text>
           </Text>
           {/* the whole dashboard (playground/dashboard.html), rebuilt from the state files on press */}
