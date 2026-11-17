@@ -85,6 +85,9 @@ h1, h2, h3, .mono { font-family:var(--mono); }
 .clamp { display:-webkit-box; -webkit-line-clamp:var(--n); -webkit-box-orient:vertical; overflow:hidden; }
 .one { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:12.5px; }
 #panel .fade { flex:1 1 0; min-height:2.6em; overflow:hidden; font-size:12.5px; -webkit-mask-image:linear-gradient(#000 70%, transparent); mask-image:linear-gradient(#000 70%, transparent); }
+.ar { direction:rtl; text-align:right; font:13.5px/1.85 "Segoe UI",Tahoma,system-ui,sans-serif; }
+.ar p { margin:0 0 4px; }
+.ar bdi { font-family:var(--mono); font-size:12px; }
 .link { background:none; border:0; padding:4px 0; font:600 12px var(--mono); color:var(--rust); cursor:pointer; text-align:left; }
 #reader { position:fixed; top:38px; right:0; bottom:0; width:min(620px,100vw); background:var(--card); border-left:1.2px solid var(--edge); box-shadow:-14px 0 30px -18px rgba(80,60,35,.5);
   transform:translateX(105%); transition:transform .34s var(--ease); z-index:60; overflow:auto; padding:18px 22px 80px; }
@@ -357,7 +360,31 @@ html, body { height:100%; overflow:hidden !important; margin:0 !important; backg
 .iso-stage svg { width:100% !important; height:100% !important; max-width:none !important; max-height:none !important; }
 .iso-legend { flex:none; margin:6px 0 0 !important; padding:0 !important; border:0 !important; font:11.5px "JetBrains Mono",ui-monospace,monospace !important; color:#6f6961 !important; }
 .iso-keys { display:flex !important; flex-wrap:wrap; gap:4px 18px; }
-.iso-page > :not(.iso-figure):not(.ar-summary):not(style):not(script) { flex:0 0 300px; max-width:300px; align-self:center; max-height:100%; overflow:auto; font-size:12px; }`;
+.fx-side div, .fx-side section { flex-wrap:wrap !important; min-width:0; max-width:100%; }
+.fx-side { gap:6px !important; } .fx-side > * + * { margin-top:6px !important; }
+.fx-side select { max-width:100%; }
+.iso-page > :not(.iso-figure):not(.ar-summary):not(style):not(script) { flex:0 0 360px; max-width:360px; align-self:center; max-height:100%; overflow-x:hidden !important; overflow-y:auto; font-size:12px; }
+/* side panels (code lists, consoles, controls, notes) in the course look */
+.fx-side { margin:0 !important; padding:12px !important; box-sizing:border-box; background:#f7efe4 !important; border:1.2px solid #ddd3c5 !important; border-radius:12px !important;
+  box-shadow:inset 0 1px 0 #ffffffa6, 0 10px 22px -16px rgba(80,60,35,.35) !important; font-family:"JetBrains Mono",ui-monospace,monospace !important; color:#1d1b18; }
+body *:not(svg):not(svg *) { overflow-x:hidden !important; }
+pre, code, li { white-space:pre-wrap !important; word-break:break-word !important; overflow-wrap:anywhere; text-overflow:clip !important; }
+pre { background:#fffaf2 !important; border:1.2px solid #ddd3c5 !important; border-radius:8px !important; box-shadow:none !important; padding:6px 9px !important; margin:0 !important; color:#6f6961 !important; font-size:11px !important; line-height:1.5 !important; }
+pre [data-on], pre .on { color:#1d1b18 !important; font-weight:700; }
+.fx-side ol { display:grid !important; gap:4px !important; margin:0 0 8px !important; }
+.fx-side li { display:block !important; padding:5px 10px !important; border:1.2px solid transparent !important; border-radius:8px !important; color:#6f6961 !important; font-size:12px !important; line-height:1.5 !important; transition:background .15s, transform .08s; }
+.fx-side li::before { color:#b5aa9a !important; }
+.fx-side li:hover { background:#0000000a !important; }
+.fx-side li[data-on] { color:#1d1b18 !important; font-weight:600; background:#cfe3b2 !important; border-color:#46413b !important; box-shadow:inset 0 1px 0 #fff8, 1.5px 2.5px 0 #1d1b18 !important; }
+.fx-side li code { display:block; }
+.fx-side p { margin:6px 0 0 !important; padding:6px 10px !important; background:#fffaf2 !important; border:1.2px solid #46413b !important; border-radius:10px !important; box-shadow:1.5px 2.5px 0 #1d1b18 !important;
+  font:12.5px/1.55 Inter,system-ui,sans-serif !important; color:#1d1b18 !important; }
+button:not(svg *), select:not(svg *) { font:500 11.5px "JetBrains Mono",ui-monospace,monospace !important; color:#1d1b18 !important; background:#f7efe4 !important; border:1.2px solid #46413b !important; border-radius:8px !important;
+  box-shadow:inset 0 1px 0 #fff8, 1.5px 2.5px 0 #1d1b18 !important; height:auto !important; padding:5px 9px !important; text-transform:none !important; letter-spacing:0 !important; outline:none !important; cursor:pointer; }
+button[aria-pressed="true"], button[data-on], button.on { background:#cfe3b2 !important; }
+button:active:not(svg *) { transform:translate(1px,2px); box-shadow:none !important; }
+button:disabled { opacity:.45; box-shadow:none !important; }
+[class$="-label"], [class*="-row-label"] { color:#6f6961 !important; }`;
 // Five hues, light → dark: top face, then shade-3 … shade-0.
 const HUES = [
   ['#e2efcf', '#cfe3b2', '#bed796', '#a9c97b', '#93b862'], ['#efe7f9', '#e7ddf5', '#d9c9f0', '#c8b3e7', '#b39cdb'],
@@ -406,12 +433,17 @@ function reframe(frame) {
     return stage.insertAdjacentHTML('afterbegin', '<p class="pill due" style="margin:0 0 8px">Opened from disk: the browser blocks reframing the figure. Serve the folder (npx http-server playground) to see it.</p>');
   }
   const s = d.createElement('style'); s.textContent = COURSE_FIG_CSS + REFRAME_CSS; d.head.appendChild(s);
+  d.querySelectorAll('.iso-page > :not(.iso-figure):not(.ar-summary):not(style):not(script)').forEach(el => el.classList.add('fx-side'));
   const corner = k => d.querySelector(`[data-corner="${k}"]`);
   const title = corner('title')?.textContent, figId = frame.title.split(' ')[0], figEl = document.getElementById('fx-fig');
   if (title) { FIG_TITLES[figId] = title; if (figEl) figEl.textContent = figEl.classList.contains('pn') ? title : `Fig ${figId} · ${title}`; }
   document.getElementById('fx-hint').textContent = corner('hint')?.textContent || '';
-  const cap = d.querySelector('.iso-caption')?.textContent, capEl = document.getElementById('fx-caption');
-  if (cap && capEl) capEl.textContent = cap;
+  // The panel shows the figure's own Arabic summary; the English caption goes to the reader.
+  const cap = d.querySelector('.iso-caption')?.textContent, ar = d.querySelector('.ar-summary')?.cloneNode(true), capEl = document.getElementById('fx-caption');
+  if (capEl) {
+    capEl.dataset.en = cap || '';
+    if (ar) { ar.querySelector('strong')?.remove(); capEl.innerHTML = ar.innerHTML; } else capEl.textContent = cap || '';
+  }
   const ro = corner('readout'), tiles = document.getElementById('fx-tiles'), paint = () => { tiles.innerHTML = tilesFrom(ro?.textContent || ''); };
   paint(); if (ro) new MutationObserver(paint).observe(ro, { childList: true, characterData: true, subtree: true });
   const map = new Map(), st = d.querySelector('.iso-stage');
@@ -491,7 +523,8 @@ function renderLearn() {
     <div class="k">Objective</div><div>${tick(t.objective)}</div>
     ${meta ? `<div class="k">Parts</div><ul class="parts">${meta}</ul>` : ''}
     ${weakFull ? `<div class="k">Weak spots</div>${weakFull}` : ''}
-    ${document.getElementById('fx-caption')?.textContent ? `<div class="k">What the figure shows</div><p style="margin:0">${esc(document.getElementById('fx-caption').textContent)}</p>` : ''}
+    ${document.getElementById('fx-caption')?.innerHTML ? `<div class="k">باختصار</div><div class="ar">${document.getElementById('fx-caption').innerHTML}</div>` : ''}
+    ${document.getElementById('fx-caption')?.dataset.en ? `<div class="k">What the figure shows</div><p style="margin:0">${esc(document.getElementById('fx-caption').dataset.en)}</p>` : ''}
     ${fig && t.summaries.length ? `<div class="k">Summary card</div>${cardsOf(t)}` : ''}`;
   panel.innerHTML = `<div class="muted mono" style="font-size:11px;text-transform:capitalize">${t.track} · ${esc(sectionName(t.section))}</div>
     <h2 style="margin:2px 0 8px;font-size:17px">${t.id} · ${esc(t.title)} ${t.star === 'core' ? '★' : t.star === 'senior' ? '☆' : ''}</h2>
@@ -499,7 +532,7 @@ function renderLearn() {
     <div class="k">Objective</div><div class="clamp" style="--n:4">${tick(t.objective)}</div>
     <div class="k">Parts</div>${t.parts.length ? t.parts.slice(0, 4).map(short).join('') + (t.parts.length > 4 ? `<div class="muted">+${t.parts.length - 4} more</div>` : '') : '<div class="muted">No parts recorded.</div>'}
     ${t.weak.length ? `<div class="k">Weak spots · ${t.weak.length}</div><div class="weak">${t.weak.slice(0, 2).map(w => `<div class="one">• ${tick(w.label)}</div>`).join('')}${t.weak.length > 2 ? `<div class="muted">+${t.weak.length - 2} more</div>` : ''}</div>` : ''}
-    ${fig && V.figs === 'course' ? '<div class="k">What the figure shows</div><div id="fx-caption" class="fade"></div>' : '<div style="flex:1"></div>'}
+    ${fig && V.figs === 'course' ? '<div class="k" dir="rtl" style="text-align:right">باختصار</div><div id="fx-caption" class="fade ar"></div>' : '<div style="flex:1"></div>'}
     <button class="link" data-reader>Read more ›</button>
     ${fig && t.summaries.length ? `<button class="pop on" data-reader style="width:100%;margin-top:8px">Open summary card ›</button>` : ''}`;
 }
