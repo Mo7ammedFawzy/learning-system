@@ -433,7 +433,8 @@ interface Exporter { void bump(); default void run() { bump(); } }     // ✅ ho
 <h2>05a — Overriding vs overloading, static hiding</h2>
 <p class="meta">Due 2026-11-18 · rung 7 · completed, ok</p>
 <p class="model">The compiler picks the signature from declared types; the JVM picks the body from the real object — instance methods only.</p>
-<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<iframe loading="lazy" src="atlas/05a-figure.html" title="05a figure"></iframe>
+<a class="open" href="atlas/05a-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>public boolean equals(Tag o)                // ❌ overload — contains() still runs Object.equals
