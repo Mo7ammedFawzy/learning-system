@@ -21,6 +21,7 @@
   --ease:cubic-bezier(.2,.7,.2,1);
 }
 * { box-sizing:border-box; }
+html { color-scheme:light; }
 html, body { margin:0; height:100%; background:var(--paper); color:var(--ink); font:14px/1.55 Inter,system-ui,sans-serif; }
 code { font:12.5px var(--mono); background:#0000000d; padding:1px 5px; border-radius:4px; }
 pre { background:#fffaf3; border:1px solid var(--line); border-radius:8px; padding:10px 12px; overflow-x:auto; }
@@ -79,7 +80,16 @@ h1, h2, h3, .mono { font-family:var(--mono); }
 .md [dir="rtl"] { text-align:right; }
 
 /* right panel */
-#panel { border-left:1.2px solid var(--line); overflow:auto; padding:18px 16px 80px; background:var(--card); }
+#panel { border-left:1.2px solid var(--line); overflow:hidden; padding:18px 16px 76px; background:var(--card); display:flex; flex-direction:column; min-height:0; font-size:13px; }
+#panel > * { flex:none; }
+.clamp { display:-webkit-box; -webkit-line-clamp:var(--n); -webkit-box-orient:vertical; overflow:hidden; }
+.one { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:12.5px; }
+#panel .fade { flex:1 1 0; min-height:2.6em; overflow:hidden; font-size:12.5px; -webkit-mask-image:linear-gradient(#000 70%, transparent); mask-image:linear-gradient(#000 70%, transparent); }
+.link { background:none; border:0; padding:4px 0; font:600 12px var(--mono); color:var(--rust); cursor:pointer; text-align:left; }
+#reader { position:fixed; top:38px; right:0; bottom:0; width:min(620px,100vw); background:var(--card); border-left:1.2px solid var(--edge); box-shadow:-14px 0 30px -18px rgba(80,60,35,.5);
+  transform:translateX(105%); transition:transform .34s var(--ease); z-index:60; overflow:auto; padding:18px 22px 80px; }
+#reader.open { transform:none; }
+#reader .close { float:right; }
 .k { font:500 11px var(--mono); color:var(--muted); text-transform:uppercase; margin:14px 0 4px; }
 .pill { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; padding:1px 8px; border-radius:99px; background:#0000000d; color:var(--muted); white-space:nowrap; }
 .pill.due { background:#f6d9cb; color:var(--rust); font-weight:600; }
@@ -125,6 +135,20 @@ ul.parts { margin:0; padding-left:16px; font-size:12.5px; }
 .tl-f.done .tl-n { background:var(--mint); } .tl-f.cur .tl-n { background:var(--green); box-shadow:0 0 0 3px #cfe3b280; }
 .tl-f.cur { color:var(--ink); font-weight:700; }
 
+/* Q9: anatomy figure in the reference frame — the stage never scrolls */
+#stage.fit { overflow:hidden; padding:16px 22px 70px; }
+.fx { display:flex; flex-direction:column; height:100%; min-height:0; font-family:var(--mono); }
+.fx-sub { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:Inter,system-ui,sans-serif; }
+.fx-card { flex:1; min-height:0; display:flex; flex-direction:column; gap:8px; margin:0; }
+.fx-frame { flex:1; min-height:0; width:100%; border:0; background:transparent; display:block; }
+.fx .mt-k { text-transform:none; font-size:10.5px; }
+.fx .mt-v { font-size:14px; }
+.fx-nav { display:flex; gap:8px; align-items:center; font-size:11px; color:var(--muted); }
+.fx .f10-chips span, .fx .f10-chips button { font-size:11.5px; }
+.fx-parts { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:2px 0 8px; font-size:11.5px; color:var(--muted); }
+.fx-parts .pop { font-size:11.5px; padding:3px 10px; max-width:300px; display:flex; gap:6px; }
+.fx-parts .pn { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:400; }
+
 /* the prototype switcher — not part of the design being judged */
 #switcher { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:1000; display:flex; align-items:center; gap:10px;
   background:#1d1b18; color:#fff; padding:7px 12px; border-radius:99px; box-shadow:0 8px 24px #0005; font:12px system-ui,sans-serif; }
@@ -136,6 +160,7 @@ ul.parts { margin:0; padding-left:16px; font-size:12.5px; }
 <body>
 <p class="ar-summary">‫نموذج تجريبي للوحة بشكل الكورس: على الشمال الأقسام والمواضيع، في النص الـ figure أو الملخص، وعلى اليمين تفاصيل الموضوع. الشريط اللي تحت بيبدّل بين اختيارات التابات وطريقة عرض الـ tracks.‬</p>
 <div class="app" id="app"><nav id="side"></nav><main id="stage"></main><aside id="panel"></aside></div>
+<aside id="reader"></aside>
 <div id="switcher"></div>
 <script>
 const D = window.DASHBOARD;
@@ -216,7 +241,7 @@ function calendar() {
 // ---------------- prototype state ----------------
 const q = new URLSearchParams(location.search);
 const V = { tabs: ['A','B','C'].includes(q.get('tabs')) ? q.get('tabs') : 'A', tracks: q.get('tracks') === 'switcher' ? 'switcher' : 'nested',
-  figs: ['anatomy','recolour'].includes(q.get('figs')) ? q.get('figs') : 'redesign' };
+  figs: ['anatomy','redesign'].includes(q.get('figs')) ? q.get('figs') : 'course' };
 // Q7: figures re-coloured to the course palette by overriding the anatomy kit's tokens (same drawings, warm paper, dark edges).
 const COURSE_FIG_CSS = `html .iso[data-theme="light"], html [data-theme="light"] .iso {
   --anatomy-page:#f4ebe0;--anatomy-card:#f7efe4;--anatomy-paper:#f7efe4;--anatomy-text:#4a453f;--anatomy-strong:#1d1b18;--anatomy-muted:#6f6961;
@@ -235,23 +260,23 @@ const NODES = {
   M: { x:530, y:330, c:BLU, label:'map', sub:'x * 10' }, T: { x:720, y:220, c:ORG, label:'findFirst', sub:'terminal op' },
   R: { x:880, y:310, cyl:true, c:GRN },
 };
-const at = n => ({ x: NODES[n].x, y: NODES[n].y + 24 });
+const at = n => ({ x: NODES[n].x, y: NODES[n].y + 28 });
 const pill = (x, y, text, bold) => { const w = text.length * 7.3 + 24;
   return `<g transform="translate(${x - w / 2},${y - 13})"><rect x="1.5" y="2.5" width="${w}" height="26" rx="13" fill="#1d1b18"/><rect width="${w}" height="26" rx="13" fill="#fffaf2" stroke="#1d1b18" stroke-width="1.5"/><text x="${w / 2}" y="17.5" text-anchor="middle" font-size="12.5" font-weight="${bold ? 700 : 500}">${esc(text)}</text></g>`; };
 function block(n) {
   const { x, y, c, label, sub, cyl } = NODES[n], k = 'stroke="#1d1b18" stroke-width="2.2" stroke-linejoin="round"';
-  if (cyl) return `<g data-node="${n}"><ellipse cx="${x}" cy="${y + 62}" rx="46" ry="15" fill="#0000000f"/>
-    <path d="M${x - 40},${y} L${x - 40},${y + 50} A40 15 0 0 0 ${x + 40},${y + 50} L${x + 40},${y} Z" fill="${c[1]}" ${k}/>
-    <ellipse cx="${x}" cy="${y}" rx="40" ry="15" fill="${c[0]}" ${k}/>
+  if (cyl) return `<g data-node="${n}"><ellipse cx="${x}" cy="${y + 66}" rx="56" ry="18" fill="#0000000f"/>
+    <path d="M${x - 48},${y} L${x - 48},${y + 54} A48 18 0 0 0 ${x + 48},${y + 54} L${x + 48},${y} Z" fill="${c[1]}" ${k}/>
+    <ellipse cx="${x}" cy="${y}" rx="48" ry="18" fill="${c[0]}" ${k}/>
     <path d="M${x - 12},${y + 22} h24 M${x - 12},${y + 30} h24 M${x - 12},${y + 38} h24" stroke="#1d1b18" stroke-width="2" stroke-linecap="round"/></g>`;
-  const a = 64, b = 37, h = 44;
+  const a = 80, b = 46, h = 54;
   return `<g data-node="${n}"><polygon points="${x - a},${y + h + 8} ${x},${y + b + h + 8} ${x + a + 6},${y + h + 8} ${x},${y + h - b + 8}" fill="#0000000d"/>
     <polygon points="${x - a},${y} ${x},${y + b} ${x},${y + b + h} ${x - a},${y + h}" fill="${c[1]}" ${k}/>
     <polygon points="${x},${y + b} ${x + a},${y} ${x + a},${y + h} ${x},${y + b + h}" fill="${c[2]}" ${k}/>
     <polygon points="${x - a},${y} ${x},${y - b} ${x + a},${y} ${x},${y + b}" fill="${c[0]}" ${k}/>
     <polyline points="${x - a + 8},${y} ${x},${y - b + 5} ${x + a - 8},${y}" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
-    <text x="${x}" y="${y + 2}" text-anchor="middle" font-size="16" font-weight="700">${label}</text>
-    <text x="${x}" y="${y + 18}" text-anchor="middle" font-size="11">${sub}</text></g>`;
+    <text x="${x}" y="${y}" text-anchor="middle" font-size="18" font-weight="700">${label}</text>
+    <text x="${x}" y="${y + 18}" text-anchor="middle" font-size="12">${sub}</text></g>`;
 }
 // A frame = caption + per-frame pills + a timed script of tokens. Metrics count up as tokens arrive.
 const pulls = (t0, d = .6) => [['T','M'],['M','F'],['F','S']].map(([a, b], i) => ({ a, b, kind:'pull', t: t0 + i * d, d }));
@@ -282,8 +307,8 @@ function figure10() {
         <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1d1b18"/></marker></defs>
         ${links}
         ${Object.keys(NODES).map(n => n === 'T' && f.dimT ? `<g opacity=".25">${block(n)}</g>` : block(n)).join('')}
-        ${pill(150, 430, f.untouched ? 'source: 3 8 ✓ · 1 12 5 never pulled' : 'source: [3, 8, 1, 12, 5]', f.untouched)}
-        ${pill(880, 420, 'Optional<Integer>')}
+        ${pill(150, 440, f.untouched ? 'source: 3 8 ✓ · 1 12 5 never pulled' : 'source: [3, 8, 1, 12, 5]', f.untouched)}
+        ${pill(880, 430, 'Optional<Integer>')}
         ${pill(500, 70, f.note, true)}
         <g id="tok"></g>
       </svg>
@@ -318,6 +343,82 @@ function themeFigure(frame) {
   if (V.figs === 'anatomy') return;
   try { const d = frame.contentDocument; const s = d.createElement('style'); s.textContent = COURSE_FIG_CSS; d.head.appendChild(s); }
   catch { stage.insertAdjacentHTML('afterbegin', '<p class="pill due" style="margin:0 0 8px">Opened from disk: the browser blocks re-colouring the figure. Serve the folder (npx http-server playground) to see it.</p>'); }
+}
+
+// ---------------- Q9: keep the anatomy drawing, reframe it in the reference layout ----------------
+// Inside the frame: only the drawing (fitted, no scroll) and its legend. Around it, in this page: header, live tiles from the readout, ◀ ▶.
+const REFRAME_CSS = `
+html, body { height:100%; overflow:hidden !important; margin:0 !important; background:transparent !important; color-scheme:light !important; }
+.ar-summary, .iso-plate-corners, .iso-caption { display:none !important; }
+.iso-page { height:100%; display:flex; gap:16px; align-items:stretch; padding:0 !important; margin:0 !important; max-width:none !important; width:100% !important; box-sizing:border-box; background:transparent !important; }
+.iso-figure { flex:1; min-width:0; min-height:0; margin:0 !important; display:flex !important; flex-direction:column; max-width:none !important; width:auto !important; }
+.iso-plate { flex:1; min-height:0; display:flex; background:transparent !important; border:0 !important; box-shadow:none !important; padding:0 !important; margin:0 !important; aspect-ratio:auto !important; }
+.iso-stage { flex:1; min-height:0; display:flex; }
+.iso-stage svg { width:100% !important; height:100% !important; max-width:none !important; max-height:none !important; }
+.iso-legend { flex:none; margin:6px 0 0 !important; padding:0 !important; border:0 !important; font:11.5px "JetBrains Mono",ui-monospace,monospace !important; color:#6f6961 !important; }
+.iso-keys { display:flex !important; flex-wrap:wrap; gap:4px 18px; }
+.iso-page > :not(.iso-figure):not(.ar-summary):not(style):not(script) { flex:0 0 300px; max-width:300px; align-self:center; max-height:100%; overflow:auto; font-size:12px; }`;
+// Five hues, light → dark: top face, then shade-3 … shade-0.
+const HUES = [
+  ['#e2efcf', '#cfe3b2', '#bed796', '#a9c97b', '#93b862'], ['#efe7f9', '#e7ddf5', '#d9c9f0', '#c8b3e7', '#b39cdb'],
+  ['#fee8d3', '#fcdcbd', '#f8cb9f', '#f2b882', '#e9a466'], ['#e3edf9', '#d3e3f7', '#bfd4f1', '#a9c4ea', '#91b1df'],
+  ['#e9f5e8', '#dff0de', '#cbe5c9', '#b4d8b1', '#9ccb98'],
+];
+function colourParts(d, map) {
+  const svg = d.querySelector('.iso-stage svg'); if (!svg) return;
+  const vb = svg.viewBox.baseVal, area = (vb && vb.width * vb.height) || 1;
+  for (const g of svg.querySelectorAll('g.iso-solid:not([data-tint])')) {
+    let b; try { b = g.getBBox(); } catch { continue; }
+    if (b.width * b.height > area * .18) { g.dataset.tint = 'base'; continue; } // the board stays paper
+    // ponytail: same bounding-box size = same role. Good enough for kit figures; a per-figure role map would be exact.
+    const k = Math.round(b.width / 6) + 'x' + Math.round(b.height / 6);
+    if (!map.has(k)) map.set(k, HUES[map.size % HUES.length]);
+    const h = map.get(k); g.dataset.tint = k;
+    g.style.cssText += `;--anatomy-top:${h[0]};--anatomy-lit-top:${h[0]};--anatomy-face:${h[0]};--anatomy-paper:${h[1]};--anatomy-lit-shade:${h[2]};--anatomy-shade-3:${h[1]};--anatomy-shade-2:${h[2]};--anatomy-shade-1:${h[3]};--anatomy-shade-0:${h[4]}`;
+  }
+}
+function tilesFrom(text) {
+  return text.split(/\s+·\s+/).filter(Boolean).map(part => {
+    const i = part.lastIndexOf(' '), k = i > 0 ? part.slice(0, i).replace(/\s+[=:]$/, '') : '', v = i > 0 ? part.slice(i + 1) : part;
+    return `<div class="mt"><div class="mt-k">${esc(k) || '&nbsp;'}</div><div class="mt-v">${esc(v)}</div></div>`;
+  }).join('');
+}
+// A part's name: its summary card heading ("# 02b — StringBuilder, …"); the figure's own title replaces it once loaded.
+const FIG_TITLES = {};
+const partName = p => FIG_TITLES[p.id] || p.summary?.md.match(/^#+\s*\S+\s+—\s+(.+)$/m)?.[1].replace(/\s*★\s*$/, '') || 'figure';
+function figureShell(t, fig) {
+  return `<div class="fx">
+    <div class="f10-crumb" style="text-transform:capitalize">${t.track} · ${esc(sectionName(t.section))} / Topic ${t.id}${fig.id !== t.id ? ` · part ${fig.id}` : ''}</div>
+    <div class="f10-head"><h1>${esc(t.title)}</h1><div class="f10-chips">
+      ${t.figures.length > 1 ? '' : `<span style="background:var(--violet)" id="fx-fig">Fig ${fig.id}</span>`}${t.star === 'core' ? '<span style="background:var(--green)">★ core</span>' : ''}<span style="background:var(--orange)">${STATUS[t.status].label}</span></div></div>
+    ${t.figures.length > 1 ? `<div class="fx-parts"><span>This topic has ${t.figures.length} parts, one figure each:</span>${t.figures.map(p =>
+      `<button class="pop ${p === fig ? 'on' : ''}" data-part="${p.id}" title="${esc(partName(p))}"><b>${p.id}</b> <span class="pn" ${p === fig ? 'id="fx-fig"' : ''}>${esc(partName(p))}</span></button>`).join('')}</div>` : ''}
+    <div class="f10-sub fx-sub">${tick(t.objective)}</div>
+    <div class="f10-card fx-card">
+      <div class="f10-top"><div class="f10-tiles" id="fx-tiles"></div>
+        <div class="fx-nav"><span id="fx-hint"></span><button class="pop" data-key="ArrowLeft" title="Previous frame">◀</button><button class="pop" data-key="ArrowRight" title="Next frame">▶</button></div></div>
+      <iframe class="fx-frame" src="${fig.figure}" title="${fig.id} figure" onload="reframe(this)"></iframe>
+    </div></div>`;
+}
+function reframe(frame) {
+  let d; try { d = frame.contentDocument; if (!d || !d.head) throw 0; } catch {
+    stage.classList.remove('fit');
+    return stage.insertAdjacentHTML('afterbegin', '<p class="pill due" style="margin:0 0 8px">Opened from disk: the browser blocks reframing the figure. Serve the folder (npx http-server playground) to see it.</p>');
+  }
+  const s = d.createElement('style'); s.textContent = COURSE_FIG_CSS + REFRAME_CSS; d.head.appendChild(s);
+  const corner = k => d.querySelector(`[data-corner="${k}"]`);
+  const title = corner('title')?.textContent, figId = frame.title.split(' ')[0], figEl = document.getElementById('fx-fig');
+  if (title) { FIG_TITLES[figId] = title; if (figEl) figEl.textContent = figEl.classList.contains('pn') ? title : `Fig ${figId} · ${title}`; }
+  document.getElementById('fx-hint').textContent = corner('hint')?.textContent || '';
+  const cap = d.querySelector('.iso-caption')?.textContent, capEl = document.getElementById('fx-caption');
+  if (cap && capEl) capEl.textContent = cap;
+  const ro = corner('readout'), tiles = document.getElementById('fx-tiles'), paint = () => { tiles.innerHTML = tilesFrom(ro?.textContent || ''); };
+  paint(); if (ro) new MutationObserver(paint).observe(ro, { childList: true, characterData: true, subtree: true });
+  const map = new Map(), st = d.querySelector('.iso-stage');
+  colourParts(d, map);
+  let queued = false;
+  if (st) new MutationObserver(() => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; colourParts(d, map); }); })
+    .observe(st, { childList: true, subtree: true });
 }
 const TABSETS = { A: ['Learn','Progress','Review'], B: ['Learn','Progress'], C: ['Learn','Progress','Cheat sheets'] };
 const S = { tab: 'Learn', track: FOCUS, open: null, part: null, folds: new Set() };
@@ -369,7 +470,9 @@ function renderLearn() {
   const t = S.open;
   appEl.classList.remove('wide');
   const fig = t.figures.find(p => p.id === S.part) || t.figures[0];
+  stage.classList.remove('fit');
   if (V.figs === 'redesign' && key(t) === 'java:10') { stage.innerHTML = figure10(); runFigure10(); }
+  else if (fig && V.figs === 'course') { stage.classList.add('fit'); stage.innerHTML = figureShell(t, fig); }
   else if (fig) {
     stage.innerHTML = `${t.figures.length > 1 ? `<div class="partbar">${t.figures.map(p => `<button class="pop ${p === fig ? 'on' : ''}" data-part="${p.id}">${p.id}</button>`).join('')}</div>` : ''}
       ${V.figs === 'redesign' ? '<p class="pill" style="margin:0 0 8px">Only topic 10 is redrawn in this prototype; this one is the recoloured anatomy figure.</p>' : ''}
@@ -380,13 +483,25 @@ function renderLearn() {
     stage.innerHTML = `<div class="empty-state card"><div class="big">${t.id}</div><h2 style="margin:4px 0">${esc(t.title)}</h2><p class="muted">Not studied yet.</p><p>${tick(t.objective)}</p></div>`;
   }
   const meta = t.parts.map(p => `<li><b class="mono">${p.id}</b> — ${p.completed ? `done ${esc(p.completed.date)}, <b>${esc(p.completed.confidence)}</b>` : p.scratched ? `scratched ${esc(p.scratched.date)}` : 'no record'}${p.review ? ` · review ${p.review.due} (every ${p.review.rung} days)` : ''}</li>`).join('');
+  // Short form: one line per part, two weak spots, clamped text. The reader holds the full version.
+  const short = p => `<div class="one"><b class="mono">${p.id}</b> ${p.completed ? `${esc(p.completed.confidence)} · ${esc(p.completed.date.slice(0, 10))}` : p.scratched ? 'scratched' : '—'}${p.review ? ` · review ${p.review.due.slice(5)}` : ''}</div>`;
+  const weakFull = t.weak.length ? `<div class="weak"><ul style="margin:0;padding-left:16px">${t.weak.map(w => `<li>${tick(w.label)} <span class="pill">${w.held}/2 held</span></li>`).join('')}</ul></div>` : '';
+  S.reader = () => `<div class="muted mono" style="font-size:11px;text-transform:capitalize">${t.track} · ${esc(sectionName(t.section))}</div>
+    <h2 style="margin:2px 0 8px;font-size:18px">${t.id} · ${esc(t.title)}</h2>
+    <div class="k">Objective</div><div>${tick(t.objective)}</div>
+    ${meta ? `<div class="k">Parts</div><ul class="parts">${meta}</ul>` : ''}
+    ${weakFull ? `<div class="k">Weak spots</div>${weakFull}` : ''}
+    ${document.getElementById('fx-caption')?.textContent ? `<div class="k">What the figure shows</div><p style="margin:0">${esc(document.getElementById('fx-caption').textContent)}</p>` : ''}
+    ${fig && t.summaries.length ? `<div class="k">Summary card</div>${cardsOf(t)}` : ''}`;
   panel.innerHTML = `<div class="muted mono" style="font-size:11px;text-transform:capitalize">${t.track} · ${esc(sectionName(t.section))}</div>
     <h2 style="margin:2px 0 8px;font-size:17px">${t.id} · ${esc(t.title)} ${t.star === 'core' ? '★' : t.star === 'senior' ? '☆' : ''}</h2>
     <div style="display:flex;flex-wrap:wrap;gap:6px">${statusPill(t)}${duePill(t)}</div>
-    <div class="k">Objective</div><div>${tick(t.objective)}</div>
-    <div class="k">Parts</div>${meta ? `<ul class="parts">${meta}</ul>` : '<div class="muted">No parts recorded.</div>'}
-    ${t.weak.length ? `<div class="k">Weak spots</div><div class="weak"><ul style="margin:0;padding-left:16px">${t.weak.map(w => `<li>${tick(w.label)} <span class="pill">${w.held}/2 held</span></li>`).join('')}</ul></div>` : ''}
-    ${fig && t.summaries.length ? `<div class="k">Summary card</div>${cardsOf(t)}` : ''}`;
+    <div class="k">Objective</div><div class="clamp" style="--n:4">${tick(t.objective)}</div>
+    <div class="k">Parts</div>${t.parts.length ? t.parts.slice(0, 4).map(short).join('') + (t.parts.length > 4 ? `<div class="muted">+${t.parts.length - 4} more</div>` : '') : '<div class="muted">No parts recorded.</div>'}
+    ${t.weak.length ? `<div class="k">Weak spots · ${t.weak.length}</div><div class="weak">${t.weak.slice(0, 2).map(w => `<div class="one">• ${tick(w.label)}</div>`).join('')}${t.weak.length > 2 ? `<div class="muted">+${t.weak.length - 2} more</div>` : ''}</div>` : ''}
+    ${fig && V.figs === 'course' ? '<div class="k">What the figure shows</div><div id="fx-caption" class="fade"></div>' : '<div style="flex:1"></div>'}
+    <button class="link" data-reader>Read more ›</button>
+    ${fig && t.summaries.length ? `<button class="pop on" data-reader style="width:100%;margin-top:8px">Open summary card ›</button>` : ''}`;
 }
 const cell = t => `<div class="pt" data-open="${key(t)}" style="background:${GREEN[lvl(t)]};color:${lvl(t) >= 3 ? '#fff' : '#1f3d27'};${t.due ? 'outline:2px solid var(--rust);outline-offset:1px;' : ''}">
   <div class="pt-id">${t.id}</div><div class="pt-name">${esc(t.title)}</div></div>`;
@@ -430,8 +545,17 @@ function openTopic(t) {
 
 // ---------------- events ----------------
 document.addEventListener('click', e => {
-  const el = e.target.closest('[data-open],[data-fold],[data-tab],[data-track],[data-part],[data-v],[data-frame],[data-f10],.cal');
+  const reader = document.getElementById('reader');
+  if (e.target.closest('[data-reader]')) { reader.innerHTML = `<button class="pop close" data-close>✕</button>${S.reader()}`; reader.scrollTop = 0; return reader.classList.add('open'); }
+  if (e.target.closest('[data-close]') || (reader.classList.contains('open') && !e.target.closest('#reader'))) reader.classList.remove('open');
+  const el = e.target.closest('[data-open],[data-fold],[data-tab],[data-track],[data-part],[data-v],[data-frame],[data-f10],[data-key],.cal');
   if (!el) return;
+  if (el.dataset.key) { // ◀ ▶ press the figure's own arrow keys
+    const f = stage.querySelector('.fx-frame');
+    try { const d = f.contentDocument, tgt = d.querySelector('.iso-stage') || d.body; tgt.focus();
+      tgt.dispatchEvent(new f.contentWindow.KeyboardEvent('keydown', { key: el.dataset.key, bubbles: true })); } catch {}
+    return;
+  }
   if (el.dataset.frame) { F10.frame = +el.dataset.frame; F10.t = 0; return renderLearn(); }
   if (el.dataset.f10 === 'replay') { F10.t = 0; F10.paused = false; return renderLearn(); }
   if (el.dataset.f10 === 'pause') { F10.paused = !F10.paused; el.textContent = F10.paused ? '▶ Play' : '❚❚ Pause'; return; }
@@ -458,10 +582,11 @@ function renderSwitcher() {
   document.getElementById('switcher').innerHTML = `<span class="lbl">Tabs</span>${['A','B','C'].map(k => `<button class="${V.tabs === k ? 'on' : ''}" data-v="tabs=${k}" title="${TABSETS[k].join(' · ')}">${k}</button>`).join('')}
     <span class="lbl">${TABSETS[V.tabs].join(' · ')}</span>
     <span class="lbl" style="margin-left:10px">Tracks</span>${['switcher','nested'].map(k => `<button class="${V.tracks === k ? 'on' : ''}" data-v="tracks=${k}">${k}</button>`).join('')}
-    <span class="lbl" style="margin-left:10px">Figures</span>${['anatomy','recolour','redesign'].map(k => `<button class="${V.figs === k ? 'on' : ''}" data-v="figs=${k}">${k}</button>`).join('')}`;
+    <span class="lbl" style="margin-left:10px">Figures</span>${['anatomy','course','redesign'].map(k => `<button class="${V.figs === k ? 'on' : ''}" data-v="figs=${k}">${k}</button>`).join('')}`;
 }
 addEventListener('keydown', e => {
   if (e.target.closest('input,textarea,[contenteditable]')) return;
+  if (e.key === 'Escape') return document.getElementById('reader').classList.remove('open');
   const ks = ['A','B','C'];
   if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { V.tabs = ks[(ks.indexOf(V.tabs) + (e.key === 'ArrowRight' ? 1 : 2)) % 3]; setVariant(); }
   if (e.key === 't' || e.key === 'T') { V.tracks = V.tracks === 'nested' ? 'switcher' : 'nested'; setVariant(); }
