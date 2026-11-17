@@ -469,7 +469,8 @@ f(5) with f(Integer) and f(int...)         // f(Integer): boxing beats varargs</
 <h2>06a — <code>static</code> and class initialisation</h2>
 <p class="meta">Due 2026-11-18 · rung 7 · completed, ok</p>
 <p class="model">A static member belongs to the class, and the JVM initialises the class once, top to bottom, on first active use.</p>
-<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<iframe loading="lazy" src="atlas/06a-figure.html" title="06a figure"></iframe>
+<a class="open" href="atlas/06a-figure.html">Open figure full size</a>
 <details><summary>Reveal trap and answer</summary>
 <p class="sub">Trap</p>
 <pre>static final Registry INSTANCE = new Registry();  // ctor: count 0 → 1
