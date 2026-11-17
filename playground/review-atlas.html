@@ -37,115 +37,10 @@ ol { padding-left:22px; }
 <body>
 <main>
 <h1>Review atlas</h1>
-<p class="meta">Read the mental model, say the trap and the interview answer out loud, then open the reveal. Order: most overdue first, as of 2026-11-16.</p>
+<p class="meta">Read the mental model, say the trap and the interview answer out loud, then open the reveal. Order: most overdue first, as of 2026-11-17.</p>
 <nav>
-  <a href="#t02b">02b</a><a href="#t04a">04a</a><a href="#t05a">05a</a><a href="#t05b">05b</a><a href="#t06a">06a</a><a href="#t08b">08b</a><a href="#t01">01</a><a href="#t04c">04c</a><a href="#t10">10</a><a href="#t12">12</a><a href="#t14">14</a><a href="#t07">07</a><a href="#t11">11</a><a href="#t17">17</a><a href="#t03a">03a</a><a href="#t04b">04b</a><a href="#t08a">08a</a><a href="#t09a">09a</a><a href="#t10a">10a</a><a href="#t02a">02a</a><a href="#t13">13</a><a href="#t15">15</a><a href="#t16">16</a><a href="#t44">44</a><a href="#t45">45</a>
+  <a href="#t01">01</a><a href="#t04c">04c</a><a href="#t10">10</a><a href="#t12">12</a><a href="#t14">14</a><a href="#t07">07</a><a href="#t11">11</a><a href="#t17">17</a><a href="#t03a">03a</a><a href="#t04b">04b</a><a href="#t08a">08a</a><a href="#t09a">09a</a><a href="#t10a">10a</a><a href="#t02a">02a</a><a href="#t13">13</a><a href="#t15">15</a><a href="#t16">16</a><a href="#t44">44</a><a href="#t45">45</a><a href="#t02b">02b</a><a href="#t04a">04a</a><a href="#t05a">05a</a><a href="#t05b">05b</a><a href="#t06a">06a</a><a href="#t08b">08b</a>
 </nav>
-
-<section id="t02b">
-<h2>02b — <code>StringBuilder</code> and loop concatenation</h2>
-<p class="meta">Due 2026-11-16 · rung 7 · completed, ok</p>
-<p class="model"><code>+</code> already compiles to one builder per expression — in a loop that is one per iteration, each copying everything so far.</p>
-<iframe loading="lazy" src="atlas/02b-figure.html" title="02b figure"></iframe>
-<a class="open" href="atlas/02b-figure.html">Open figure full size</a>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>for (...) sb = new StringBuilder(sb).append(x);                 // ❌ still O(n²): copy in the constructor
-StringBuilder sb = new StringBuilder(); for (...) sb.append(x);  // ✅ hoisted</pre>
-<p class="sub">Interview</p>
-<ol><li>One expression, one builder.</li><li>A loop: n builders, each copying the accumulator — O(n²).</li><li>Hoist the builder (amortised O(1) append), or <code>String.join</code> / <code>Collectors.joining</code>.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">الـ += جوه loop بينسخ كل اللي اتجمع قبل كده في كل لفّة.</p>
-<p class="ar">الحل: StringBuilder واحد برّه الـ loop.</p>
-</details>
-</section>
-
-<section id="t04a">
-<h2>04a — Abstract class vs interface</h2>
-<p class="meta">Due 2026-11-16 · rung 7 · completed, ok</p>
-<p class="model">An interface is a type a class takes on many times; an abstract class is a partial implementation with state, and a class gets one.</p>
-<iframe loading="lazy" src="atlas/04a-figure.html" title="04a figure"></iframe>
-<a class="open" href="atlas/04a-figure.html">Open figure full size</a>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>interface Exporter { int count = 0; default void run() { count++; } }  // ❌ static final, can't assign
-interface Exporter { void bump(); default void run() { bump(); } }     // ✅ hook; each class owns a field</pre>
-<p class="sub">Interview</p>
-<ol><li>Shared state or a constructor, no other superclass → abstract class.</li><li>A capability for unrelated classes → interface.</li><li>Both → interface for the type, default method reaches state through an abstract accessor.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">الـ interface مفيهوش state، أي field فيه بيبقى constant.</p>
-<p class="ar">الـ private method في الـ interface محدش يناديها غير الـ interface نفسه.</p>
-</details>
-</section>
-
-<section id="t05a">
-<h2>05a — Overriding vs overloading, static hiding</h2>
-<p class="meta">Due 2026-11-16 · rung 7 · completed, ok</p>
-<p class="model">The compiler picks the signature from declared types; the JVM picks the body from the real object — instance methods only.</p>
-<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>public boolean equals(Tag o)                // ❌ overload — contains() still runs Object.equals
-@Override public boolean equals(Object o) { return o instanceof Tag t &amp;&amp; name.equals(t.name); }  // ✅</pre>
-<p class="sub">Interview</p>
-<ol><li>Overloading: compile time, declared argument types.</li><li>Overriding: runtime, the receiver's object.</li><li>Static methods are hidden, never overridden — runtime-varying behaviour goes in an <code>@Override</code> instance method.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">الـ static method مابتتعملهاش override، بتتعملها hiding.</p>
-<p class="ar">حط الـ @Override دايماً.</p>
-</details>
-</section>
-
-<section id="t05b">
-<h2>05b — Dynamic dispatch, the four OOP concepts, varargs</h2>
-<p class="meta">Due 2026-11-16 · rung 7 · completed, ok</p>
-<p class="model">A method runs where it is written, but <code>this</code> is always the real object.</p>
-<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>new TestConfig().show();                   // "test" — show() calls this.env()
-Arrays.asList(new int[]{1,2,3}).size();    // 1 — an int[] is one object
-f(5) with f(Integer) and f(int...)         // f(Integer): boxing beats varargs</pre>
-<p class="sub">Interview</p>
-<ol><li>Encapsulation: the class enforces its own rules (not just getters/setters).</li><li>Abstraction: what, not how. Inheritance: reuse.</li><li>Polymorphism: one call site, many bodies — the compiler checks, the JVM picks.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">أي method بتتنادى من غير object قدامها يبقى قصدك this، وبتروح للـ subclass.</p>
-<p class="ar">الـ boxing بيكسب الـ varargs.</p>
-</details>
-</section>
-
-<section id="t06a">
-<h2>06a — <code>static</code> and class initialisation</h2>
-<p class="meta">Due 2026-11-16 · rung 7 · completed, ok</p>
-<p class="model">A static member belongs to the class, and the JVM initialises the class once, top to bottom, on first active use.</p>
-<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>static final Registry INSTANCE = new Registry();  // ctor: count 0 → 1
-static int count = 10;                            // ❌ then overwritten — count is 10, not 11</pre>
-<p class="sub">Interview</p>
-<ol><li>One copy per class.</li><li>Initialised once by the JVM, at runtime, in written order; reading a constant variable triggers nothing.</li><li>Static methods are hidden, never overridden.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">الـ static بيتعمله initialize مرة واحدة بس، مش مع كل new.</p>
-<p class="ar">ترتيب السطور مهم، السطر اللي تحت ممكن يمسح اللي فوق.</p>
-</details>
-</section>
-
-<section id="t08b">
-<h2>08b — Maps</h2>
-<p class="meta">Due 2026-11-16 · rung 7 · completed, ok</p>
-<p class="model">The backing structure decides order, cost and <code>null</code>.</p>
-<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>Map&lt;String,Integer&gt; t = new TreeMap&lt;&gt;(String.CASE_INSENSITIVE_ORDER);
-t.put("Java", 1); t.put("java", 2);   // size 1, {Java=2} — equals never asked</pre>
-<p class="sub">Interview</p>
-<ol><li><code>HashMap</code>: O(1) avg, O(log n) worst (treeified bucket), no order, one <code>null</code> key.</li><li><code>LinkedHashMap</code>: insertion order. <code>TreeMap</code>: sorted, O(log n), no <code>null</code> key.</li><li><code>Hashtable</code>: every method synchronized, no nulls, O(n) worst — use <code>ConcurrentHashMap</code>.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">الفرق بين الـ HashMap والـ Hashtable إن الـ Hashtable كله synchronized.</p>
-<p class="ar">الـ TreeMap بيستخدم الـ comparator بس.</p>
-</details>
-</section>
 
 <section id="t01">
 <h2>01 — Types, values and references</h2>
@@ -497,6 +392,113 @@ DENSE_RANK() = 2   -- ✅ 90</pre>
 <p class="ar">لو عايز تاني أعلى salary استخدم الـ DENSE_RANK.</p>
 </details>
 </section>
+
+<section id="t02b">
+<h2>02b — <code>StringBuilder</code> and loop concatenation</h2>
+<p class="meta">Due 2026-11-18 · rung 7 · completed, ok</p>
+<p class="model"><code>+</code> already compiles to one builder per expression — in a loop that is one per iteration, each copying everything so far.</p>
+<iframe loading="lazy" src="atlas/02b-figure.html" title="02b figure"></iframe>
+<a class="open" href="atlas/02b-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>for (...) sb = new StringBuilder(sb).append(x);                 // ❌ still O(n²): copy in the constructor
+StringBuilder sb = new StringBuilder(); for (...) sb.append(x);  // ✅ hoisted</pre>
+<p class="sub">Interview</p>
+<ol><li>One expression, one builder.</li><li>A loop: n builders, each copying the accumulator — O(n²).</li><li>Hoist the builder (amortised O(1) append), or <code>String.join</code> / <code>Collectors.joining</code>.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ += جوه loop بينسخ كل اللي اتجمع قبل كده في كل لفّة.</p>
+<p class="ar">الحل: StringBuilder واحد برّه الـ loop.</p>
+</details>
+</section>
+
+<section id="t04a">
+<h2>04a — Abstract class vs interface</h2>
+<p class="meta">Due 2026-11-18 · rung 7 · completed, ok</p>
+<p class="model">An interface is a type a class takes on many times; an abstract class is a partial implementation with state, and a class gets one.</p>
+<iframe loading="lazy" src="atlas/04a-figure.html" title="04a figure"></iframe>
+<a class="open" href="atlas/04a-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>interface Exporter { int count = 0; default void run() { count++; } }  // ❌ static final, can't assign
+interface Exporter { void bump(); default void run() { bump(); } }     // ✅ hook; each class owns a field</pre>
+<p class="sub">Interview</p>
+<ol><li>Shared state or a constructor, no other superclass → abstract class.</li><li>A capability for unrelated classes → interface.</li><li>Both → interface for the type, default method reaches state through an abstract accessor.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ interface مفيهوش state، أي field فيه بيبقى constant.</p>
+<p class="ar">الـ private method في الـ interface محدش يناديها غير الـ interface نفسه.</p>
+</details>
+</section>
+
+<section id="t05a">
+<h2>05a — Overriding vs overloading, static hiding</h2>
+<p class="meta">Due 2026-11-18 · rung 7 · completed, ok</p>
+<p class="model">The compiler picks the signature from declared types; the JVM picks the body from the real object — instance methods only.</p>
+<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>public boolean equals(Tag o)                // ❌ overload — contains() still runs Object.equals
+@Override public boolean equals(Object o) { return o instanceof Tag t &amp;&amp; name.equals(t.name); }  // ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>Overloading: compile time, declared argument types.</li><li>Overriding: runtime, the receiver's object.</li><li>Static methods are hidden, never overridden — runtime-varying behaviour goes in an <code>@Override</code> instance method.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ static method مابتتعملهاش override، بتتعملها hiding.</p>
+<p class="ar">حط الـ @Override دايماً.</p>
+</details>
+</section>
+
+<section id="t05b">
+<h2>05b — Dynamic dispatch, the four OOP concepts, varargs</h2>
+<p class="meta">Due 2026-11-18 · rung 7 · completed, ok</p>
+<p class="model">A method runs where it is written, but <code>this</code> is always the real object.</p>
+<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>new TestConfig().show();                   // "test" — show() calls this.env()
+Arrays.asList(new int[]{1,2,3}).size();    // 1 — an int[] is one object
+f(5) with f(Integer) and f(int...)         // f(Integer): boxing beats varargs</pre>
+<p class="sub">Interview</p>
+<ol><li>Encapsulation: the class enforces its own rules (not just getters/setters).</li><li>Abstraction: what, not how. Inheritance: reuse.</li><li>Polymorphism: one call site, many bodies — the compiler checks, the JVM picks.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">أي method بتتنادى من غير object قدامها يبقى قصدك this، وبتروح للـ subclass.</p>
+<p class="ar">الـ boxing بيكسب الـ varargs.</p>
+</details>
+</section>
+
+<section id="t06a">
+<h2>06a — <code>static</code> and class initialisation</h2>
+<p class="meta">Due 2026-11-18 · rung 7 · completed, ok</p>
+<p class="model">A static member belongs to the class, and the JVM initialises the class once, top to bottom, on first active use.</p>
+<div class="pending">Figure not built yet — added by the next scratch review that re-reads this topic.</div>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>static final Registry INSTANCE = new Registry();  // ctor: count 0 → 1
+static int count = 10;                            // ❌ then overwritten — count is 10, not 11</pre>
+<p class="sub">Interview</p>
+<ol><li>One copy per class.</li><li>Initialised once by the JVM, at runtime, in written order; reading a constant variable triggers nothing.</li><li>Static methods are hidden, never overridden.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ static بيتعمله initialize مرة واحدة بس، مش مع كل new.</p>
+<p class="ar">ترتيب السطور مهم، السطر اللي تحت ممكن يمسح اللي فوق.</p>
+</details>
+</section>
+
+<section id="t08b">
+<h2>08b — Maps</h2>
+<p class="meta">Due 2026-11-18 · rung 7 · completed, ok</p>
+<p class="model">The backing structure decides order, cost and <code>null</code>.</p>
+<iframe loading="lazy" src="08b-maps/anatomy/hashmap-rack-light.html" title="08b figure"></iframe>
+<a class="open" href="08b-maps/anatomy/hashmap-rack-light.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>Map&lt;String,Integer&gt; t = new TreeMap&lt;&gt;(String.CASE_INSENSITIVE_ORDER);
+t.put("Java", 1); t.put("java", 2);   // size 1, {Java=2} — equals never asked</pre>
+<p class="sub">Interview</p>
+<ol><li><code>HashMap</code>: O(1) avg, O(log n) worst (treeified bucket), no order, one <code>null</code> key.</li><li><code>LinkedHashMap</code>: insertion order. <code>TreeMap</code>: sorted, O(log n), no <code>null</code> key.</li><li><code>Hashtable</code>: every method synchronized, no nulls, O(n) worst — use <code>ConcurrentHashMap</code>.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الفرق بين الـ HashMap والـ Hashtable إن الـ Hashtable كله synchronized.</p>
+<p class="ar">الـ TreeMap بيستخدم الـ comparator بس.</p>
+</details>
+</section>
+
 </main>
 </body>
 </html>
