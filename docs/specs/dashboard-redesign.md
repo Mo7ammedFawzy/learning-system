@@ -25,6 +25,10 @@ Reference prototype: [playground/PROTOTYPE-dashboard-v2.html](../../playground/P
 | 12 | **Topics with several figures** show one named button per part ("02a String pool vs heap") |
 | 13 | **Figure side panels** (code listings, consoles, controls and notes beside a drawing) use the course look: a card, the current line as a green pop pill, pop buttons, notes as dark-bordered callouts. Long lines wrap, so nothing scrolls sideways. Known gap: figure 12's side panel (878px) is taller than the frame and scrolls vertically inside its card |
 | 14 | **The right panel shows the figure's Arabic summary** (its `.ar-summary`, right-to-left, under "باختصار") instead of the English caption. The English caption moves to the Read more reader, after the Arabic |
+| 15 | **Figure controls:** a small bar on the figure frame with − / + / reset; Ctrl+wheel zooms and dragging pans (CSS transform, no redraw). No rotate buttons: figures are flat SVG at a fixed isometric angle. A topic with no figure has no figure and no bar (decision 7) |
+| 16 | **Search:** a Ctrl K palette (and a search box in the top bar) matching topic id, title, objective and summary-card text. It lists Recent topics first, then results grouped by section with done/total; ↑ ↓ move, Enter opens, Esc closes |
+| 17 | **Popovers on figure parts only:** hovering a part shows its name and one sentence. Sidebar topics get no popover |
+| 18 | **Part text is added over time:** new figures must give each part its text; existing figures get theirs when their topic comes up for review. A part without text shows no popover |
 | — | Light only (no dark mode, no toggle), Arabic summary at the top of the page, `./check.sh` passes |
 
 ## Layout
@@ -63,6 +67,9 @@ Decision 10 moves that stylesheet into the figures themselves.
 - [ ] A topic with several figures shows one named button per part
 - [ ] No figure scrolls sideways (all 26 checked); figure 12's side panel is the only one that scrolls vertically
 - [ ] The right panel shows the figure's Arabic summary; Read more shows the Arabic, then the English caption
+- [ ] − / + / reset, Ctrl+wheel and drag zoom and pan the figure; reset restores the fit
+- [ ] Ctrl K opens search; a word that only appears in a summary card finds its topic
+- [ ] Hovering a figure part with text shows its popover; a part without text shows none
 - [ ] Reloading reopens the last topic; on first visit (cleared storage) it opens the focused track's current topic
 - [ ] `./check.sh` passes
 - [ ] `playground/PROTOTYPE-dashboard-v2.html` is deleted once the real page lands
