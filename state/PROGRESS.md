@@ -74,6 +74,11 @@ Fast batch pass only (`/scratch`): seen once, quizzed once, not practised. Still
 | 18 | JPA and Hibernate mapping — owning side, `mappedBy`, lazy `@ManyToOne`, `@MappedSuperclass` | 2026-11-23 | — |
 | 19 | Persistence context and lazy loading — entity states, dirty checking, `merge`, `LazyInitializationException` | 2026-11-23 | — |
 | 20 | Queries — JPQL vs native SQL, Criteria, projections, pagination | 2026-11-23 | — |
+| 21 | Transactions — proxy, propagation, rollback rules, self-invocation | 2026-11-23 | — |
+| 22 | N+1 and caching — fetch joins, entity graphs, paging trap, cache levels | 2026-11-23 | — |
+| 23 | IoC and DI — container, `BeanFactory` vs `ApplicationContext` | 2026-11-23 | — |
+| 24 | Beans — declaration, scopes, lifecycle, stateful singleton trap | 2026-11-23 | — |
+| 25 | Injection styles — constructor wins, `@Qualifier`, `@Primary`, `@Inject`, cycles | 2026-11-23 | — |
 
 ## Notes to self
 
@@ -89,13 +94,7 @@ Fast batch pass only (`/scratch`): seen once, quizzed once, not practised. Still
   ‫الـ HashMap مابيدورش، الـ hashCode بيختار الـ bucket والـ equals بيختار العنصر.‬
   ```
 
-  **Nothing technical is ever spelled in Arabic letters** (asked for on 2026-10-28, widened to
-  concept words on 2026-11-01). A concept or term (immutable object, constructor, final, reference,
-  list, bean, proxy) and any code (`isPresent()`, `orElse`, `List<Integer>`, `@Mock`) are written in
-  English, inline in the Arabic line, with `الـ` in front where Arabic needs it: "الـ immutable
-  object", not "الأوبجكت الإيموتابل"; "الـ constructor", not "الكونستركتور". Only the glue words
-  are Arabic. The English half is where the exact terms live — the Arabic is the memory hook, not the
-  source of truth.
+  **Nothing technical is ever spelled in Arabic letters** (asked for on 2026-10-28, widened to concept words on 2026-11-01). A concept or term (immutable object, constructor, final, reference, list, bean, proxy) and any code (`isPresent()`, `orElse`, `List<Integer>`, `@Mock`) are written in English, inline in the Arabic line, with `الـ` in front where Arabic needs it: "الـ immutable object", not "الأوبجكت الإيموتابل"; "الـ constructor", not "الكونستركتور". Only the glue words are Arabic. The English half is where the exact terms live — the Arabic is the memory hook, not the source of truth.
 
 - **Scratch is information only: no quiz.** Asked for on 2026-10-10, after two batches where the
   quiz came back mostly "I don't know": "just tell me the info in a good way". The goal is to get
