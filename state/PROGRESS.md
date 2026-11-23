@@ -69,16 +69,17 @@ Fast batch pass only (`/scratch`): seen once, quizzed once, not practised. Still
 | 44 | Schema design and DDL — constraints, `DELETE` vs `TRUNCATE` vs `DROP` | 2026-11-09 | — |
 | 45 | Advanced SQL — window functions, `ROW_NUMBER`/`RANK`/`DENSE_RANK`, Nth highest, duplicates | 2026-11-09 | — |
 | 17 | Indexes and isolation — B-tree seek vs scan, leftmost prefix, function on a column, isolation levels | 2026-11-09 | — |
+| 47 | PostgreSQL for a SQL Server / MySQL developer — types, case-folded identifiers, sequences over `IDENTITY` | 2026-11-23 | — |
+| 48 | Schema migrations with Flyway — versioned files, checksums, baseline, why not `ddl-auto=update` | 2026-11-23 | — |
+| 18 | JPA and Hibernate mapping — owning side, `mappedBy`, lazy `@ManyToOne`, `@MappedSuperclass` | 2026-11-23 | — |
+| 19 | Persistence context and lazy loading — entity states, dirty checking, `merge`, `LazyInitializationException` | 2026-11-23 | — |
+| 20 | Queries — JPQL vs native SQL, Criteria, projections, pagination | 2026-11-23 | — |
 
 ## Notes to self
 
 - **Teaching language: English + light Egyptian Arabic.** Arabic for the room — and more Arabic than feels natural in English prose. Framing, encouragement, corrections and the nudge at the end of a step go in light Egyptian dialect: "خلينا نشوف", "واضح كده؟", "برافو", "غلط، وهقولك ليه". **Technical content stays English**: code, terms (reference, heap, proxy, bean, erasure), the step-1 explanation, and the reasoning for *why* something breaks. That is the exact vocabulary needed in the interview itself, so it never gets translated. Rule of thumb: **Arabic for the room, English for the material.**
 
-- **Never mix Arabic and English in the same line.** A line is either pure Arabic — a short
-  standalone phrase, with no English words, no `code`, no backticks, no trailing English
-  punctuation — or pure English. Mixed right-to-left lines get visually scrambled in the terminal:
-  words and punctuation jump to the wrong end and the sentence becomes unreadable. If a thought
-  needs an English term or a code token, write that whole thought in English.
+- **Never mix Arabic and English in the same line.** A line is either pure Arabic — a short standalone phrase, with no English words, no `code`, no backticks, no trailing English punctuation — or pure English. Mixed right-to-left lines get visually scrambled in the terminal: words and punctuation jump to the wrong end and the sentence becomes unreadable. If a thought needs an English term or a code token, write that whole thought in English.
 
 - **A sentence worth memorising is given twice** — the English line, then the Arabic line directly
   underneath it, never on the same line:
