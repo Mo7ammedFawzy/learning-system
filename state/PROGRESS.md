@@ -20,7 +20,7 @@ One line per track; a lesson changes only its own track's line.
 
 **node** — Topic: N01 — The event loop and async code. Step: not started. Paused — focus is java.
 
-Last review: 2026-11-17 (scratch review, re-read 02b 04a 05a 05b 06a 08b, then 11 17 03a 04b 08a 09a) · 2026-11-16 (scratch review, re-read 17 04c 10 12 14 07, then 11 03a 04b 08a 09a 10a, then 13 15 16 44 45 02a) · 2026-11-15 (scratch review, re-read 09a 10a 02a 02b 04a 05a, then 05b 06a 13 15 08b 01, then 03a 04b 08a 16 44 45) · 2026-11-11 (quiz, scratched 10 12 14 07 11) · 2026-10-20 (placement quiz) · 2026-09-06 (topic 01).
+Last review: 2026-11-24 (scratch review, re-read 10a 02a 13 15 16 44) · 2026-11-17 (scratch review, re-read 02b 04a 05a 05b 06a 08b, then 11 17 03a 04b 08a 09a) · 2026-11-16 (scratch review, re-read 17 04c 10 12 14 07, then 11 03a 04b 08a 09a 10a, then 13 15 16 44 45 02a) · 2026-11-15 (scratch review, re-read 09a 10a 02a 02b 04a 05a, then 05b 06a 13 15 08b 01, then 03a 04b 08a 16 44 45) · 2026-11-11 (quiz, scratched 10 12 14 07 11) · 2026-10-20 (placement quiz) · 2026-09-06 (topic 01).
 
 ## Level
 

@@ -37,120 +37,22 @@ ol { padding-left:22px; }
 <body>
 <main>
 <h1>Review atlas</h1>
-<p class="meta">Read the mental model, say the trap and the interview answer out loud, then open the reveal. Order: most overdue first, as of 2026-11-17.</p>
+<p class="meta">Read the mental model, say the trap and the interview answer out loud, then open the reveal. Order: most overdue first, as of 2026-11-24.</p>
 <nav>
   <a href="#t11">11</a><a href="#t17">17</a><a href="#t03a">03a</a><a href="#t04b">04b</a><a href="#t08a">08a</a><a href="#t09a">09a</a><a href="#t10a">10a</a><a href="#t02a">02a</a><a href="#t13">13</a><a href="#t15">15</a><a href="#t16">16</a><a href="#t44">44</a><a href="#t45">45</a><a href="#t01">01</a><a href="#t04c">04c</a><a href="#t10">10</a><a href="#t12">12</a><a href="#t14">14</a><a href="#t07">07</a><a href="#t02b">02b</a><a href="#t04a">04a</a><a href="#t05a">05a</a><a href="#t05b">05b</a><a href="#t06a">06a</a><a href="#t08b">08b</a>
 </nav>
 
-<section id="t10a">
-<h2>10a — Lambdas, functional interfaces, method references</h2>
-<p class="meta">Due 2026-11-17 · rung 7 · completed, shaky</p>
-<p class="model">A lambda is the body of the one abstract method of a functional interface — and it captures a copy of each local's value.</p>
-<iframe loading="lazy" src="atlas/10a-figure.html" title="10a figure"></iframe>
-<a class="open" href="atlas/10a-figure.html">Open figure full size</a>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>Supplier&lt;List&lt;Book&gt;&gt; s = () -&gt; EMPTY;     // ❌ same list on every get()
-Supplier&lt;List&lt;Book&gt;&gt; s = ArrayList::new;  // ✅ new list on every get()
-String::startsWith  ==  (a, b) -&gt; a.startsWith(b)   // first argument is the receiver</pre>
-<p class="sub">Interview</p>
-<ol><li>A functional interface has one abstract method; a lambda or method reference implements it.</li><li>The target type infers the parameter types.</li><li>Captured locals are effectively final because the value is copied and may run later, on another thread.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">أي local variable بتقراه الـ lambda لازم يكون effectively final، لأنها بتاخد نسخة من القيمة.</p>
-<p class="ar">خلي بالك من الـ Supplier اللي بيرجّع نفس الـ object كل مرة.</p>
-</details>
-</section>
 
-<section id="t02a">
-<h2>02a — Strings: immutability, the pool, <code>==</code> vs <code>equals</code></h2>
-<p class="meta">Due 2026-11-17 · rung 7 · completed, ok</p>
-<p class="model">A <code>String</code> never changes; the only questions are which object you hold and whether it came from the pool.</p>
-<iframe loading="lazy" src="atlas/02a-figure.html" title="02a figure"></iframe>
-<a class="open" href="atlas/02a-figure.html">Open figure full size</a>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>if (cmd == "REFUND")                         // ❌ green with literals, red with socket input
-if ("REFUND".equals(cmd))                    // ✅ and null-safe
-static final String V; static { V = "1"; }   // ❌ not a constant: blank final</pre>
-<p class="sub">Interview</p>
-<ol><li><code>"hi"</code> + <code>new String("hi")</code> = two objects, <code>==</code> false.</li><li><code>intern()</code> returns the pooled instance — memory tool, not a comparison tool.</li><li>Tests pass by accident because literals are pooled; runtime strings never are.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">الـ == بيقارن الـ reference، مش النص، استخدم الـ equals.</p>
-<p class="ar">الـ constant لازم يتعمله initialize في نفس سطر الـ declaration.</p>
-</details>
-</section>
 
-<section id="t13">
-<h2>13 — Records, sealed types, pattern matching</h2>
-<p class="meta">Due 2026-11-17 · rung 7 · scratched</p>
-<p class="model">A record is a named tuple of final fields; a sealed interface is a closed list of subtypes, so a <code>switch</code> can be checked for exhaustiveness.</p>
-<iframe loading="lazy" src="atlas/13-figure.html" title="13 figure"></iframe>
-<a class="open" href="atlas/13-figure.html">Open figure full size</a>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>record Order(List&lt;Item&gt; items) {}                                        // ❌ the list still changes
-record Order(List&lt;Item&gt; items) { Order { items = List.copyOf(items); } }  // ✅</pre>
-<p class="sub">Interview</p>
-<ol><li>Records: data carriers, <code>equals</code>/<code>hashCode</code>/<code>toString</code> free, shallowly immutable.</li><li>Sealed + pattern <code>switch</code>: exhaustive, compiler-checked, no <code>default</code>.</li><li>Not JPA entities: final fields, no no-arg constructor.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">الـ sealed بيقفل الأنواع، فالـ switch مش محتاج default.</p>
-<p class="ar">الـ list اللي جوه الـ record لسه بتتغير.</p>
-</details>
-</section>
 
-<section id="t15">
-<h2>15 — Testing: JUnit 5 and Mockito</h2>
-<p class="meta">Due 2026-11-17 · rung 7 · scratched</p>
-<p class="model">A unit test swaps the class's collaborators for mocks and checks one behaviour: arrange, act, assert.</p>
-<iframe loading="lazy" src="atlas/15-figure.html" title="15 figure"></iframe>
-<a class="open" href="atlas/15-figure.html">Open figure full size</a>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>when(spy.load()).thenReturn(x);   // ❌ the real load() runs while stubbing
-doReturn(x).when(spy).load();     // ✅</pre>
-<p class="sub">Interview</p>
-<ol><li>JUnit runs it, Mockito fakes collaborators.</li><li>Mock boundaries you don't own or that are slow — never the class under test.</li><li>Verify outcomes over interactions; a spy needs <code>doReturn</code>.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">اعمل mock للي مش بتاعك أو البطيء، مش للـ class نفسه.</p>
-<p class="ar">مع الـ spy استخدم الـ doReturn.</p>
-</details>
-</section>
 
-<section id="t16">
-<h2>16 — SQL fundamentals</h2>
-<p class="meta">Due 2026-11-17 · rung 7 · scratched</p>
-<p class="model">SQL runs FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY, and <code>NULL</code> compared to anything is UNKNOWN.</p>
-<iframe loading="lazy" src="atlas/16-figure.html" title="16 figure"></iframe>
-<a class="open" href="atlas/16-figure.html">Open figure full size</a>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>WHERE Id NOT IN (SELECT ManagerId FROM Emp)    -- ❌ one NULL → empty result
-WHERE NOT EXISTS (SELECT 1 FROM Emp m WHERE m.ManagerId = e.Id)  -- ✅</pre>
-<p class="sub">Interview</p>
-<ol><li>Logical order: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY.</li><li><code>WHERE</code> for rows, <code>HAVING</code> for aggregates over groups.</li><li><code>NULL = NULL</code> is UNKNOWN: use <code>IS NULL</code>; prefer <code>NOT EXISTS</code> on a nullable column.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">الـ WHERE على الـ rows قبل الـ GROUP BY، والـ HAVING على الـ groups بعده.</p>
-<p class="ar">لو فيه NULL واحد جوه الـ NOT IN، النتيجة هتطلع فاضية.</p>
-</details>
-</section>
 
-<section id="t44">
-<h2>44 — Schema design and DDL</h2>
-<p class="meta">Due 2026-11-17 · rung 7 · scratched</p>
-<p class="model"><code>DELETE</code> removes the rows you choose, <code>TRUNCATE</code> empties the table and keeps its structure, <code>DROP</code> removes the table.</p>
-<iframe loading="lazy" src="atlas/44-figure.html" title="44 figure"></iframe>
-<a class="open" href="atlas/44-figure.html">Open figure full size</a>
-<details><summary>Reveal trap and answer</summary>
-<p class="sub">Trap</p>
-<pre>BEGIN TRAN; TRUNCATE TABLE Orders; ROLLBACK;  -- ✅ rows are back in SQL Server
-TRUNCATE TABLE Customers;                     -- ❌ refused when a FOREIGN KEY references it</pre>
-<p class="sub">Interview</p>
-<ol><li><code>DELETE</code> is DML; <code>TRUNCATE</code> and <code>DROP</code> are DDL.</li><li><code>TRUNCATE</code>: no <code>WHERE</code>, page-logged, resets <code>IDENTITY</code>, no triggers, blocked by a referencing FK.</li><li>Both roll back inside a transaction in SQL Server.</li></ol>
-<p class="sub">بالمصري</p>
-<p class="ar">الـ TRUNCATE بيرجّع الـ IDENTITY للأول.</p>
-<p class="ar">في الـ SQL Server، الـ TRUNCATE جوه transaction ينفع يتعمله rollback.</p>
-</details>
-</section>
+
+
+
+
+
+
 
 <section id="t45">
 <h2>45 — Advanced SQL: window functions</h2>
@@ -504,6 +406,116 @@ WHERE created_at &gt;= '2026-01-01' AND created_at &lt; '2027-01-01'   -- ✅ ra
 
 
 
+
+<section id="t10a">
+<h2>10a — Lambdas, functional interfaces, method references</h2>
+<p class="meta">Due 2026-11-25 · rung 7 · completed, shaky</p>
+<p class="model">A lambda is the body of the one abstract method of a functional interface — and it captures a copy of each local's value.</p>
+<iframe loading="lazy" src="atlas/10a-figure.html" title="10a figure"></iframe>
+<a class="open" href="atlas/10a-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>Supplier&lt;List&lt;Book&gt;&gt; s = () -&gt; EMPTY;     // ❌ same list on every get()
+Supplier&lt;List&lt;Book&gt;&gt; s = ArrayList::new;  // ✅ new list on every get()
+String::startsWith  ==  (a, b) -&gt; a.startsWith(b)   // first argument is the receiver</pre>
+<p class="sub">Interview</p>
+<ol><li>A functional interface has one abstract method; a lambda or method reference implements it.</li><li>The target type infers the parameter types.</li><li>Captured locals are effectively final because the value is copied and may run later, on another thread.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">أي local variable بتقراه الـ lambda لازم يكون effectively final، لأنها بتاخد نسخة من القيمة.</p>
+<p class="ar">خلي بالك من الـ Supplier اللي بيرجّع نفس الـ object كل مرة.</p>
+</details>
+</section>
+
+<section id="t02a">
+<h2>02a — Strings: immutability, the pool, <code>==</code> vs <code>equals</code></h2>
+<p class="meta">Due 2026-11-25 · rung 7 · completed, ok</p>
+<p class="model">A <code>String</code> never changes; the only questions are which object you hold and whether it came from the pool.</p>
+<iframe loading="lazy" src="atlas/02a-figure.html" title="02a figure"></iframe>
+<a class="open" href="atlas/02a-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>if (cmd == "REFUND")                         // ❌ green with literals, red with socket input
+if ("REFUND".equals(cmd))                    // ✅ and null-safe
+static final String V; static { V = "1"; }   // ❌ not a constant: blank final</pre>
+<p class="sub">Interview</p>
+<ol><li><code>"hi"</code> + <code>new String("hi")</code> = two objects, <code>==</code> false.</li><li><code>intern()</code> returns the pooled instance — memory tool, not a comparison tool.</li><li>Tests pass by accident because literals are pooled; runtime strings never are.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ == بيقارن الـ reference، مش النص، استخدم الـ equals.</p>
+<p class="ar">الـ constant لازم يتعمله initialize في نفس سطر الـ declaration.</p>
+</details>
+</section>
+
+<section id="t13">
+<h2>13 — Records, sealed types, pattern matching</h2>
+<p class="meta">Due 2026-11-25 · rung 7 · scratched</p>
+<p class="model">A record is a named tuple of final fields; a sealed interface is a closed list of subtypes, so a <code>switch</code> can be checked for exhaustiveness.</p>
+<iframe loading="lazy" src="atlas/13-figure.html" title="13 figure"></iframe>
+<a class="open" href="atlas/13-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>record Order(List&lt;Item&gt; items) {}                                        // ❌ the list still changes
+record Order(List&lt;Item&gt; items) { Order { items = List.copyOf(items); } }  // ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>Records: data carriers, <code>equals</code>/<code>hashCode</code>/<code>toString</code> free, shallowly immutable.</li><li>Sealed + pattern <code>switch</code>: exhaustive, compiler-checked, no <code>default</code>.</li><li>Not JPA entities: final fields, no no-arg constructor.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ sealed بيقفل الأنواع، فالـ switch مش محتاج default.</p>
+<p class="ar">الـ list اللي جوه الـ record لسه بتتغير.</p>
+</details>
+</section>
+
+<section id="t15">
+<h2>15 — Testing: JUnit 5 and Mockito</h2>
+<p class="meta">Due 2026-11-25 · rung 7 · scratched</p>
+<p class="model">A unit test swaps the class's collaborators for mocks and checks one behaviour: arrange, act, assert.</p>
+<iframe loading="lazy" src="atlas/15-figure.html" title="15 figure"></iframe>
+<a class="open" href="atlas/15-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>when(spy.load()).thenReturn(x);   // ❌ the real load() runs while stubbing
+doReturn(x).when(spy).load();     // ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>JUnit runs it, Mockito fakes collaborators.</li><li>Mock boundaries you don't own or that are slow — never the class under test.</li><li>Verify outcomes over interactions; a spy needs <code>doReturn</code>.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">اعمل mock للي مش بتاعك أو البطيء، مش للـ class نفسه.</p>
+<p class="ar">مع الـ spy استخدم الـ doReturn.</p>
+</details>
+</section>
+
+<section id="t16">
+<h2>16 — SQL fundamentals</h2>
+<p class="meta">Due 2026-11-25 · rung 7 · scratched</p>
+<p class="model">SQL runs FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY, and <code>NULL</code> compared to anything is UNKNOWN.</p>
+<iframe loading="lazy" src="atlas/16-figure.html" title="16 figure"></iframe>
+<a class="open" href="atlas/16-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>WHERE Id NOT IN (SELECT ManagerId FROM Emp)    -- ❌ one NULL → empty result
+WHERE NOT EXISTS (SELECT 1 FROM Emp m WHERE m.ManagerId = e.Id)  -- ✅</pre>
+<p class="sub">Interview</p>
+<ol><li>Logical order: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY.</li><li><code>WHERE</code> for rows, <code>HAVING</code> for aggregates over groups.</li><li><code>NULL = NULL</code> is UNKNOWN: use <code>IS NULL</code>; prefer <code>NOT EXISTS</code> on a nullable column.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ WHERE على الـ rows قبل الـ GROUP BY، والـ HAVING على الـ groups بعده.</p>
+<p class="ar">لو فيه NULL واحد جوه الـ NOT IN، النتيجة هتطلع فاضية.</p>
+</details>
+</section>
+
+<section id="t44">
+<h2>44 — Schema design and DDL</h2>
+<p class="meta">Due 2026-11-25 · rung 7 · scratched</p>
+<p class="model"><code>DELETE</code> removes the rows you choose, <code>TRUNCATE</code> empties the table and keeps its structure, <code>DROP</code> removes the table.</p>
+<iframe loading="lazy" src="atlas/44-figure.html" title="44 figure"></iframe>
+<a class="open" href="atlas/44-figure.html">Open figure full size</a>
+<details><summary>Reveal trap and answer</summary>
+<p class="sub">Trap</p>
+<pre>BEGIN TRAN; TRUNCATE TABLE Orders; ROLLBACK;  -- ✅ rows are back in SQL Server
+TRUNCATE TABLE Customers;                     -- ❌ refused when a FOREIGN KEY references it</pre>
+<p class="sub">Interview</p>
+<ol><li><code>DELETE</code> is DML; <code>TRUNCATE</code> and <code>DROP</code> are DDL.</li><li><code>TRUNCATE</code>: no <code>WHERE</code>, page-logged, resets <code>IDENTITY</code>, no triggers, blocked by a referencing FK.</li><li>Both roll back inside a transaction in SQL Server.</li></ol>
+<p class="sub">بالمصري</p>
+<p class="ar">الـ TRUNCATE بيرجّع الـ IDENTITY للأول.</p>
+<p class="ar">في الـ SQL Server، الـ TRUNCATE جوه transaction ينفع يتعمله rollback.</p>
+</details>
+</section>
 </main>
 </body>
 </html>
