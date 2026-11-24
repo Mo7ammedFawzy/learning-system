@@ -4,8 +4,8 @@ Rebuild `playground/dashboard.html` so it looks and works like an interactive co
 (reference: designed-to-scale.vercel.app), while keeping everything today's dashboard shows.
 Vocabulary follows [GLOSSARY.md](../../GLOSSARY.md): topic, part, figure, frame, summary card.
 
-Reference prototype: [playground/PROTOTYPE-dashboard-v2.html](../../playground/PROTOTYPE-dashboard-v2.html)
-(commit `745ca23`; open it with `?tabs=B`). Serve the folder over http to see the figure colours.
+Reference prototype: `playground/PROTOTYPE-dashboard-v2.html`, deleted once the real page landed
+(see it with `git show 745ca23:playground/PROTOTYPE-dashboard-v2.html`; open it with `?tabs=B`).
 
 ## Decisions
 
@@ -72,4 +72,4 @@ Decision 10 moves that stylesheet into the figures themselves.
 - [x] Hovering a figure part with text shows its popover; a part without text shows none
 - [x] Reloading reopens the last topic; on first visit (cleared storage) it opens the focused track's current topic
 - [x] `./check.sh` passes
-- [ ] `playground/PROTOTYPE-dashboard-v2.html` is deleted once the real page lands
+- [x] `playground/PROTOTYPE-dashboard-v2.html` is deleted once the real page lands
