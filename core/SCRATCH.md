@@ -41,7 +41,10 @@ picture. When `state/PROGRESS.md` names a second teaching language, every detail
 in the atlas) shows at the top of the page a short summary of the whole figure in that language: 2–4 lines
 saying what the object is, what each part stands for and what moving it shows, so the figure reads
 at a glance. The teaching agent writes those lines to that file's language rules and hands them to
-the builder verbatim, set right-to-left where the language is. Where there is no background worker, skip it: building the figure inline would delay the
+the builder verbatim, set right-to-left where the language is. Every new detailed figure also gives
+each part a name and one sentence for its hover popover, in a
+`<script type="application/json" id="part-text">{"<data-part>":{"name":"…","text":"…"}}</script>` block;
+an existing figure gets this when its topic comes up for review. Where there is no background worker, skip it: building the figure inline would delay the
 teach turn by far more than the batch is worth.
 
 One headed block per topic, about 120 words plus one view. Do not wait between blocks and ask

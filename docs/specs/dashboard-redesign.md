@@ -58,18 +58,18 @@ Decision 10 moves that stylesheet into the figures themselves.
 
 ## Done when
 
-- [ ] `playground/dashboard.html` shows the course layout with real data from `node dashboard.mjs`
-- [ ] Opened from disk (and from the band button), it renders with no console errors
-- [ ] Learn and Progress tabs both work; Progress keeps the cell grid, calendar and due list
-- [ ] The tree shows all tracks with done/total counts; folders open and close with the eased transition
-- [ ] The stage follows decision 7 for a topic with a figure, one with only a summary card, and one with neither
-- [ ] Figures show in the course colours when opened from disk; ◀ ▶ and the metric tiles follow the figure; the stage and right panel never scroll
-- [ ] A topic with several figures shows one named button per part
-- [ ] No figure scrolls sideways (all 26 checked); figure 12's side panel is the only one that scrolls vertically
-- [ ] The right panel shows the figure's Arabic summary; Read more shows the Arabic, then the English caption
-- [ ] − / + / reset, Ctrl+wheel and drag zoom and pan the figure; reset restores the fit
-- [ ] Ctrl K opens search; a word that only appears in a summary card finds its topic
-- [ ] Hovering a figure part with text shows its popover; a part without text shows none
-- [ ] Reloading reopens the last topic; on first visit (cleared storage) it opens the focused track's current topic
-- [ ] `./check.sh` passes
+- [x] `playground/dashboard.html` shows the course layout with real data from `node dashboard.mjs`
+- [x] Opened from disk (and from the band button), it renders with no console errors
+- [x] Learn and Progress tabs both work; Progress keeps the cell grid, calendar and due list
+- [x] The tree shows all tracks with done/total counts; folders open and close with the eased transition
+- [x] The stage follows decision 7 for a topic with a figure, one with only a summary card, and one with neither
+- [x] Figures show in the course colours when opened from disk; ◀ ▶ and the metric tiles follow the figure; the stage and right panel never scroll. Figures 02b, 04a, 05a and 21 have no arrow keys or buttons to step, so they show no ◀ ▶
+- [x] A topic with several figures shows one named button per part
+- [x] No figure scrolls sideways (all 27 checked at 1440×900); figure 12's side panel is the only one that scrolls vertically
+- [x] The right panel shows the figure's Arabic summary; Read more shows the Arabic, then the English caption (figure 44 has no English caption)
+- [x] − / + / reset, Ctrl+wheel and drag zoom and pan the figure; reset restores the fit
+- [x] Ctrl K opens search; a word that only appears in a summary card finds its topic
+- [x] Hovering a figure part with text shows its popover; a part without text shows none
+- [x] Reloading reopens the last topic; on first visit (cleared storage) it opens the focused track's current topic
+- [x] `./check.sh` passes
 - [ ] `playground/PROTOTYPE-dashboard-v2.html` is deleted once the real page lands

@@ -11,5 +11,6 @@
 # The review atlas and the figures it embeds.
 !/review-atlas.html
 !/atlas/*-figure.html
+!/atlas/course-figure.js
 # Every built page: figures, scratch-folder copies, prototypes. The learner keeps them all.
 !*.html

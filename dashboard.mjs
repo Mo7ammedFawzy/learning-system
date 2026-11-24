@@ -89,6 +89,13 @@ for (const d of ['atlas', ...dirs.filter(d => d !== 'atlas')]) {
     if (id && !figures[id]) figures[id] = `${d}/${f}`
   }
 }
+// Every figure loads the dashboard's bridge (inert when opened alone). Stamped here so a new or rebuilt figure gets it too.
+const BRIDGE = '<script src="../atlas/course-figure.js"></script>'
+for (const f of Object.values(figures)) {
+  const file = path.join(pg, f), html = fs.readFileSync(file, 'utf8')
+  const end = html.lastIndexOf('</body>')
+  if (end >= 0 && !html.includes(BRIDGE)) fs.writeFileSync(file, html.slice(0, end) + BRIDGE + html.slice(end))
+}
 
 const data = { generated: new Date().toISOString(), tracks, completed, scratched, current, focus, review, weak, summaries, figures }
 fs.writeFileSync(path.join(pg, 'dashboard-data.js'),
